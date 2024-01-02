@@ -1,0 +1,12 @@
+{
+    "component": "r2artifact",
+    "repoName": "onl_create_enterprice_quotation",
+    "uuaa": "rbvd",
+    "slave_label": "apx",
+    "extra_properties": null,
+    "apxrepoBranch": "master",
+    "componentPaaSId": "onl_create_enterprice_quotation",
+    "appPaaSId": "rbvd",
+    "proyectPaaSId": "pe.rbvd.app-id-105529.dsg",
+    "resource_type": "du_online"
+}
