@@ -56,7 +56,7 @@ public class SimulationMap {
     }
     private static Boolean checkParticipant(List<ParticipantDTO> participant){
         Boolean isHolder = participant.stream()
-                .anyMatch(particip -> particip.getParticipantType().equals("HOLDER"));
+                .anyMatch(particip -> particip.getParticipantType().getId().equals("HOLDER"));
         return isHolder;
     }
 }
