@@ -12,5 +12,7 @@
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>TRANSACTIONS-onl_create_enterprice_quotation</name>
-	<modules/>
+	<modules>
+		<module>RBVDT402-01-PE</module>
+	</modules>
 </project>
