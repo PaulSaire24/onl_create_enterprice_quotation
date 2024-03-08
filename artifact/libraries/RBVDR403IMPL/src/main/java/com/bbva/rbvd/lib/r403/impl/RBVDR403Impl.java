@@ -6,14 +6,18 @@ import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnte
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationInputBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
+import com.bbva.rbvd.lib.r403.service.dao.IInsuranceProductDAO;
 import com.bbva.rbvd.lib.r403.service.dao.IInsuranceSimulationDAO;
 import com.bbva.rbvd.lib.r403.service.dao.ISimulationDAO;
 import com.bbva.rbvd.lib.r403.service.dao.ISimulationProductDAO;
+import com.bbva.rbvd.lib.r403.service.dao.impl.InsuranceProductDAO;
 import com.bbva.rbvd.lib.r403.service.dao.impl.InsuranceSimulationDAOImpl;
 import com.bbva.rbvd.lib.r403.service.dao.impl.SimulationDAOImpl;
 import com.bbva.rbvd.lib.r403.service.dao.impl.SimulationProductDAOImpl;
 import com.bbva.rbvd.lib.r403.service.impl.ConsumerExternalService;
 import com.bbva.rbvd.lib.r403.transform.bean.QuotationBean;
+import com.bbva.rbvd.lib.r403.transform.map.ProductMap;
+import com.bbva.rbvd.lib.r403.transform.map.QuotationMap;
 import com.bbva.rbvd.lib.r403.transform.map.SimulationMap;
 import com.bbva.rbvd.lib.r403.transform.map.SimulationProductMap;
 import org.slf4j.Logger;
@@ -47,13 +51,16 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		BigDecimal nextId = this.getInsuranceSimulationId();
 		response = mapInQuotationResponse(quotationCreate,responseRimac,branchCode,nextId);
 		LOGGER.info("*****executeCreateQuotation a- participant response: {}***",response);
-
+		Map<String, Object> argumentsForGetProductId = ProductMap.createArgumentsForGetProductId(quotationCreate);
+		LOGGER.info("*****executeCreateQuotation - participant argumentsForSaveSimulation: {}***", argumentsForGetProductId);
+		Object productId = this.getProductId(argumentsForGetProductId);
+		LOGGER.info("*****executeCreateQuotation -  productId from BD: {}***", productId);
 		Map<String, Object> argumentsForSaveSimulation = SimulationMap.createArgumentsForSaveSimulation(nextId,response, quotationCreate, responseRimac, creationUser, userAudit, branchCode,this.applicationConfigurationService);
-			LOGGER.info("*****executeCreateQuotation - participant argumentsForSaveSimulation: {}***", argumentsForSaveSimulation);
-
+		LOGGER.info("*****executeCreateQuotation - participant argumentsForSaveSimulation: {}***", argumentsForSaveSimulation);
+		Map<String, Object> argumentsForSaveQuotation = QuotationMap.createArgumentsForSaveQuotation(nextId,response, quotationCreate, responseRimac, creationUser, userAudit, branchCode,this.applicationConfigurationService);
+		LOGGER.info("*****executeCreateQuotation - participant argumentsForSaveQuotation: {}***", argumentsForSaveQuotation);
 		Map<String, Object> argumentsForSaveSimulationProd = SimulationProductMap.createArgumentsForSaveSimulationProduct(nextId,quotationCreate,creationUser,userAudit);
-		LOGGER.info("*****executeCreateQuotation - participant argumentsForSaveSimulationProd: {}***",argumentsForSaveSimulationProd);
-		ISimulationProductDAO iSimulationProductDAO = new SimulationProductDAOImpl(this.pisdR402);
+		    LOGGER.info("*****executeCreateQuotation - participant argumentsForSaveSimulationProd: {}***",argumentsForSaveSimulationProd);ISimulationProductDAO iSimulationProductDAO = new SimulationProductDAOImpl(this.pisdR402);
 		ISimulationDAO iSimulationDAO = new SimulationDAOImpl(this.pisdR402);
         iSimulationDAO.insertSimulation(argumentsForSaveSimulation);
 		iSimulationProductDAO.insertSimulationProduct(argumentsForSaveSimulationProd);
@@ -61,6 +68,15 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		return response;
 	}
 
+	public Object getProductId(Map<String, Object> argumentsForGetProductId){
+		LOGGER.info("***** executeCreateQuotation - getInsuranceSimulationId START *****");
+
+		IInsuranceProductDAO insuranceProductDAO= new InsuranceProductDAO(pisdR401);
+		Object productId = insuranceProductDAO.getInsuranceProductId(argumentsForGetProductId);
+
+		LOGGER.info("***** executeCreateQuotation - getInsuranceSimulationId | simulationNextValue: {} *****",productId);
+		return productId;
+	}
 	public BigDecimal getInsuranceSimulationId(){
 		LOGGER.info("***** executeCreateQuotation - getInsuranceSimulationId START *****");
 
@@ -70,5 +86,4 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		LOGGER.info("***** executeCreateQuotation - getInsuranceSimulationId | simulationNextValue: {} *****",simulationNextValue);
 		return simulationNextValue;
 	}
-
 }

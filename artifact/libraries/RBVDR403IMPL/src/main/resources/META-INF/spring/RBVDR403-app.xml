@@ -4,5 +4,6 @@
 	<bean id="rbvdR403" class="com.bbva.rbvd.lib.r403.impl.RBVDR403Impl" parent="rbvdR403Abstract">
 		<property name="pisdR402" ref="pisdR402"/>
 		<property name="pisdR014" ref="pisdR014"/>
+		<property name="pisdR401" ref="pisdR401"/>
 	</bean>
 </beans>

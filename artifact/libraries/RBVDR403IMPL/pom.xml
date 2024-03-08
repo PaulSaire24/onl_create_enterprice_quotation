@@ -94,6 +94,11 @@
 			<artifactId>PISDR014</artifactId>
 			<version>0.10.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.bbva.pisd</groupId>
+			<artifactId>PISDR401</artifactId>
+			<version>0.3.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>

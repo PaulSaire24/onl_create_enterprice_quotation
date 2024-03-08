@@ -86,6 +86,17 @@ public static final class mockData{
         public static final String FIELD_CAMPAIGN_FACTOR_PER = "CAMPAIGN_FACTOR_PER";
         public static final String FIELD_SALE_CHANNEL_ID="SALE_CHANNEL_ID";
 
+        public static final String FIELD_POLICY_QUOTA_INTERNAL_ID="POLICY_QUOTA_INTERNAL_ID";
+        public static final String FIELD_INSURANCE_COMPANY_QUOTA_ID="INSURANCE_COMPANY_QUOTA_ID";
+        public static final String FIELD_QUOTE_DATE="QUOTE_DATE";
+        public static final String FIELD_QUOTA_HMS_DATE="QUOTA_HMS_DATE";
+        public static final String FIELD_POLICY_QUOTA_END_VALIDITY_DATE="POLICY_QUOTA_END_VALIDITY_DATE";
+        public static final String FIELD_POLICY_QUOTA_STATUS_TYPE="POLICY_QUOTA_STATUS_TYPE";
+        public static final String FIELD_LAST_CHANGE_BRANCH_ID="LAST_CHANGE_BRANCH_ID";
+        public static final String FIELD_RFQ_INTERNAL_ID="RFQ_INTERNAL_ID";
+        public static final String FIELD_INSURANCE_PRODUCT_TYPE="FIELD_INSURANCE_PRODUCT_TYPE";
+
+
     }
 
 }

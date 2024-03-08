@@ -1,5 +1,6 @@
 package com.bbva.rbvd.lib.r403.service.dao.impl;
 
+import com.bbva.pisd.lib.r401.PISDR401;
 import com.bbva.pisd.lib.r402.PISDR402;
 import com.bbva.rbvd.dto.enterpriseinsurance.utils.ConstantsUtil;
 import com.bbva.rbvd.lib.r403.service.dao.IInsuranceSimulationDAO;
@@ -21,5 +22,6 @@ public class InsuranceSimulationDAOImpl implements IInsuranceSimulationDAO {
 
         return (BigDecimal) responseGetInsuranceSimulationMap.get(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL);
     }
+
 
 }
