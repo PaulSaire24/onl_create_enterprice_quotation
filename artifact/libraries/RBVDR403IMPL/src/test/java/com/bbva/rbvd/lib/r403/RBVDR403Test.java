@@ -9,6 +9,7 @@ import com.bbva.elara.domain.transaction.ThreadContext;
 import com.bbva.elara.utility.api.connector.APIConnector;
 import com.bbva.pisd.dto.insurance.amazon.SignatureAWS;
 import com.bbva.pisd.lib.r014.PISDR014;
+import com.bbva.pisd.lib.r401.PISDR401;
 import com.bbva.pisd.lib.r402.PISDR402;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.*;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.*;
@@ -56,7 +57,7 @@ public class RBVDR403Test {
 	private ApplicationConfigurationService applicationConfigurationService;
 
 	@Mock
-	private RBVDR403 rbvdR403;
+	private PISDR401 pisdr401;
 	@Mock
 	private ConsumerExternalService consumerExternalServiceMock;
 	@Mock
@@ -88,6 +89,8 @@ public class RBVDR403Test {
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
 				.thenReturn(1);
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
+		when(pisdr401.executeGetProductById(anyString(), anyMap()))
+				.thenReturn(1);
 
 		rbvdR302.executeCreateQuotation(requestInput,"PISD","P012341","P012341","0241","a");
 	}
@@ -244,6 +247,7 @@ catch (BusinessException e){
 		planes.add(plan1);
 		planes.add(plan2);
 		cotizaciones1.setPlan(plan1);
+		cotizaciones1.setFechaFinVigencia("2024-04-30");
 		cotizaciones2.setPlan(plan2);
 		cotizaciones.add(cotizaciones1);
 		cotizaciones.add(cotizaciones2);
@@ -296,6 +300,7 @@ catch (BusinessException e){
 		planes.add(plan1);
 		planes.add(plan2);
 		cotizaciones1.setPlan(plan1);
+		cotizaciones1.setFechaFinVigencia("2024-04-30");
 		cotizaciones2.setPlan(plan2);
 		cotizaciones.add(cotizaciones1);
 		cotizaciones.add(cotizaciones2);

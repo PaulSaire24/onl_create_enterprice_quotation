@@ -8,22 +8,36 @@ import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResp
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 public class QuotationMap {
     private QuotationMap(){}
-    public static Map<String, Object> createArgumentsForSaveQuotation(BigDecimal nextId, CreateQuotationDTO responseDTO, CreateQuotationDTO input, InsuranceEnterpriseResponseBO payload, String creationUser, String userAudit, String branchId, ApplicationConfigurationService applicationConfigurationService) {
+    public static Map<String, Object> createArgumentsForSaveQuotation(BigDecimal nextId, CreateQuotationDTO responseDTO, CreateQuotationDTO input, InsuranceEnterpriseResponseBO payload, String creationUser, String userAudit, String branchId, ApplicationConfigurationService applicationConfigurationService){
         Map<String, Object> arguments = new HashMap<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         QuotationResponseBO response = payload.getPayload();
 
+
+
         if (Objects.nonNull(response) && Objects.nonNull(response.getCotizaciones()) && !response.getCotizaciones().isEmpty()) {
+            SimpleDateFormat dateFormatEnd = new SimpleDateFormat("yyyy-MM-dd");
+            LocalDate fechaFin = LocalDate.parse(response.getCotizaciones().get(0).getFechaFinVigencia());
+            LocalDateTime fechaFinDate = fechaFin.atStartOfDay();
+
+            // Convertir LocalDateTime a Date
+            Date date = Date.from(fechaFinDate.atZone(ZoneId.systemDefault()).toInstant());
             arguments.put(ContansUtils.Mapper.FIELD_INSURANCE_COMPANY_QUOTA_ID,response.getCotizaciones().get(0).getCotizacion());
+            arguments.put(ContansUtils.Mapper.FIELD_POLICY_QUOTA_END_VALIDITY_DATE, dateFormatEnd.format(date));
 
         } else {
 
             arguments.put(ContansUtils.Mapper.FIELD_INSURANCE_COMPANY_QUOTA_ID, null);
+            arguments.put(ContansUtils.Mapper.FIELD_POLICY_QUOTA_END_VALIDITY_DATE, null);
         }
 
         if (Objects.nonNull(input) && Objects.nonNull(input.getParticipants()) && !input.getParticipants().isEmpty()&&checkParticipant(input.getParticipants()).equals(true)) {
@@ -41,8 +55,7 @@ public class QuotationMap {
         arguments.put(ContansUtils.Mapper.FIELD_POLICY_QUOTA_INTERNAL_ID, responseDTO.getId());
         arguments.put(ContansUtils.Mapper.FIELD_QUOTE_DATE, dateFormat.format(new Date()));
         arguments.put(ContansUtils.Mapper.FIELD_QUOTA_HMS_DATE, dateFormat.format(new Date()));
-        arguments.put(ContansUtils.Mapper.FIELD_POLICY_QUOTA_END_VALIDITY_DATE, "01");
-        arguments.put(ContansUtils.Mapper.FIELD_POLICY_QUOTA_STATUS_TYPE, null);
+        arguments.put(ContansUtils.Mapper.FIELD_POLICY_QUOTA_STATUS_TYPE, "COT");
         arguments.put(ContansUtils.Mapper.FIELD_LAST_CHANGE_BRANCH_ID, branchId);
         arguments.put(ContansUtils.Mapper.FIELD_SOURCE_BRANCH_ID, branchId);
         arguments.put(ContansUtils.Mapper.FIELD_CREATION_USER_ID, userAudit);
