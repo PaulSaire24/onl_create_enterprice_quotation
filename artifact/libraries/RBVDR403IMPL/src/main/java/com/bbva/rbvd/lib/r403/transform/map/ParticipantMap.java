@@ -25,7 +25,7 @@ public class ParticipantMap {
     }
     public static Long getPlanSelected(List<Map<String,Object>> planList){
         Long planSelected = null;
-        if(Objects.requireNonNull(planList).equals(true)) {
+        if(Objects.requireNonNull(planList).equals(planList) && !planList.isEmpty()) {
              planSelected = (Long) planList.get(0).get("INSURANCE_MODALITY_ID");
         }
         return planSelected;
