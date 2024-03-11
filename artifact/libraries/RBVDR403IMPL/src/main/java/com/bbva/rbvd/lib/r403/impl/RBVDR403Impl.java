@@ -11,10 +11,7 @@ import com.bbva.rbvd.lib.r403.service.dao.*;
 import com.bbva.rbvd.lib.r403.service.dao.impl.*;
 import com.bbva.rbvd.lib.r403.service.impl.ConsumerExternalService;
 import com.bbva.rbvd.lib.r403.transform.bean.QuotationBean;
-import com.bbva.rbvd.lib.r403.transform.map.ProductMap;
-import com.bbva.rbvd.lib.r403.transform.map.QuotationMap;
-import com.bbva.rbvd.lib.r403.transform.map.SimulationMap;
-import com.bbva.rbvd.lib.r403.transform.map.SimulationProductMap;
+import com.bbva.rbvd.lib.r403.transform.map.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Map;
 
 import static com.bbva.rbvd.lib.r403.transform.bean.QuotationRimac.mapInQuotationResponse;
@@ -40,16 +38,19 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 	public CreateQuotationDTO executeCreateQuotation(CreateQuotationDTO quotationCreate,String channelCode, String userAudit,String creationUser,String branchCode,String traceId) {
 		CreateQuotationDTO response;
 		LOGGER.info("*****executeCreateQuotation - participant : {}***",quotationCreate.getParticipants());
-
-		InsuranceEnterpriseInputBO rimacInput = QuotationBean.createQuotationDAO(quotationCreate);
+		Map<String, Object> argumentsForGetPlansId = PlansMap.createArgumentsForGetPlansId(quotationCreate,channelCode);
+		LOGGER.info("*****executeCreateQuotation - participant argumentsForGetPlansId: {}***", argumentsForGetPlansId);
+		IInsurancePlanDAO iInsurancePlanDAO = new InsurancePlanDAO(this.pisdR402);
+		List<Map<String, Object>> planList = iInsurancePlanDAO.getPlansId(argumentsForGetPlansId);
+		LOGGER.info("*****executeCreateQuotation - Lista de Planes: {}***", planList);
+		InsuranceEnterpriseInputBO rimacInput = QuotationBean.createQuotationDAO(quotationCreate,planList);
 	   ConsumerExternalService consumerExternalService = new ConsumerExternalService();
 		InsuranceEnterpriseResponseBO responseRimac = consumerExternalService.callRimacService(rimacInput,traceId,this.pisdR014,this.externalApiConnector);
 		BigDecimal nextId = this.getInsuranceSimulationId();
-
 		response = mapInQuotationResponse(quotationCreate,responseRimac,branchCode,nextId);
 		LOGGER.info("*****executeCreateQuotation a- participant response: {}***",response);
 		Map<String, Object> argumentsForGetProductId = ProductMap.createArgumentsForGetProductId(quotationCreate);
-		LOGGER.info("*****executeCreateQuotation - participant argumentsForSaveSimulation: {}***", argumentsForGetProductId);
+		LOGGER.info("*****executeCreateQuotation - participant argumentsForGetProductId: {}***", argumentsForGetProductId);
 		Object product = this.getProductId(argumentsForGetProductId);
 		LOGGER.info("*****executeCreateQuotation -  product from BD: {}***", product);
 		Map<String, Object> argumentsForSaveSimulation = SimulationMap.createArgumentsForSaveSimulation(nextId,response, quotationCreate, responseRimac, creationUser, userAudit, branchCode,this.applicationConfigurationService);
