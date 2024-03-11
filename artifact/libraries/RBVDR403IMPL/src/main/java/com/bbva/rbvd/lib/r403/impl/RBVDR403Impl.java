@@ -38,19 +38,25 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 	@Override
 	public CreateQuotationDTO executeCreateQuotation(CreateQuotationDTO quotationCreate,String channelCode, String userAudit,String creationUser,String branchCode,String traceId) {
 		CreateQuotationDTO response;
+		Map<String, Object> argumentsForGetProductId = ProductMap.createArgumentsForGetProductId(quotationCreate);
+		LOGGER.info("*****executeCreateQuotation - participant argumentsForGetProductId: {}***", argumentsForGetProductId);
+		Object product = this.getProductId(argumentsForGetProductId);
+		Map<String, Object> productMap = (Map<String, Object>) product;
+		LOGGER.info("*****executeCreateQuotation -  product from BD: {}***", product);
+
+		Map<String, Object> argumentsForGetPlansId = PlansMap.createArgumentsForGetPlansId(quotationCreate,channelCode,getInsurancePruductId(productMap));
+		LOGGER.info("*****executeCreateQuotation - participant argumentsForGetPlansId: {}***", argumentsForGetPlansId);
+		IInsurancePlanDAO iInsurancePlanDAO = new InsurancePlanDAO(this.pisdR402);
+		List<Map<String, Object>> planList = iInsurancePlanDAO.getPlansId(argumentsForGetPlansId);
+		LOGGER.info("*****executeCreateQuotation - Lista de Planes: {}***", planList);
+
 		LOGGER.info("*****executeCreateQuotation - participant : {}***",quotationCreate.getParticipants());
-		InsuranceEnterpriseInputBO rimacInput = QuotationBean.createQuotationDAO(quotationCreate);
+		InsuranceEnterpriseInputBO rimacInput = QuotationBean.createQuotationDAO(quotationCreate,planList);
 	   ConsumerExternalService consumerExternalService = new ConsumerExternalService();
 		InsuranceEnterpriseResponseBO responseRimac = consumerExternalService.callRimacService(rimacInput,traceId,this.pisdR014,this.externalApiConnector);
 		BigDecimal nextId = this.getInsuranceSimulationId();
 		response = mapInQuotationResponse(quotationCreate,responseRimac,branchCode,nextId);
 		LOGGER.info("*****executeCreateQuotation a- participant response: {}***",response);
-		Map<String, Object> argumentsForGetProductId = ProductMap.createArgumentsForGetProductId(quotationCreate);
-		LOGGER.info("*****executeCreateQuotation - participant argumentsForGetProductId: {}***", argumentsForGetProductId);
-		Object product = this.getProductId(argumentsForGetProductId);
-		Map<String, Object> productMap = (Map<String, Object>) product;
-
-		LOGGER.info("*****executeCreateQuotation -  product from BD: {}***", product);
 		Map<String, Object> argumentsForSaveSimulation = SimulationMap.createArgumentsForSaveSimulation(nextId,response, quotationCreate, responseRimac, creationUser, userAudit, branchCode,this.applicationConfigurationService);
 		LOGGER.info("*****executeCreateQuotation - participant argumentsForSaveSimulation: {}***", argumentsForSaveSimulation);
 		Map<String, Object> argumentsForSaveQuotation = QuotationMap.createArgumentsForSaveQuotation(nextId,response, quotationCreate, responseRimac, creationUser, userAudit, branchCode,this.applicationConfigurationService);
@@ -64,11 +70,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
         iSimulationDAO.insertSimulation(argumentsForSaveSimulation);
 		iSimulationProductDAO.insertSimulationProduct(argumentsForSaveSimulationProd);
 		iQuotationDAO.insertQuotation(argumentsForSaveQuotation);
-		Map<String, Object> argumentsForGetPlansId = PlansMap.createArgumentsForGetPlansId(quotationCreate,channelCode);
-		LOGGER.info("*****executeCreateQuotation - participant argumentsForGetPlansId: {}***", argumentsForGetPlansId);
-		IInsurancePlanDAO iInsurancePlanDAO = new InsurancePlanDAO(this.pisdR402);
-		Map<String, Object> planList = iInsurancePlanDAO.getPlansId(argumentsForGetPlansId);
-		LOGGER.info("*****executeCreateQuotation - Lista de Planes: {}***", planList);
+
 
 		return response;
 	}
@@ -92,8 +94,8 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		LOGGER.info("***** executeCreateQuotation - getInsuranceSimulationId | simulationNextValue: {} *****",simulationNextValue);
 		return simulationNextValue;
 	}
-	public String getInsurancePruductId(Map<String, Object> productMap){
-		String productId = (String) productMap.get(ContansUtils.Mapper.FIELD_INSURANCE_PRODUCT_ID);
+	public BigDecimal getInsurancePruductId(Map<String, Object> productMap){
+		BigDecimal productId = (BigDecimal) productMap.get(ContansUtils.Mapper.FIELD_INSURANCE_PRODUCT_ID);
 		LOGGER.info("***** executeCreateQuotation - getInsurancePruductId | productId: {} *****",productId);
 
 		return productId;
