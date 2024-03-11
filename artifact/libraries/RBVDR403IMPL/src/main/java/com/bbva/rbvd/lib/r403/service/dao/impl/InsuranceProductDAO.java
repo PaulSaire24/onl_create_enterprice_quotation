@@ -19,7 +19,7 @@ public class InsuranceProductDAO implements IInsuranceProductDAO {
     @Override
     public Object getInsuranceProductId(Map<String, Object> argumentsForGetProductId) {
 
-         Object responseGetInsuranceSimulationMap = this.pisdR401.executeGetProductById(ConstantsUtil.QueriesName.QUERY_SELECT_PRODUCT_BY_PRODUCT_TYPE,new HashMap<>());
+         Object responseGetInsuranceSimulationMap = this.pisdR401.executeGetProductById(ConstantsUtil.QueriesName.QUERY_SELECT_PRODUCT_BY_PRODUCT_TYPE,argumentsForGetProductId);
 
         return responseGetInsuranceSimulationMap;
     }
