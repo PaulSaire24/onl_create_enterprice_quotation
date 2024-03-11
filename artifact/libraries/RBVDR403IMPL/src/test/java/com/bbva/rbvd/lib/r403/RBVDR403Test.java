@@ -107,6 +107,8 @@ public class RBVDR403Test {
 		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
+		when(pisdr401.executeGetProductById(anyString(), anyMap()))
+				.thenReturn(createProduct());
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
 				.thenReturn(1);
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
@@ -468,7 +470,7 @@ catch (BusinessException e){
 	private Object createProduct(){
 		Map<String, Object> productMap = new HashMap<>();
 		productMap.put("nombre", "Juan");
-		productMap.put("edad", 30);
+		productMap.put("INSURANCE_PRODUCT_ID", new BigDecimal(842.0));
 		productMap.put("ciudad", "Madrid");
 		Object product = productMap;
 		return product;

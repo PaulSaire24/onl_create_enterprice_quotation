@@ -11,7 +11,7 @@ import java.util.Map;
 public class SimulationProductMap {
     private SimulationProductMap(){}
 
-    public static Map<String, Object> createArgumentsForSaveSimulationProduct(BigDecimal nextId, CreateQuotationDTO input, String creationUser, String userAudit,String productId) {
+    public static Map<String, Object> createArgumentsForSaveSimulationProduct(BigDecimal nextId, CreateQuotationDTO input, String creationUser, String userAudit,BigDecimal productId) {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put(ContansUtils.Mapper.FIELD_INSURANCE_SIMULATION_ID, nextId);
         arguments.put(ContansUtils.Mapper.FIELD_OR_FILTER_INSURANCE_PRODUCT_ID, productId);

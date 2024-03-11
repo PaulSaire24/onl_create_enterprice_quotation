@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ParticipantMap {
@@ -23,7 +24,10 @@ public class ParticipantMap {
         return planBOList;
     }
     public static Long getPlanSelected(List<Map<String,Object>> planList){
-        Long planSelected = (Long) planList.get(0).get("INSURANCE_MODALITY_ID");
+        Long planSelected = null;
+        if(Objects.requireNonNull(planList).equals(true)) {
+             planSelected = (Long) planList.get(0).get("INSURANCE_MODALITY_ID");
+        }
         return planSelected;
     }
 
