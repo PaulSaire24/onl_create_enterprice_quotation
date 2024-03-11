@@ -25,7 +25,7 @@ public class QuotationMap {
 
 
         if (Objects.nonNull(response) && Objects.nonNull(response.getCotizaciones()) && !response.getCotizaciones().isEmpty()) {
-            SimpleDateFormat dateFormatEnd = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormatEnd = new SimpleDateFormat("dd/MM/yyyy");
             LocalDate fechaFin = LocalDate.parse(response.getCotizaciones().get(0).getFechaFinVigencia());
             LocalDateTime fechaFinDate = fechaFin.atStartOfDay();
 
