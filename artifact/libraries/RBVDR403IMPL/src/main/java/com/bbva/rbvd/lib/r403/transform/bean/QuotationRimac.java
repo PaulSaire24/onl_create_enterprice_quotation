@@ -68,7 +68,7 @@ public class QuotationRimac {
         String simulationId = nextId.toString();
         String product = input.getProduct().getId();
 
-        String quotationId = branchCode.concat("0000").concat(simulationId).concat(product);
+        String quotationId = branchCode.concat(product).concat(simulationId).concat("00");
         return quotationId;
     }
 }
