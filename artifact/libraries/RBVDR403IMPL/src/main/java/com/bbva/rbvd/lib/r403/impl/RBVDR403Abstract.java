@@ -20,11 +20,11 @@ public abstract class RBVDR403Abstract extends AbstractLibrary implements RBVDR4
 
 	protected APIConnectorBuilder apiConnectorBuilder;
 
-	protected PISDR402 pisdR402;
-
 	protected PISDR014 pisdR014;
 
 	protected PISDR401 pisdR401;
+
+	protected PISDR402 pisdR402;
 
 
 	/**
@@ -49,13 +49,6 @@ public abstract class RBVDR403Abstract extends AbstractLibrary implements RBVDR4
 	}
 
 	/**
-	* @param pisdR402 the this.pisdR402 to set
-	*/
-	public void setPisdR402(PISDR402 pisdR402) {
-		this.pisdR402 = pisdR402;
-	}
-
-	/**
 	* @param pisdR014 the this.pisdR014 to set
 	*/
 	public void setPisdR014(PISDR014 pisdR014) {
@@ -67,6 +60,13 @@ public abstract class RBVDR403Abstract extends AbstractLibrary implements RBVDR4
 	*/
 	public void setPisdR401(PISDR401 pisdR401) {
 		this.pisdR401 = pisdR401;
+	}
+
+	/**
+	* @param pisdR402 the this.pisdR402 to set
+	*/
+	public void setPisdR402(PISDR402 pisdR402) {
+		this.pisdR402 = pisdR402;
 	}
 
 }

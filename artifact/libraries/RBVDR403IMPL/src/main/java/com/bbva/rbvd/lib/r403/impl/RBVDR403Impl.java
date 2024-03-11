@@ -12,6 +12,7 @@ import com.bbva.rbvd.lib.r403.service.dao.impl.*;
 import com.bbva.rbvd.lib.r403.service.impl.ConsumerExternalService;
 import com.bbva.rbvd.lib.r403.transform.bean.QuotationBean;
 import com.bbva.rbvd.lib.r403.transform.map.*;
+import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		Map<String, Object> argumentsForGetPlansId = PlansMap.createArgumentsForGetPlansId(quotationCreate,channelCode);
 		LOGGER.info("*****executeCreateQuotation - participant argumentsForGetPlansId: {}***", argumentsForGetPlansId);
 		IInsurancePlanDAO iInsurancePlanDAO = new InsurancePlanDAO(this.pisdR402);
-		List<Map<String, Object>> planList = iInsurancePlanDAO.getPlansId(argumentsForGetPlansId);
+		Map<String, Object> planList = iInsurancePlanDAO.getPlansId(argumentsForGetPlansId);
 		LOGGER.info("*****executeCreateQuotation - Lista de Planes: {}***", planList);
 		InsuranceEnterpriseInputBO rimacInput = QuotationBean.createQuotationDAO(quotationCreate,planList);
 	   ConsumerExternalService consumerExternalService = new ConsumerExternalService();
@@ -52,13 +53,15 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		Map<String, Object> argumentsForGetProductId = ProductMap.createArgumentsForGetProductId(quotationCreate);
 		LOGGER.info("*****executeCreateQuotation - participant argumentsForGetProductId: {}***", argumentsForGetProductId);
 		Object product = this.getProductId(argumentsForGetProductId);
+		Map<String, Object> productMap = (Map<String, Object>) product;
+
 		LOGGER.info("*****executeCreateQuotation -  product from BD: {}***", product);
 		Map<String, Object> argumentsForSaveSimulation = SimulationMap.createArgumentsForSaveSimulation(nextId,response, quotationCreate, responseRimac, creationUser, userAudit, branchCode,this.applicationConfigurationService);
 		LOGGER.info("*****executeCreateQuotation - participant argumentsForSaveSimulation: {}***", argumentsForSaveSimulation);
 		Map<String, Object> argumentsForSaveQuotation = QuotationMap.createArgumentsForSaveQuotation(nextId,response, quotationCreate, responseRimac, creationUser, userAudit, branchCode,this.applicationConfigurationService);
 
 		LOGGER.info("*****executeCreateQuotation - participant argumentsForSaveQuotation: {}***", argumentsForSaveQuotation);
-		Map<String, Object> argumentsForSaveSimulationProd = SimulationProductMap.createArgumentsForSaveSimulationProduct(nextId,quotationCreate,creationUser,userAudit);
+		Map<String, Object> argumentsForSaveSimulationProd = SimulationProductMap.createArgumentsForSaveSimulationProduct(nextId,quotationCreate,creationUser,userAudit,getInsurancePruductId(productMap));
 		LOGGER.info("*****executeCreateQuotation - participant argumentsForSaveSimulationProd: {}***",argumentsForSaveSimulationProd);
 		ISimulationProductDAO iSimulationProductDAO = new SimulationProductDAOImpl(this.pisdR402);
 		ISimulationDAO iSimulationDAO = new SimulationDAOImpl(this.pisdR402);
@@ -78,6 +81,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		LOGGER.info("***** executeCreateQuotation - getInsuranceSimulationId | simulationNextValue: {} *****",productId);
 		return productId;
 	}
+
 	public BigDecimal getInsuranceSimulationId(){
 		LOGGER.info("***** executeCreateQuotation - getInsuranceSimulationId START *****");
 
@@ -86,5 +90,9 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 
 		LOGGER.info("***** executeCreateQuotation - getInsuranceSimulationId | simulationNextValue: {} *****",simulationNextValue);
 		return simulationNextValue;
+	}
+	public String getInsurancePruductId(Map<String, Object> productMap){
+		String productId = (String) productMap.get(ContansUtils.Mapper.FIELD_INSURANCE_PRODUCT_TYPE);
+		return productId;
 	}
 }

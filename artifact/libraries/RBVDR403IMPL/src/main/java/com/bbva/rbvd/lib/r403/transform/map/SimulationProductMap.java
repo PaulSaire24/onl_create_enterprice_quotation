@@ -11,10 +11,10 @@ import java.util.Map;
 public class SimulationProductMap {
     private SimulationProductMap(){}
 
-    public static Map<String, Object> createArgumentsForSaveSimulationProduct(BigDecimal nextId, CreateQuotationDTO input, String creationUser, String userAudit) {
+    public static Map<String, Object> createArgumentsForSaveSimulationProduct(BigDecimal nextId, CreateQuotationDTO input, String creationUser, String userAudit,String productId) {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put(ContansUtils.Mapper.FIELD_INSURANCE_SIMULATION_ID, nextId);
-        arguments.put(ContansUtils.Mapper.FIELD_OR_FILTER_INSURANCE_PRODUCT_ID, 9);
+        arguments.put(ContansUtils.Mapper.FIELD_OR_FILTER_INSURANCE_PRODUCT_ID, productId);
         arguments.put(ContansUtils.Mapper.FIELD_CAMPAIGN_FACTOR_TYPE, null);
         arguments.put(ContansUtils.Mapper.FIELD_CAMPAIGN_OFFER_1_AMOUNT, 0);
         arguments.put(ContansUtils.Mapper.FIELD_CAMPAIGN_FACTOR_PER, 0);

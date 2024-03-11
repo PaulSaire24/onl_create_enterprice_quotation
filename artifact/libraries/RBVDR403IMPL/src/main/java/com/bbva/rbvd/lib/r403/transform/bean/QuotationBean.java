@@ -25,7 +25,7 @@ public class  QuotationBean {
 
     private QuotationBean(){}
 
-    public static InsuranceEnterpriseInputBO createQuotationDAO(CreateQuotationDTO quotationCreate,List<Map<String, Object>> planList){
+    public static InsuranceEnterpriseInputBO createQuotationDAO(CreateQuotationDTO quotationCreate,Map<String, Object> planList){
         //los if van en el bussiness
         InsuranceEnterpriseInputBO payload = new InsuranceEnterpriseInputBO();
         QuotationInputBO companyQuotationPayloadBO = new QuotationInputBO();

@@ -54,7 +54,6 @@ public class QuotationMap {
         }
         arguments.put(ContansUtils.Mapper.FIELD_POLICY_QUOTA_INTERNAL_ID, responseDTO.getId());
         arguments.put(ContansUtils.Mapper.FIELD_QUOTE_DATE, dateFormat.format(new Date()));
-        arguments.put(ContansUtils.Mapper.FIELD_QUOTA_HMS_DATE, dateFormat.format(new Date()));
         arguments.put(ContansUtils.Mapper.FIELD_POLICY_QUOTA_STATUS_TYPE, "COT");
         arguments.put(ContansUtils.Mapper.FIELD_LAST_CHANGE_BRANCH_ID, branchId);
         arguments.put(ContansUtils.Mapper.FIELD_SOURCE_BRANCH_ID, branchId);
