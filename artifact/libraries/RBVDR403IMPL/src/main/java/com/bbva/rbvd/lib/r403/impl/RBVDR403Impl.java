@@ -39,12 +39,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 	public CreateQuotationDTO executeCreateQuotation(CreateQuotationDTO quotationCreate,String channelCode, String userAudit,String creationUser,String branchCode,String traceId) {
 		CreateQuotationDTO response;
 		LOGGER.info("*****executeCreateQuotation - participant : {}***",quotationCreate.getParticipants());
-		Map<String, Object> argumentsForGetPlansId = PlansMap.createArgumentsForGetPlansId(quotationCreate,channelCode);
-		LOGGER.info("*****executeCreateQuotation - participant argumentsForGetPlansId: {}***", argumentsForGetPlansId);
-		IInsurancePlanDAO iInsurancePlanDAO = new InsurancePlanDAO(this.pisdR402);
-		Map<String, Object> planList = iInsurancePlanDAO.getPlansId(argumentsForGetPlansId);
-		LOGGER.info("*****executeCreateQuotation - Lista de Planes: {}***", planList);
-		InsuranceEnterpriseInputBO rimacInput = QuotationBean.createQuotationDAO(quotationCreate,planList);
+		InsuranceEnterpriseInputBO rimacInput = QuotationBean.createQuotationDAO(quotationCreate);
 	   ConsumerExternalService consumerExternalService = new ConsumerExternalService();
 		InsuranceEnterpriseResponseBO responseRimac = consumerExternalService.callRimacService(rimacInput,traceId,this.pisdR014,this.externalApiConnector);
 		BigDecimal nextId = this.getInsuranceSimulationId();
@@ -69,6 +64,12 @@ public class RBVDR403Impl extends RBVDR403Abstract {
         iSimulationDAO.insertSimulation(argumentsForSaveSimulation);
 		iSimulationProductDAO.insertSimulationProduct(argumentsForSaveSimulationProd);
 		iQuotationDAO.insertQuotation(argumentsForSaveQuotation);
+		Map<String, Object> argumentsForGetPlansId = PlansMap.createArgumentsForGetPlansId(quotationCreate,channelCode);
+		LOGGER.info("*****executeCreateQuotation - participant argumentsForGetPlansId: {}***", argumentsForGetPlansId);
+		IInsurancePlanDAO iInsurancePlanDAO = new InsurancePlanDAO(this.pisdR402);
+		Map<String, Object> planList = iInsurancePlanDAO.getPlansId(argumentsForGetPlansId);
+		LOGGER.info("*****executeCreateQuotation - Lista de Planes: {}***", planList);
+
 		return response;
 	}
 

@@ -25,7 +25,7 @@ public class  QuotationBean {
 
     private QuotationBean(){}
 
-    public static InsuranceEnterpriseInputBO createQuotationDAO(CreateQuotationDTO quotationCreate,Map<String, Object> planList){
+    public static InsuranceEnterpriseInputBO createQuotationDAO(CreateQuotationDTO quotationCreate){
         //los if van en el bussiness
         InsuranceEnterpriseInputBO payload = new InsuranceEnterpriseInputBO();
         QuotationInputBO companyQuotationPayloadBO = new QuotationInputBO();
@@ -43,7 +43,7 @@ public class  QuotationBean {
             companyQuotationPayloadBO.setPlanes(new ArrayList<>());
             companyQuotationPayloadBO.setTipoCotizacion("R");
         } else {
-            companyQuotationPayloadBO.setPlanes(ParticipantMap.mapPlan(planList));
+            companyQuotationPayloadBO.setPlanes(ParticipantMap.mapPlan());
             companyQuotationPayloadBO.setTipoCotizacion("C");
         }
 
