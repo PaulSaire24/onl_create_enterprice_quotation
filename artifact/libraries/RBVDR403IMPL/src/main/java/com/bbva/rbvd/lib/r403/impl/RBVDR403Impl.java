@@ -92,7 +92,9 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		return simulationNextValue;
 	}
 	public String getInsurancePruductId(Map<String, Object> productMap){
-		String productId = (String) productMap.get(ContansUtils.Mapper.FIELD_INSURANCE_PRODUCT_TYPE);
+		String productId = (String) productMap.get(ContansUtils.Mapper.FIELD_INSURANCE_PRODUCT_ID);
+		LOGGER.info("***** executeCreateQuotation - getInsurancePruductId | productId: {} *****",productId);
+
 		return productId;
 	}
 }

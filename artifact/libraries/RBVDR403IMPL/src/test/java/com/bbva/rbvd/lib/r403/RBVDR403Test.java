@@ -130,8 +130,11 @@ public class RBVDR403Test {
 		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
+		when(pisdr401.executeGetProductById(anyString(), anyMap()))
+				.thenReturn(createProduct());
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
 				.thenReturn(0);
+
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 try {
 	rbvdR302.executeCreateQuotation(requestInput, "PISD", "P012341", "P012341", "0241", "a");
@@ -156,6 +159,8 @@ catch (BusinessException e){
 				.thenReturn(responseQueryModalities);
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
 				.thenReturn(1);
+		when(pisdr401.executeGetProductById(anyString(), anyMap()))
+				.thenReturn(createProduct());
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 
 		rbvdR302.executeCreateQuotation(requestInput,"PISD","P012341","P012341","0241","a");
@@ -174,6 +179,8 @@ catch (BusinessException e){
 		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
+		when(pisdr401.executeGetProductById(anyString(), anyMap()))
+				.thenReturn(createProduct());
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
 				.thenReturn(1);
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
@@ -194,6 +201,8 @@ catch (BusinessException e){
 		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
+		when(pisdr401.executeGetProductById(anyString(), anyMap()))
+				.thenReturn(createProduct());
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
 				.thenReturn(1);
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
