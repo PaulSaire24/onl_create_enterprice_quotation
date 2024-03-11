@@ -316,10 +316,12 @@ catch (BusinessException e){
 		List<Long> planes2 = new ArrayList<>();
 		planes2.add(1234124l);
 		PlanBO plan1 = new PlanBO();
+		PlanBO plan2 = new PlanBO();
 		List<AssistanceBO> assistanceBOList = new ArrayList<>();
 		AssistanceBO asistencia = new AssistanceBO();
 		asistencia.setDescripcionAsistencia("Asistencia 1");
 		asistencia.setAsistencia(1l);
+		assistanceBOList.add(asistencia);
 		List<FinancingBO> financingBOList = new ArrayList<>();
 		FinancingBO financing = new FinancingBO();
 		financing.setPeriodicidad("1");
@@ -348,6 +350,23 @@ catch (BusinessException e){
 		plan1.setMoneda("pen");
 		plan1.setAsistencias(assistanceBOList);
 		planes.add(plan1);
+		plan2.setPlan(2l);
+		plan2.setFinanciamientos(financingBOList);
+		plan2.setPrimaNeta(new BigDecimal(1000));
+		plan2.setMoneda("pen");
+
+		List<QuotationBO> cotizaciones = new ArrayList<>();
+		QuotationBO cotizaciones1 = new QuotationBO();
+		QuotationBO cotizaciones2 = new QuotationBO();
+		planes.add(plan1);
+		planes.add(plan2);
+		cotizaciones1.setPlan(plan1);
+		cotizaciones1.setFechaFinVigencia("2024-04-30");
+		cotizaciones2.setPlan(plan2);
+		cotizaciones.add(cotizaciones1);
+		cotizaciones.add(cotizaciones2);
+		planes.add(plan1);
+		responseBO.setCotizaciones(cotizaciones);
 		responseBO.setPlanes(planes2);
 		return responseBO;
 	}
