@@ -90,7 +90,7 @@ public class RBVDR403Test {
 				.thenReturn(1);
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
-				.thenReturn(1);
+				.thenReturn(createProduct());
 
 		rbvdR302.executeCreateQuotation(requestInput,"PISD","P012341","P012341","0241","a");
 	}
@@ -437,4 +437,14 @@ catch (BusinessException e){
 
 		return input;
 	}
+	private Object createProduct(){
+		Map<String, Object> productMap = new HashMap<>();
+		productMap.put("nombre", "Juan");
+		productMap.put("edad", 30);
+		productMap.put("ciudad", "Madrid");
+		Object product = productMap;
+		return product;
+
+	}
+
 }
