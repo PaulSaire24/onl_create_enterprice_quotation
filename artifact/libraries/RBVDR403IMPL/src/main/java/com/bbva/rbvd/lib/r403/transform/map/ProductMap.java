@@ -1,6 +1,7 @@
 package com.bbva.rbvd.lib.r403.transform.map;
 
 import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dto.CreateQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
@@ -16,16 +17,10 @@ public class ProductMap {
     private ProductMap() {
     }
 
-    public static Map<String, Object> createArgumentsForGetProductId(CreateQuotationDTO input) {
+    public static Map<String, Object> createArgumentsForGetProductId(String product) {
         Map<String, Object> arguments = new HashMap<>();
+        arguments.put(ContansUtils.Mapper.FIELD_INSURANCE_PRODUCT_TYPE, product);
 
-        if (Objects.nonNull(input) && Objects.nonNull(input.getProduct()) && Objects.nonNull(input.getProduct().getId())) {
-            arguments.put(ContansUtils.Mapper.FIELD_INSURANCE_PRODUCT_TYPE, input.getProduct().getId());
-
-        } else {
-
-            arguments.put(ContansUtils.Mapper.FIELD_INSURANCE_PRODUCT_TYPE, null);
-        }
         return arguments;
     }
 }

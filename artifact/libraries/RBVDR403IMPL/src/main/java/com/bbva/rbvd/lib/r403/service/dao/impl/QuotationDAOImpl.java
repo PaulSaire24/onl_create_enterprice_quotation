@@ -20,6 +20,7 @@ public class QuotationDAOImpl implements IQuotationDAO {
     public void insertQuotation(Map<String, Object> argument) {
 
         int idInsSimulation = this.pisdR402.executeInsertSingleRow(ContansUtils.Querys.INSERT_INSURANCE_QUOTATION, argument);
+
         if (idInsSimulation != 1) {
             throw RBVDValidation.build(RBVDErrors.INSERTION_ERROR_IN_SIMULATION_PRD_TABLE);
         }

@@ -1,47 +1,73 @@
 package com.bbva.rbvd.lib.r403.transform.bean;
 
-import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.DescriptionDTO;
-import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ParticipantDTO;
-import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ProductDTO;
+import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.*;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dto.CreateQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
 import com.bbva.rbvd.lib.r403.service.dao.PlanDAO;
 import com.bbva.rbvd.lib.r403.service.impl.ConsumerInternalService;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 public class QuotationRimac {
-    private QuotationRimac() {
+
+    private final ApplicationConfigurationService applicationConfigurationService;
+
+    public QuotationRimac(ApplicationConfigurationService applicationConfigurationService) {
+        this.applicationConfigurationService = applicationConfigurationService;
     }
 
-    public static CreateQuotationDTO mapInQuotationResponse(CreateQuotationDTO input, InsuranceEnterpriseResponseBO payload, String branchCode, BigDecimal nextId) {
-        CreateQuotationDTO response = input;
-        QuotationResponseBO responseRimac= payload.getPayload();
+    public EnterpriseQuotationDTO mapInQuotationResponse(EnterpriseQuotationDTO input,
+                                                         InsuranceEnterpriseResponseBO payload, BigDecimal nextId) {
+
+        QuotationResponseBO responseRimac = payload.getPayload();
 
         PlanDAO planDAO = new PlanDAO();
-        ConsumerInternalService consumerInternalService = new ConsumerInternalService();
 
-        DescriptionDTO businessAgentResponse = Objects.nonNull(input.getBusinessAgent()) ? consumerInternalService.getBusinessAgent(input.getBusinessAgent().getId()) : null;
-        List<ParticipantDTO> participantResponse = listParticipants(input);
-        ProductDTO productResponse = consumerInternalService.getProduct(input.getProduct().getId(), responseRimac);
-        response.setParticipants(participantResponse);
-        response.setBusinessAgent(businessAgentResponse);
-        response.setProduct(productResponse);
-        response.getProduct().setPlans(Objects.nonNull(response.getProduct()) && Objects.nonNull(responseRimac.getCotizaciones())  ? planDAO.getPlanInfo(listPlans(responseRimac)) : null);
-        response.setId(generateQuotationId(branchCode, nextId, input));
+        input.getProduct().setPlans(!CollectionUtils.isEmpty(responseRimac.getCotizaciones())
+                ? planDAO.getPlanInfo(listPlans(responseRimac.getCotizaciones()),this.applicationConfigurationService) : null);
+        input.setId(generateQuotationId(nextId, input));
+        input.setValidityPeriod(createValidityPeriodDTO(responseRimac.getCotizaciones().get(0).getFechaFinVigencia()));
+        input.setQuotationDate(LocalDate.now());
 
-        return response;
+        return input;
     }
-    public static List<PlanBO> listPlans(QuotationResponseBO responseRimac) {
+
+    private ValidityPeriodDTO createValidityPeriodDTO(String fechaFinVigencia){
+        //VALIDAR CAMPO FECHA FIN Y FECHA INICIO NO NULO
+
+        ValidityPeriodDTO validityPeriodDTO = new ValidityPeriodDTO();
+        validityPeriodDTO.setStartDate(convertLocalDateToDate(LocalDate.now()));
+        validityPeriodDTO.setEndDate(convertLocalDateToDate(convertStringDateToLocalDate(fechaFinVigencia)));
+
+        return validityPeriodDTO;
+    }
+
+    private LocalDate convertStringDateToLocalDate(String date){
+        return LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+    private Date convertLocalDateToDate(LocalDate date){
+        return Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static List<PlanBO> listPlans(List<QuotationBO> responseRimac) {
         List<PlanBO> planBOList = new ArrayList<>();
-        Integer i ;
-        for (i = 0; i < responseRimac.getCotizaciones().size(); i++) {
-                planBOList.add(responseRimac.getCotizaciones().get(i).getPlan());
+
+        for (QuotationBO quotationBO : responseRimac) {
+            planBOList.add(quotationBO.getPlan());
         }
         return planBOList;
     }
@@ -57,18 +83,13 @@ public class QuotationRimac {
 
         return listaParticipantes;
     }
-    public static String generateQuotationId(String branchCode,BigDecimal nextId,CreateQuotationDTO input){
-      // Pasar solo el input, Queda por ahora asì, igual es configurable.
+    public static String generateQuotationId(BigDecimal nextId,EnterpriseQuotationDTO input){
+        // Pasar solo el input, Queda por ahora asì, igual es configurable.
         //0814 842 IdSimulacion 01. en el bussiness
-
-        Objects.requireNonNull(branchCode, "branchCode no puede ser nulo");
-        Objects.requireNonNull(nextId, "nextId no puede ser nulo");
-        Objects.requireNonNull(input, "input no puede ser nulo");
 
         String simulationId = nextId.toString();
         String product = input.getProduct().getId();
 
-        String quotationId = branchCode.concat(product).concat(simulationId).concat("00");
-        return quotationId;
+        return input.getSourceBranchCode().concat(product).concat(simulationId).concat("00");
     }
 }

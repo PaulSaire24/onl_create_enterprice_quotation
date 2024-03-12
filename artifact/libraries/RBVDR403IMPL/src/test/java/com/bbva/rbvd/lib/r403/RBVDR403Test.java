@@ -13,7 +13,6 @@ import com.bbva.pisd.lib.r401.PISDR401;
 import com.bbva.pisd.lib.r402.PISDR402;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.*;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.*;
-import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dto.CreateQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
@@ -65,17 +64,17 @@ public class RBVDR403Test {
 	private Map<String, Object> responseQueryModalities;
 	private Map<String, Object> responseQuery;
 
-	private CreateQuotationDTO requestInput;
+	private EnterpriseQuotationDTO requestInput;
 	@Before
 	public void setUp() throws Exception {
 
 		context = new Context();
 		ThreadContext.set(context);
-		requestInput=new CreateQuotationDTO();
+		requestInput = new EnterpriseQuotationDTO();
 	}
 	@Test
 	public void executeTestOk(){
-		this.requestInput =createInput();
+		this.requestInput = createInput();
 		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
 		InsuranceEnterpriseResponseBO payload = new InsuranceEnterpriseResponseBO();
 		payload.setPayload(responseRimacMock);
@@ -92,7 +91,7 @@ public class RBVDR403Test {
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
 				.thenReturn(createProduct());
 
-		rbvdR302.executeCreateQuotation(requestInput,"PISD","P012341","P012341","0241","a");
+		rbvdR302.executeCreateQuotation(requestInput);
 	}
 	@Test
 	public void executeTestRimacFail(){
@@ -114,7 +113,7 @@ public class RBVDR403Test {
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 
 		try {
-			rbvdR302.executeCreateQuotation(requestInput, "PISD", "P012341", "P012341", "0241", "a");
+			rbvdR302.executeCreateQuotation(requestInput);
 		}
 		catch (BusinessException e){
 
@@ -139,7 +138,7 @@ public class RBVDR403Test {
 
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 try {
-	rbvdR302.executeCreateQuotation(requestInput, "PISD", "P012341", "P012341", "0241", "a");
+	rbvdR302.executeCreateQuotation(requestInput);
 }
 catch (BusinessException e){
 
@@ -165,7 +164,7 @@ catch (BusinessException e){
 				.thenReturn(createProduct());
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 
-		rbvdR302.executeCreateQuotation(requestInput,"PISD","P012341","P012341","0241","a");
+		rbvdR302.executeCreateQuotation(requestInput);
 	}
 	@Test
 	public void executeTestOkfULLINC(){
@@ -187,7 +186,7 @@ catch (BusinessException e){
 				.thenReturn(1);
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 
-		rbvdR302.executeCreateQuotation(requestInput,"PISD","P012341","P012341","0241","a");
+		rbvdR302.executeCreateQuotation(requestInput);
 	}
 	@Test
 	public void executeTestOkfULLOPC(){
@@ -209,7 +208,7 @@ catch (BusinessException e){
 				.thenReturn(1);
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 
-		rbvdR302.executeCreateQuotation(requestInput,"PISD","P012341","P012341","0241","a");
+		rbvdR302.executeCreateQuotation(requestInput);
 	}
 
 	private QuotationResponseBO createRimacResponse(){
@@ -418,8 +417,8 @@ catch (BusinessException e){
 		responseBO.setPlanes(planes2);
 		return responseBO;
 	}
-	private CreateQuotationDTO createInput(){
-		CreateQuotationDTO input = new CreateQuotationDTO();
+	private EnterpriseQuotationDTO createInput(){
+		EnterpriseQuotationDTO input = new EnterpriseQuotationDTO();
 		ProductDTO product = new ProductDTO();
 		List<Long> planes2 = new ArrayList<>();
 		planes2.add(1234124l);

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class ParticipantMap {
     private ParticipantMap(){}
-    public static List<PlanBO> mapPlan(List<Map<String,Object>> planList) {
+    public static List<PlanBO> mapPlan(List<Long> planList) {
         List<PlanBO> planBOList =new ArrayList<>();
         PlanBO planBO = new PlanBO();
         planBO.setPlan(getPlanSelected(planList));

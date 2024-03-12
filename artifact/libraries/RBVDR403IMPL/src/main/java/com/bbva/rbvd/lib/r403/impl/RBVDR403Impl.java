@@ -1,29 +1,28 @@
 package com.bbva.rbvd.lib.r403.impl;
 
-import com.bbva.apx.exception.business.BusinessException;
-import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
-import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dto.CreateQuotationDTO;
+
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
+
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseInputBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
-import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationInputBO;
-import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
+
 import com.bbva.rbvd.lib.r403.service.dao.*;
 import com.bbva.rbvd.lib.r403.service.dao.impl.*;
 import com.bbva.rbvd.lib.r403.service.impl.ConsumerExternalService;
 import com.bbva.rbvd.lib.r403.transform.bean.QuotationBean;
+import com.bbva.rbvd.lib.r403.transform.bean.QuotationRimac;
 import com.bbva.rbvd.lib.r403.transform.map.*;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static com.bbva.rbvd.lib.r403.transform.bean.QuotationRimac.mapInQuotationResponse;
+
 
 /**
  * The RBVDR403Impl class...
@@ -36,50 +35,82 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 	 * The execute method...
 	 */
 	@Override
-	public CreateQuotationDTO executeCreateQuotation(CreateQuotationDTO quotationCreate,String channelCode, String userAudit,String creationUser,String branchCode,String traceId) {
-		CreateQuotationDTO response;
-		Map<String, Object> argumentsForGetProductId = ProductMap.createArgumentsForGetProductId(quotationCreate);
-		LOGGER.info("*****executeCreateQuotation - participant argumentsForGetProductId: {}***", argumentsForGetProductId);
-		Object product = this.getProductId(argumentsForGetProductId);
-		Map<String, Object> productMap = (Map<String, Object>) product;
-		LOGGER.info("*****executeCreateQuotation -  product from BD: {}***", product);
+	public EnterpriseQuotationDTO executeCreateQuotation(EnterpriseQuotationDTO quotationCreate) {
+		LOGGER.info("RBVDR403Impl - executeCreateQuotation() | START");
 
-		Map<String, Object> argumentsForGetPlansId = PlansMap.createArgumentsForGetPlansId(quotationCreate,channelCode,getInsurancePruductId(productMap));
-		LOGGER.info("*****executeCreateQuotation - participant argumentsForGetPlansId: {}***", argumentsForGetPlansId);
+		EnterpriseQuotationDTO response;
+
+		LOGGER.info("RBVDR403Impl - executeCreateQuotation() | arguments: {}",quotationCreate.toString());
+
+		Map<String, Object> argumentsForGetProductId = ProductMap.createArgumentsForGetProductId(
+				quotationCreate.getProduct().getId());
+		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - argumentsForGetProductId: {} ***", argumentsForGetProductId);
+
+		Map<String,Object> productMap = this.getProductInfo(argumentsForGetProductId);
+		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() -  product from DB: {}***", productMap);
+
+		BigDecimal insuranceProductId = getInsurancePruductId(productMap);
+		String productName = (String) argumentsForGetProductId.get("PRODUCT_SHORT_DESC");
+		quotationCreate.getProduct().setName(productName);
+
+		Map<String, Object> argumentsForGetPlansId = PlansMap.createArgumentsForGetPlansId(
+				quotationCreate.getSaleChannelId(),insuranceProductId);
+		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - argumentsForGetPlansId: {} ***", argumentsForGetPlansId);
+
 		IInsurancePlanDAO iInsurancePlanDAO = new InsurancePlanDAO(this.pisdR402);
 		List<Map<String, Object>> planList = iInsurancePlanDAO.getPlansId(argumentsForGetPlansId);
-		LOGGER.info("*****executeCreateQuotation - Lista de Planes: {}***", planList);
+		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - List of plans: {} ***", planList);
 
-		LOGGER.info("*****executeCreateQuotation - participant : {}***",quotationCreate.getParticipants());
-		InsuranceEnterpriseInputBO rimacInput = QuotationBean.createQuotationDAO(quotationCreate,planList);
-	   ConsumerExternalService consumerExternalService = new ConsumerExternalService();
-		InsuranceEnterpriseResponseBO responseRimac = consumerExternalService.callRimacService(rimacInput,traceId,this.pisdR014,this.externalApiConnector);
+		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - input.participants[] : {} ***",quotationCreate.getParticipants());
+
+
+		List<Long> plansToRimac = planList.stream().map(plan -> (Long) plan.get("INSURANCE_COMPANY_MODALITY_ID"))
+				.collect(Collectors.toList());
+
+		InsuranceEnterpriseInputBO rimacInput = QuotationBean.createQuotationDAO(quotationCreate,plansToRimac,this.applicationConfigurationService);
+
+		if(rimacInput == null){
+			this.addAdviceWithDescription("RBVD0383873","Error al construir request api Crear cotizacion de Rimac");
+			return null;
+		}
+
+	    ConsumerExternalService consumerExternalService = new ConsumerExternalService();
+		InsuranceEnterpriseResponseBO responseRimac = consumerExternalService.callRimacService(rimacInput,
+				quotationCreate.getTraceId(),this.pisdR014,this.externalApiConnector);
+
 		BigDecimal nextId = this.getInsuranceSimulationId();
-		response = mapInQuotationResponse(quotationCreate,responseRimac,branchCode,nextId);
-		LOGGER.info("*****executeCreateQuotation a- participant response: {}***",response);
-		Map<String, Object> argumentsForSaveSimulation = SimulationMap.createArgumentsForSaveSimulation(nextId,response, quotationCreate, responseRimac, creationUser, userAudit, branchCode,this.applicationConfigurationService);
-		LOGGER.info("*****executeCreateQuotation - participant argumentsForSaveSimulation: {}***", argumentsForSaveSimulation);
-		Map<String, Object> argumentsForSaveQuotation = QuotationMap.createArgumentsForSaveQuotation(nextId,response, quotationCreate, responseRimac, creationUser, userAudit, branchCode,this.applicationConfigurationService);
 
-		LOGGER.info("*****executeCreateQuotation - participant argumentsForSaveQuotation: {}***", argumentsForSaveQuotation);
-		Map<String, Object> argumentsForSaveSimulationProd = SimulationProductMap.createArgumentsForSaveSimulationProduct(nextId,quotationCreate,creationUser,userAudit,getInsurancePruductId(productMap));
-		LOGGER.info("*****executeCreateQuotation - participant argumentsForSaveSimulationProd: {}***",argumentsForSaveSimulationProd);
-		ISimulationProductDAO iSimulationProductDAO = new SimulationProductDAOImpl(this.pisdR402);
+		QuotationRimac quotationRimac = new QuotationRimac(this.applicationConfigurationService);
+		response = quotationRimac.mapInQuotationResponse(quotationCreate,responseRimac,nextId);
+		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - response: {} ***",response);
+
+		SimulationMap simulationMap = new SimulationMap();
+		Map<String, Object> argumentsForSaveSimulation = simulationMap.createArgumentsForSaveSimulation(nextId,response, responseRimac,this.applicationConfigurationService);
+		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - argumentsForSaveSimulation: {} ***", argumentsForSaveSimulation);
+
+		QuotationMap quotationMap = new QuotationMap();
+		Map<String, Object> argumentsForSaveQuotation = quotationMap.createArgumentsForSaveQuotation(nextId,response, responseRimac,this.applicationConfigurationService);
+		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - argumentsForSaveQuotation: {} ***", argumentsForSaveQuotation);
+
+		Map<String, Object> argumentsForSaveSimulationProd = SimulationProductMap.createArgumentsForSaveSimulationProduct(nextId,response,insuranceProductId);
+		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - argumentsForSaveSimulationProd: {} ***",argumentsForSaveSimulationProd);
+
 		ISimulationDAO iSimulationDAO = new SimulationDAOImpl(this.pisdR402);
+		ISimulationProductDAO iSimulationProductDAO = new SimulationProductDAOImpl(this.pisdR402);
 		IQuotationDAO iQuotationDAO = new QuotationDAOImpl(this.pisdR402);
+
         iSimulationDAO.insertSimulation(argumentsForSaveSimulation);
 		iSimulationProductDAO.insertSimulationProduct(argumentsForSaveSimulationProd);
 		iQuotationDAO.insertQuotation(argumentsForSaveQuotation);
 
-
 		return response;
 	}
 
-	public Object getProductId(Map<String, Object> argumentsForGetProductId){
+	public Map<String,Object> getProductInfo(Map<String, Object> argumentsForGetProductId){
 		LOGGER.info("***** executeCreateQuotation - getInsuranceSimulationId START *****");
 
-		IInsuranceProductDAO insuranceProductDAO= new InsuranceProductDAO(pisdR401);
-		Object productId = insuranceProductDAO.getInsuranceProductId(argumentsForGetProductId);
+		IInsuranceProductDAO insuranceProductDAO = new InsuranceProductDAO(pisdR401);
+		Map<String,Object> productId = insuranceProductDAO.getInsuranceProductId(argumentsForGetProductId);
 
 		LOGGER.info("***** executeCreateQuotation - getInsuranceSimulationId | simulationNextValue: {} *****",productId);
 		return productId;

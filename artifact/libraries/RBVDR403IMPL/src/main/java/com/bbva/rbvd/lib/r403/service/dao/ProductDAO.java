@@ -7,7 +7,6 @@ import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 public class ProductDAO {
 
     public ProductDTO getProductInfo(ProductDTO productDTO){
-
         productDTO.setName(ContansUtils.mockInternalData.PRODUCT_NAME);
         return productDTO;
     }

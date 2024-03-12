@@ -1,11 +1,13 @@
 package com.bbva.rbvd.lib.r403.service.dao;
 
 
+import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.*;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.AssistanceBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.CoverageBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.FinancingBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,107 +16,108 @@ import java.util.stream.Collectors;
 
 public class PlanDAO {
 
-    public List<PlanDTO> getPlanInfo(List<PlanBO> planBOList){
+    //MEJORAR, EL APPLICATION PASAR POR SETTER O CONSTRUCTOR A ESTA CLASE
+    public List<PlanDTO> getPlanInfo(List<PlanBO> planBOList, ApplicationConfigurationService applicationConfigurationService){
         if (Objects.isNull(planBOList)) {
             return Collections.emptyList();
         }
 
-        List<PlanDTO> planDTOList = planBOList.stream()
+        return planBOList.stream()
                 .map(planBO -> {
                     PlanDTO planDTO = new PlanDTO();
                     planDTO.setId(planBO.getPlan().toString());
                     planDTO.setIsSelected(false);
                     planDTO.setIsRecommended(false);
-                    planDTO.setInstallmentPlans(mapInstallmentPlans(planBO));
-                    planDTO.setCoverages(mapCoverages(planBO));
+                    planDTO.setInstallmentPlans(mapInstallmentPlans(planBO,applicationConfigurationService));
+                    planDTO.setCoverages(mapCoverages(planBO,applicationConfigurationService));
                     planDTO.setTotalInstallment(mapTotalInstallmentPlans(planBO));
                     planDTO.setBenefits(mapBenefits(planBO));
                     return planDTO;
                 })
                 .collect(Collectors.toList());
-        return planDTOList;
     }
 
     private static AmountDTO mapTotalInstallmentPlans(PlanBO rimacPlan) {
-        if (Objects.isNull(rimacPlan)) {
+        if (Objects.isNull(rimacPlan.getPrimaNeta()) || Objects.isNull(rimacPlan.getMoneda())) {
             return null;
         }
+
         AmountDTO totalInstallmentPlan = new AmountDTO();
         totalInstallmentPlan.setAmount(rimacPlan.getPrimaNeta().doubleValue());
         totalInstallmentPlan.setCurrency(rimacPlan.getMoneda());
+
         return totalInstallmentPlan;
     }
 
-    private static List<CoverageDTO> mapCoverages(PlanBO rimacPlan) {
-        if (Objects.isNull(rimacPlan) || Objects.isNull(rimacPlan.getCoberturas())) {
+    private static List<CoverageDTO> mapCoverages(PlanBO rimacPlan,ApplicationConfigurationService applicationConfigurationService) {
+        if (CollectionUtils.isEmpty(rimacPlan.getCoberturas())) {
             return Collections.emptyList();
         }
-        List<CoverageBO> coverageBOList = rimacPlan.getCoberturas();
-        List<CoverageDTO> coverageDTOList = coverageBOList.stream()
+
+        return rimacPlan.getCoberturas().stream()
                 .map(coverageBO -> {
                     CoverageDTO coverageDTO = new CoverageDTO();
-                    coverageDTO.setCoverageType(mapCoverageType(coverageBO));
-                    coverageDTO.setId(coverageBO.getCondicion());
-                    coverageDTO.setDescription(coverageBO.getDescripcionCobertura());
+                    coverageDTO.setCoverageType(mapCoverageType(coverageBO,applicationConfigurationService));
+                    coverageDTO.setId(coverageBO.getCobertura().toString());
+                    coverageDTO.setDescription(coverageBO.getObservacionCobertura());
+                    coverageDTO.setName(coverageBO.getDescripcionCobertura());
                     return coverageDTO;
                 })
                 .collect(Collectors.toList());
-        return coverageDTOList;
     }
     private static List<DescriptionDTO> mapBenefits(PlanBO rimacPlan) {
-        if (Objects.isNull(rimacPlan) || Objects.isNull(rimacPlan.getAsistencias())) {
+        if (CollectionUtils.isEmpty(rimacPlan.getAsistencias())) {
             return Collections.emptyList();
         }
+
         List<AssistanceBO> assistanceBOList =rimacPlan.getAsistencias();
-        List<DescriptionDTO> benefitsDTOList = assistanceBOList.stream()
+        return assistanceBOList.stream()
                 .map(assistanceBO -> {
                     DescriptionDTO benefitsDTO = new DescriptionDTO();
+
                     benefitsDTO.setId(assistanceBO.getAsistencia().toString());
                     benefitsDTO.setName(assistanceBO.getDescripcionAsistencia());
+
                     return benefitsDTO;
                 })
                 .collect(Collectors.toList());
-        return benefitsDTOList;
     }
-    private static List<InstallmentPlansDTO> mapInstallmentPlans(PlanBO rimacPlan) {
-        if (Objects.isNull(rimacPlan) || Objects.isNull(rimacPlan.getFinanciamientos())) {
+    private static List<InstallmentPlansDTO> mapInstallmentPlans(PlanBO rimacPlan,ApplicationConfigurationService applicationConfigurationService) {
+        if (CollectionUtils.isEmpty(rimacPlan.getFinanciamientos())) {
             return Collections.emptyList();
         }
         List<FinancingBO> financingBOList = rimacPlan.getFinanciamientos();
-        List<InstallmentPlansDTO> installmentPlansDTOList = financingBOList.stream()
+
+        return financingBOList.stream()
                 .map(financingBO -> {
                     InstallmentPlansDTO installmentPlansDTO = new InstallmentPlansDTO();
                     installmentPlansDTO.setPaymentsTotalNumber(financingBO.getNumeroCuotas());
                     installmentPlansDTO.setPaymentAmount(mapPaymentAmount(financingBO));
-                    installmentPlansDTO.setPeriod(mapPeriod(financingBO));
+                    installmentPlansDTO.setPeriod(mapPeriod(financingBO,applicationConfigurationService));
                     return installmentPlansDTO;
                 })
                 .collect(Collectors.toList());
-
-        return installmentPlansDTOList;
     }
     private static AmountDTO mapPaymentAmount(FinancingBO rimacPlan) {
         if (Objects.isNull(rimacPlan)) {
             return null;
         }
+
         AmountDTO paymentAmount = new AmountDTO();
         paymentAmount.setAmount(rimacPlan.getCuotasFinanciamiento().get(0).getMonto().doubleValue());
-       //CAMBIAR
-        if(rimacPlan.getCuotasFinanciamiento().get(0).getMoneda().equals("PEN")|| rimacPlan.getCuotasFinanciamiento().get(0).getMoneda().equals("SOL")) {
-            paymentAmount.setCurrency("P");
-        }
-        else{
-            paymentAmount.setCurrency("D");
-        }
+        paymentAmount.setCurrency(rimacPlan.getCuotasFinanciamiento().get(0).getMoneda());
+
         return paymentAmount;
     }
-    private static DescriptionDTO mapCoverageType(CoverageBO rimacPlan) {
-        if (Objects.isNull(rimacPlan)) {
+    private static DescriptionDTO mapCoverageType(CoverageBO coverageBO,ApplicationConfigurationService applicationConfigurationService) {
+        if (Objects.isNull(coverageBO.getCondicion())) {
             return null;
         }
+
         DescriptionDTO coverageType = new DescriptionDTO();
-        String condicion = getCondicionforCoverageType(rimacPlan);
-        coverageType.setId(condicion);
+        String condition = applicationConfigurationService.getProperty("COVERAGE_TYPE_" + coverageBO.getCondicion());
+        coverageType.setId(condition);
+        coverageType.setName(condition);
 
         return coverageType;
     }
@@ -132,21 +135,15 @@ public class PlanDAO {
         }
         return condicion;
     }
-    private static DescriptionDTO mapPeriod(FinancingBO rimacPlan) {
+    private static DescriptionDTO mapPeriod(FinancingBO rimacPlan,ApplicationConfigurationService applicationConfigurationService) {
         DescriptionDTO period = new DescriptionDTO();
-        String name;
-        if (Objects.isNull(rimacPlan)) {
+
+        if (Objects.isNull(rimacPlan.getPeriodicidad())) {
             return null;
         }
-        if(rimacPlan.getPeriodicidad().equals("A")){
-            name = "ANNUAL";
-        }
-        else{
-            name = "MONTHLY";
-        }
 
-        period.setId(rimacPlan.getPeriodicidad());
-        period.setName(name);
+        period.setId(applicationConfigurationService.getProperty("PERIODICITY_ID_" + rimacPlan.getPeriodicidad()));
+        period.setName(applicationConfigurationService.getProperty("PERIODICITY_NAME_" + rimacPlan.getPeriodicidad()));
 
         return period;
     }

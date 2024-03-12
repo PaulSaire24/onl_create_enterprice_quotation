@@ -14,13 +14,12 @@ import java.util.Map;
 
 public class InsurancePlanDAO implements IInsurancePlanDAO {
     private final PISDR402 pisdR402;
+
     public InsurancePlanDAO(PISDR402 pisdR402) {
         this.pisdR402 = pisdR402;
     }
+
     @Override
     public List<Map<String, Object>> getPlansId(Map<String, Object> argumentsForGetPlans) {
-
-      List<Map<String, Object>> responseGetInsurancePlans= this.pisdR402.executeGetListASingleRow(ContansUtils.Querys.GET_MODALITY_TYPE_BY_PRODUCT_ID,argumentsForGetPlans);
-
-        return  responseGetInsurancePlans;
+        return this.pisdR402.executeGetListASingleRow(ContansUtils.Querys.GET_MODALITY_TYPE_BY_PRODUCT_ID,argumentsForGetPlans);
     }}

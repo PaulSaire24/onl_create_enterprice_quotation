@@ -129,7 +129,7 @@ public class RBVDT40201PETransactionTest {
 
 
 		CreateQuotationDTO response = createInput();
-		when(this.rbvdR403.executeCreateQuotation(anyObject(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(response);
+		when(this.rbvdR403.executeCreateQuotation(anyObject())).thenReturn(response);
 		Assert.assertNotNull(this.transaction);
 		this.transaction.execute();
 		assertEquals(Severity.OK, this.transaction.getSeverity());
@@ -139,7 +139,7 @@ public class RBVDT40201PETransactionTest {
 
 		assertNotNull(this.transaction);
 
-		when(rbvdR403.executeCreateQuotation(anyObject(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(null);
+		when(rbvdR403.executeCreateQuotation(anyObject())).thenReturn(null);
 		this.transaction.execute();
 
 		assertEquals(Severity.ENR, this.transaction.getSeverity());

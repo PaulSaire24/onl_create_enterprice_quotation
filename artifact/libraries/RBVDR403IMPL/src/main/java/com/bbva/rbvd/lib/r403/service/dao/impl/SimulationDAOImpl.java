@@ -20,6 +20,7 @@ public class SimulationDAOImpl implements ISimulationDAO {
     public void insertSimulation(Map<String, Object> argument) {
 
         int idInsSimulation = this.pisdR402.executeInsertSingleRow(ContansUtils.Querys.INSERT_SIMULATE_ENTERPRICE, argument);
+
         if (idInsSimulation != 1) {
             throw RBVDValidation.build(RBVDErrors.INSERTION_ERROR_IN_SIMULATION_PRD_TABLE);
         }
