@@ -51,7 +51,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() -  product from DB: {}***", productMap);
 
 		BigDecimal insuranceProductId = getInsurancePruductId(productMap);
-		String productName = (String) argumentsForGetProductId.get("PRODUCT_SHORT_DESC");
+		String productName = (String) productMap.get("PRODUCT_SHORT_DESC");
 		quotationCreate.getProduct().setName(productName);
 
 		Map<String, Object> argumentsForGetPlansId = PlansMap.createArgumentsForGetPlansId(
