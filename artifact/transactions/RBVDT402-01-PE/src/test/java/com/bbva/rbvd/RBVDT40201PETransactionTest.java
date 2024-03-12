@@ -17,6 +17,8 @@ import javax.annotation.Resource;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.*;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dto.CreateQuotationDTO;
 import com.bbva.rbvd.lib.r403.RBVDR403;
+
+import java.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,8 +77,30 @@ public class RBVDT40201PETransactionTest {
 		this.transaction.getContext().setTransactionRequest(transactionRequest);
 
 	}
-	private CreateQuotationDTO createInput(){
-		CreateQuotationDTO input = new CreateQuotationDTO();
+	@Test
+	public void testNotNull() throws IOException {
+	    // Example to Mock the Header
+		// Mockito.doReturn("ES").when(header).getHeaderParameter(RequestHeaderParamsName.COUNTRYCODE);
+
+
+		EnterpriseQuotationDTO response = createInput();
+		when(this.rbvdR403.executeCreateQuotation(anyObject())).thenReturn(response);
+		Assert.assertNotNull(this.transaction);
+		this.transaction.execute();
+		assertEquals(Severity.OK, this.transaction.getSeverity());
+	}
+	@Test
+	public void testNull() {
+
+		assertNotNull(this.transaction);
+
+		when(rbvdR403.executeCreateQuotation(anyObject())).thenReturn(null);
+		this.transaction.execute();
+
+		assertEquals(Severity.ENR, this.transaction.getSeverity());
+	}
+	private EnterpriseQuotationDTO createInput(){
+		EnterpriseQuotationDTO input = new EnterpriseQuotationDTO();
 		ProductDTO product = new ProductDTO();
 		List<ContactDetailsDTO> contactDetails = new ArrayList<>();
 		List<ParticipantDTO> participantes = new ArrayList<>();
@@ -118,31 +142,9 @@ public class RBVDT40201PETransactionTest {
 		input.setEmployees(employees);
 		input.setBusinessAgent(busunessAgent);
 		input.setContactDetails(contactDetails);
-
+        input.setQuotationDate(LocalDate.now());
 
 		return input;
-	}
-	@Test
-	public void testNotNull() throws IOException {
-	    // Example to Mock the Header
-		// Mockito.doReturn("ES").when(header).getHeaderParameter(RequestHeaderParamsName.COUNTRYCODE);
-
-
-		CreateQuotationDTO response = createInput();
-		when(this.rbvdR403.executeCreateQuotation(anyObject())).thenReturn(response);
-		Assert.assertNotNull(this.transaction);
-		this.transaction.execute();
-		assertEquals(Severity.OK, this.transaction.getSeverity());
-	}
-	@Test
-	public void testNull() {
-
-		assertNotNull(this.transaction);
-
-		when(rbvdR403.executeCreateQuotation(anyObject())).thenReturn(null);
-		this.transaction.execute();
-
-		assertEquals(Severity.ENR, this.transaction.getSeverity());
 	}
 
 	// Add Parameter to Transaction
