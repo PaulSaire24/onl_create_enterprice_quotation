@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,8 +65,16 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - input.participants[] : {} ***",quotationCreate.getParticipants());
 
 
-		List<Long> plansToRimac = planList.stream().map(plan -> (Long) plan.get("INSURANCE_COMPANY_MODALITY_ID"))
-				.collect(Collectors.toList());
+		List<Long> plansToRimac = new ArrayList<>();
+
+		planList.forEach(mapa -> {
+			mapa.entrySet().stream()
+					.filter(entry -> "INSURANCE_COMPANY_MODALITY_ID".equals(entry.getKey()))
+					.map(Map.Entry::getValue)
+					.filter(value -> value instanceof Long || value instanceof String)
+					.map(value -> value instanceof Long ? (Long) value : Long.parseLong((String) value))
+					.forEach(plansToRimac::add);
+		});
 
 		InsuranceEnterpriseInputBO rimacInput = QuotationBean.createQuotationDAO(quotationCreate,plansToRimac,this.applicationConfigurationService);
 
