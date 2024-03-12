@@ -105,6 +105,13 @@ public class PlanDAO {
 
         AmountDTO paymentAmount = new AmountDTO();
         paymentAmount.setAmount(rimacPlan.getCuotasFinanciamiento().get(0).getMonto().doubleValue());
+        if(rimacPlan.getCuotasFinanciamiento().get(0).getMoneda().equals("PEN")||
+                rimacPlan.getCuotasFinanciamiento().get(0).getMoneda().equals("SOL")){
+            rimacPlan.getCuotasFinanciamiento().get(0).setMoneda("P");
+        }
+        else{
+            rimacPlan.getCuotasFinanciamiento().get(0).setMoneda("D");
+        }
         paymentAmount.setCurrency(rimacPlan.getCuotasFinanciamiento().get(0).getMoneda());
 
         return paymentAmount;
