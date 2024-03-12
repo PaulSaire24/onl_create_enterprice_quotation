@@ -8,11 +8,9 @@ import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnte
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
 import com.bbva.rbvd.lib.r403.service.dao.PlanDAO;
-import com.bbva.rbvd.lib.r403.service.impl.ConsumerInternalService;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;

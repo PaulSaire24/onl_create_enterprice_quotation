@@ -387,6 +387,7 @@ catch (BusinessException e){
 		planes2.add(1234124l);
 		List<PlanBO> planes = new ArrayList<>();
 		PlanBO plan1 = new PlanBO();
+		PlanBO plan2 = new PlanBO();
 		List<FinancingBO> financingBOList = new ArrayList<>();
 		FinancingBO financing = new FinancingBO();
 		financing.setPeriodicidad("1");
@@ -414,6 +415,23 @@ catch (BusinessException e){
 		plan1.setPrimaNeta(new BigDecimal(1000));
 		plan1.setMoneda("pen");
 		planes.add(plan1);
+		plan2.setPlan(2l);
+		plan2.setFinanciamientos(financingBOList);
+		plan2.setPrimaNeta(new BigDecimal(1000));
+		plan2.setMoneda("pen");
+
+		List<QuotationBO> cotizaciones = new ArrayList<>();
+		QuotationBO cotizaciones1 = new QuotationBO();
+		QuotationBO cotizaciones2 = new QuotationBO();
+		planes.add(plan1);
+		planes.add(plan2);
+		cotizaciones1.setPlan(plan1);
+		cotizaciones1.setFechaFinVigencia("2024-04-30");
+		cotizaciones2.setPlan(plan2);
+		cotizaciones.add(cotizaciones1);
+		cotizaciones.add(cotizaciones2);
+		planes.add(plan1);
+		responseBO.setCotizaciones(cotizaciones);
 		responseBO.setPlanes(planes2);
 		return responseBO;
 	}
@@ -462,6 +480,12 @@ catch (BusinessException e){
 		input.setEmployees(employees);
 		input.setBusinessAgent(busunessAgent);
 		input.setContactDetails(contactDetails);
+		input.setSaleChannelId("PC");
+		input.setUserAudit("zg01293");
+		input.setCreationUser("zg01293");
+		input.setTraceId("traceId");
+		input.setSourceBranchCode("0072");
+		input.setLastChangeBranchId("0072");
 
 
 		return input;
