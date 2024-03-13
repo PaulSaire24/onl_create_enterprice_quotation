@@ -2,6 +2,7 @@ package com.bbva.rbvd.lib.r403.service.impl;
 
 
 import com.bbva.elara.utility.api.connector.APIConnector;
+
 import com.bbva.pisd.dto.insurance.amazon.SignatureAWS;
 import com.bbva.pisd.lib.r014.PISDR014;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseInputBO;
@@ -18,8 +19,6 @@ import org.springframework.web.client.RestClientException;
 
 import javax.ws.rs.HttpMethod;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 public class ConsumerExternalService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsumerExternalService.class);
 
