@@ -7,6 +7,7 @@ import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dto.CreateQuotation
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.utils.ConstantsUtil;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.springframework.util.CollectionUtils;
 
@@ -36,7 +37,7 @@ public class QuotationMap {
         Date date = Date.from(fechaFinDate.atZone(ZoneId.systemDefault()).toInstant());
         arguments.put(ContansUtils.Mapper.FIELD_INSURANCE_COMPANY_QUOTA_ID,firstQuotation.getCotizacion());
         arguments.put(ContansUtils.Mapper.FIELD_POLICY_QUOTA_END_VALIDITY_DATE, dateFormatEnd.format(date));
-        arguments.put(ContansUtils.Mapper.FIELD_INSURANCE_SIMULATION_ID, nextId);
+        arguments.put(ConstantsUtil.InsuranceSimulation.FIELD_INSURANCE_SIMULATION_ID, nextId);
 
         if (!CollectionUtils.isEmpty(responseDTO.getParticipants()) && checkParticipant(responseDTO.getParticipants()).equals(true)) {
 

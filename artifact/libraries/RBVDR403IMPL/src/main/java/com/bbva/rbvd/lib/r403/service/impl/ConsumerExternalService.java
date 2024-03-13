@@ -1,11 +1,11 @@
 package com.bbva.rbvd.lib.r403.service.impl;
 
-import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
+
 import com.bbva.elara.utility.api.connector.APIConnector;
 import com.bbva.pisd.dto.insurance.amazon.SignatureAWS;
 import com.bbva.pisd.lib.r014.PISDR014;
-import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.*;
-import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.*;
+import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseInputBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 import com.bbva.rbvd.lib.r403.impl.utils.JsonHelper;
 import com.bbva.rbvd.lib.r403.impl.utils.RimacExceptionHandler;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
 import javax.ws.rs.HttpMethod;

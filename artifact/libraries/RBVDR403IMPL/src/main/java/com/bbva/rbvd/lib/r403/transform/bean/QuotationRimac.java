@@ -37,7 +37,12 @@ public class QuotationRimac {
         input.getProduct().setPlans(!CollectionUtils.isEmpty(responseRimac.getCotizaciones())
                 ? planDAO.getPlanInfo(listPlans(responseRimac.getCotizaciones()),this.applicationConfigurationService) : null);
         input.setId(generateQuotationId(nextId, input));
-        input.setValidityPeriod(createValidityPeriodDTO(responseRimac.getCotizaciones().get(0).getFechaFinVigencia()));
+        if(CollectionUtils.isEmpty(responseRimac.getCotizaciones())){
+            input.setValidityPeriod(null);
+        }
+        else {
+            input.setValidityPeriod(createValidityPeriodDTO(responseRimac.getCotizaciones().get(0).getFechaFinVigencia()));
+        }
         input.setQuotationDate(LocalDate.now());
 
         return input;
@@ -45,7 +50,6 @@ public class QuotationRimac {
 
     private ValidityPeriodDTO createValidityPeriodDTO(String fechaFinVigencia){
         //VALIDAR CAMPO FECHA FIN Y FECHA INICIO NO NULO
-
         ValidityPeriodDTO validityPeriodDTO = new ValidityPeriodDTO();
         validityPeriodDTO.setStartDate(convertLocalDateToDate(LocalDate.now()));
         validityPeriodDTO.setEndDate(convertLocalDateToDate(convertStringDateToLocalDate(fechaFinVigencia)));

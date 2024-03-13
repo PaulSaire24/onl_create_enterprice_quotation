@@ -17,8 +17,8 @@
 			<dto order="1" name="Type" mandatory="0" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ContactDetailsDTO" artifactId="RBVDC402">
 				<dto order="1" name="contact" mandatory="1" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ContactDTO" artifactId="RBVDC402">
 					<parameter order="1" name="contactDetailType" mandatory="1" type="String" size="10"/>
-					<parameter order="2" name="number" mandatory="1" type="String" size="40"/>
-					<parameter order="3" name="address" mandatory="1" type="String" size="100"/>
+					<parameter order="2" name="number" mandatory="0" type="String" size="40"/>
+					<parameter order="3" name="address" mandatory="0" type="String" size="100"/>
 				</dto>
 			</dto>
 		</list>
@@ -74,7 +74,7 @@
 							<parameter order="1" name="paymentsTotalNumber" mandatory="0" type="Long" size="4"/>
 							<dto order="2" name="paymentAmount" mandatory="0" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.AmountDTO" artifactId="RBVDC402">
 								<parameter order="1" name="amount" mandatory="1" type="Double" size="18"/>
-								<parameter order="2" name="currency" mandatory="1" type="String" size="1"/>
+								<parameter order="2" name="currency" mandatory="1" type="String" size="3"/>
 							</dto>
 							<dto order="3" name="period" mandatory="0" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.DescriptionDTO" artifactId="RBVDC402">
 								<parameter order="1" name="id" mandatory="1" type="String" size="20"/>

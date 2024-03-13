@@ -6,8 +6,18 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseInputBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 
-import com.bbva.rbvd.lib.r403.service.dao.*;
-import com.bbva.rbvd.lib.r403.service.dao.impl.*;
+import com.bbva.rbvd.lib.r403.service.dao.IInsurancePlanDAO;
+import com.bbva.rbvd.lib.r403.service.dao.ISimulationDAO;
+import com.bbva.rbvd.lib.r403.service.dao.ISimulationProductDAO;
+import com.bbva.rbvd.lib.r403.service.dao.IQuotationDAO;
+import com.bbva.rbvd.lib.r403.service.dao.IInsuranceProductDAO;
+import com.bbva.rbvd.lib.r403.service.dao.IInsuranceSimulationDAO;
+import com.bbva.rbvd.lib.r403.service.dao.impl.InsurancePlanDAO;
+import com.bbva.rbvd.lib.r403.service.dao.impl.SimulationDAOImpl;
+import com.bbva.rbvd.lib.r403.service.dao.impl.SimulationProductDAOImpl;
+import com.bbva.rbvd.lib.r403.service.dao.impl.QuotationDAOImpl;
+import com.bbva.rbvd.lib.r403.service.dao.impl.InsuranceProductDAO;
+import com.bbva.rbvd.lib.r403.service.dao.impl.InsuranceSimulationDAOImpl;
 import com.bbva.rbvd.lib.r403.service.impl.ConsumerExternalService;
 import com.bbva.rbvd.lib.r403.transform.bean.QuotationBean;
 import com.bbva.rbvd.lib.r403.transform.bean.QuotationRimac;
@@ -51,7 +61,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() -  product from DB: {}***", productMap);
 
 		BigDecimal insuranceProductId = getInsurancePruductId(productMap);
-		String productName = (String) productMap.get("PRODUCT_SHORT_DESC");
+		String productName = (String) productMap.get(ContansUtils.Mapper.FIELD_PRODUCT_SHORT_DESC);
 		quotationCreate.getProduct().setName(productName);
 
 		Map<String, Object> argumentsForGetPlansId = PlansMap.createArgumentsForGetPlansId(
@@ -69,7 +79,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 
 		planList.forEach(mapa -> {
 			mapa.entrySet().stream()
-					.filter(entry -> "INSURANCE_COMPANY_MODALITY_ID".equals(entry.getKey()))
+					.filter(entry -> ContansUtils.Mapper.FIELD_INSURANCE_COMPANY_MODALITY_ID.equals(entry.getKey()))
 					.map(Map.Entry::getValue)
 					.filter(value -> value instanceof Long || value instanceof String)
 					.map(value -> value instanceof Long ? (Long) value : Long.parseLong((String) value))
@@ -92,6 +102,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		QuotationRimac quotationRimac = new QuotationRimac(this.applicationConfigurationService);
 		response = quotationRimac.mapInQuotationResponse(quotationCreate,responseRimac,nextId);
 		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - response: {} ***",response);
+		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - response.ContactDetails: {} ***",response.getContactDetails());
 
 		SimulationMap simulationMap = new SimulationMap();
 		Map<String, Object> argumentsForSaveSimulation = simulationMap.createArgumentsForSaveSimulation(nextId,response, responseRimac,this.applicationConfigurationService);

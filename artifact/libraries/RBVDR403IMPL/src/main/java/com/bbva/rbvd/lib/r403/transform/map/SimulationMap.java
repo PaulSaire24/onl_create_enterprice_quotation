@@ -6,6 +6,7 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ParticipantDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dto.CreateQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.utils.ConstantsUtil;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.springframework.util.CollectionUtils;
 
@@ -23,8 +24,8 @@ public class SimulationMap {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         QuotationResponseBO responseRimac = payload.getPayload();
 
-        arguments.put(ContansUtils.Mapper.FIELD_INSURANCE_SIMULATION_ID, nextId);
-        arguments.put(ContansUtils.Mapper.FIELD_INSRNC_COMPANY_SIMULATION_ID,responseRimac.getCotizaciones().get(0).getCotizacion());
+        arguments.put(ConstantsUtil.InsuranceSimulation.FIELD_INSURANCE_SIMULATION_ID, nextId);
+        arguments.put(ConstantsUtil.InsuranceSimulation.FIELD_INSRNC_COMPANY_SIMULATION_ID,responseRimac.getCotizaciones().get(0).getCotizacion());
         arguments.put(ContansUtils.Mapper.FIELD_CUST_SIMULATION_EXPIRED_DATE, dateFormat.format(new Date()));
 
 

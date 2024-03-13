@@ -5,6 +5,7 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dto.CreateQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.utils.ConstantsUtil;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 
 import java.math.BigDecimal;
@@ -19,7 +20,7 @@ public class ProductMap {
 
     public static Map<String, Object> createArgumentsForGetProductId(String product) {
         Map<String, Object> arguments = new HashMap<>();
-        arguments.put(ContansUtils.Mapper.FIELD_INSURANCE_PRODUCT_TYPE, product);
+        arguments.put(ConstantsUtil.InsuranceProduct.FIELD_INSURANCE_PRODUCT_TYPE, product);
 
         return arguments;
     }
