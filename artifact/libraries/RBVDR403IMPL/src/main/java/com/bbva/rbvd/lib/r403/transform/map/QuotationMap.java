@@ -3,7 +3,6 @@ package com.bbva.rbvd.lib.r403.transform.map;
 import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ParticipantDTO;
-import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dto.CreateQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
@@ -12,7 +11,6 @@ import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,6 +23,7 @@ public class QuotationMap {
                                   InsuranceEnterpriseResponseBO payload, ApplicationConfigurationService applicationConfigurationService){
 
         Map<String, Object> arguments = new HashMap<>();
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         QuotationResponseBO responseRimac = payload.getPayload();
         QuotationBO firstQuotation = responseRimac.getCotizaciones().get(0);
