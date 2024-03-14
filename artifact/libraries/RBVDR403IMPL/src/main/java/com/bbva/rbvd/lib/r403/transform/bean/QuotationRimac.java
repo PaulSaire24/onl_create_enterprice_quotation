@@ -31,7 +31,6 @@ public class QuotationRimac {
                                                          InsuranceEnterpriseResponseBO payload, BigDecimal nextId) {
 
         QuotationResponseBO responseRimac = payload.getPayload();
-        QuotationBO firstQuotation = responseRimac.getCotizaciones().get(0);
         PlanDAO planDAO = new PlanDAO();
 
         input.getProduct().setPlans(!CollectionUtils.isEmpty(responseRimac.getCotizaciones())
@@ -44,7 +43,7 @@ public class QuotationRimac {
             input.setValidityPeriod(createValidityPeriodDTO(responseRimac.getCotizaciones().get(0).getFechaFinVigencia()));
         }
         input.setQuotationDate(LocalDate.now());
-        input.setId(firstQuotation.getCotizacion());
+
 
         return input;
     }
