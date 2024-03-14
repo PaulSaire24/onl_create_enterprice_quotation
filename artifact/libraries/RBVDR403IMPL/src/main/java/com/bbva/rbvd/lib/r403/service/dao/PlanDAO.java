@@ -27,6 +27,7 @@ public class PlanDAO {
                     PlanDTO planDTO = new PlanDTO();
                     planDTO.setId(planBO.getPlan().toString());
                     planDTO.setIsSelected(false);
+                    planDTO.setName(planBO.getDescripcionPlan());
                     planDTO.setIsRecommended(false);
                     planDTO.setInstallmentPlans(mapInstallmentPlans(planBO,applicationConfigurationService));
                     planDTO.setCoverages(mapCoverages(planBO,applicationConfigurationService));
