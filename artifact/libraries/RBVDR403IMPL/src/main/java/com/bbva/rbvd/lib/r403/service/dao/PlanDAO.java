@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 public class PlanDAO {
 
     //MEJORAR, EL APPLICATION PASAR POR SETTER O CONSTRUCTOR A ESTA CLASE
-    public List<PlanDTO> getPlanInfo(List<PlanBO> planBOList, ApplicationConfigurationService applicationConfigurationService){
+    public List<PlanDTO> getPlanInfo(List<PlanBO> planBOList, ApplicationConfigurationService applicationConfigurationService,List<Long> plansList){
         if (Objects.isNull(planBOList)) {
             return Collections.emptyList();
         }
-
+        addPlansId(plansList,planBOList);
         return planBOList.stream()
                 .map(planBO -> {
                     PlanDTO planDTO = new PlanDTO();
@@ -65,6 +65,14 @@ public class PlanDAO {
                     return coverageDTO;
                 })
                 .collect(Collectors.toList());
+    }
+    private static void addPlansId(List<Long> rimacPlan,List<PlanBO> planBOList) {
+
+        rimacPlan.forEach(id ->
+                planBOList.forEach(planBO ->
+                        planBO.setPlan(id)
+                )
+        );
     }
     private static List<DescriptionDTO> mapBenefits(PlanBO rimacPlan) {
         if (CollectionUtils.isEmpty(rimacPlan.getAsistencias())) {

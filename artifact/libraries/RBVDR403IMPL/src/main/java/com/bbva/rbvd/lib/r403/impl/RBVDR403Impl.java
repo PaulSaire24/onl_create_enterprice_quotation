@@ -85,6 +85,16 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 					.map(value -> value instanceof Long ? (Long) value : Long.parseLong((String) value))
 					.forEach(plansToRimac::add);
 		});
+		List<Long> plansId = new ArrayList<>();
+
+		planList.forEach(mapper -> {
+			mapper.entrySet().stream()
+					.filter(entry -> ContansUtils.Mapper.FIELD_INSURANCE_MODALITY_TYPE.equals(entry.getKey()))
+					.map(Map.Entry::getValue)
+					.filter(value -> value instanceof Long || value instanceof String)
+					.map(value -> value instanceof Long ? (Long) value : Long.parseLong((String) value))
+					.forEach(plansId::add);
+		});
 
 		InsuranceEnterpriseInputBO rimacInput = QuotationBean.createQuotationDAO(quotationCreate,plansToRimac,this.applicationConfigurationService);
 
@@ -100,7 +110,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		BigDecimal nextId = this.getInsuranceSimulationId();
 
 		QuotationRimac quotationRimac = new QuotationRimac(this.applicationConfigurationService);
-		response = quotationRimac.mapInQuotationResponse(quotationCreate,responseRimac,nextId);
+		response = quotationRimac.mapInQuotationResponse(quotationCreate,responseRimac,nextId,plansId);
 		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - response: {} ***",response);
 		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - response.ContactDetails: {} ***",response.getContactDetails());
 

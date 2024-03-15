@@ -65,6 +65,7 @@ public class ContansUtils {
 
         public static final String FIELD_INSURANCE_COMPANY_MODALITY_ID = "INSURANCE_COMPANY_MODALITY_ID";
         public static final String FIELD_PRODUCT_SHORT_DESC = "PRODUCT_SHORT_DESC";
+        public static final String FIELD_INSURANCE_MODALITY_TYPE = "INSURANCE_MODALITY_TYPE";
 
     }
 

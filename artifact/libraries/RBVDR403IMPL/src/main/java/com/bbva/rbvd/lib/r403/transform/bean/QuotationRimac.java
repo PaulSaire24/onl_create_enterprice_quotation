@@ -28,13 +28,13 @@ public class QuotationRimac {
     }
 
     public EnterpriseQuotationDTO mapInQuotationResponse(EnterpriseQuotationDTO input,
-                                                         InsuranceEnterpriseResponseBO payload, BigDecimal nextId) {
+                                                         InsuranceEnterpriseResponseBO payload, BigDecimal nextId,List<Long> plansId) {
 
         QuotationResponseBO responseRimac = payload.getPayload();
         PlanDAO planDAO = new PlanDAO();
 
         input.getProduct().setPlans(!CollectionUtils.isEmpty(responseRimac.getCotizaciones())
-                ? planDAO.getPlanInfo(listPlans(responseRimac.getCotizaciones()),this.applicationConfigurationService) : null);
+                ? planDAO.getPlanInfo(listPlans(responseRimac.getCotizaciones()),this.applicationConfigurationService,plansId) : null);
         input.setId(generateQuotationId(nextId, input));
         if(CollectionUtils.isEmpty(responseRimac.getCotizaciones())){
             input.setValidityPeriod(null);
