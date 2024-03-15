@@ -1,7 +1,7 @@
 package com.bbva.rbvd;
 
+
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
-import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dto.CreateQuotationDTO;
 import com.bbva.rbvd.lib.r403.RBVDR403;
 import com.bbva.elara.domain.transaction.RequestHeaderParamsName;
 import com.bbva.elara.domain.transaction.Severity;
