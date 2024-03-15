@@ -25,7 +25,7 @@ public class PlanDAO {
                     PlanDTO planDTO = new PlanDTO();
                     planDTO.setId(String.format("%02d", planBO.getPlan()));
                     planDTO.setIsSelected(false);
-                    planDTO.setName(planBO.getDescripcionPlan());
+                    planDTO.setName(planBO.getDescripcionPlan().replaceFirst("\\s+\\w+\\s+\\w+\\s+\\d+", ""));
                     planDTO.setIsRecommended(false);
                     planDTO.setInstallmentPlans(mapInstallmentPlans(planBO,applicationConfigurationService));
                     planDTO.setCoverages(mapCoverages(planBO,applicationConfigurationService));

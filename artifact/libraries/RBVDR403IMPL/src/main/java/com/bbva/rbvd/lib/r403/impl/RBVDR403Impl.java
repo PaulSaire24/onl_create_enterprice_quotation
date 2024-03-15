@@ -155,12 +155,11 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 	}
 	public void validInput(EnterpriseQuotationDTO input){
 	if (input.getEmployees().getMonthlyPayrollAmount().getAmount()<= 0.0){
-		this.addAdviceWithDescription("RBVD10094947",
-				"Error el monto no puede ser menor a cero");
+		throw new BusinessException("RBVD10094947", false, "ERROR EL MONTO NO PUEDE SER MENOR A CERO");
 	}
 	else if (input.getEmployees().getEmployeesNumber()<= 0L){
-		this.addAdviceWithDescription("RBVD10094946",
-				"Error el numero de empleados no puede ser menor a cero");
+		throw new BusinessException("RBVD10094946", false, "Error el numero de empleados no puede ser menor a cero");
+
 	}
 		List<ParticipantDTO> participant = input.getParticipants();
 

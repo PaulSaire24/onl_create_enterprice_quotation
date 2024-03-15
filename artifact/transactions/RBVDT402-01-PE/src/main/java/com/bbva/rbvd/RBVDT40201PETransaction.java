@@ -1,6 +1,7 @@
 package com.bbva.rbvd;
 
 
+import com.bbva.apx.exception.business.BusinessException;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
 import com.bbva.rbvd.lib.r403.RBVDR403;
 import com.bbva.elara.domain.transaction.RequestHeaderParamsName;
@@ -59,12 +60,8 @@ public class RBVDT40201PETransaction extends AbstractRBVDT40201PETransaction {
 		quotationCreate.setPaymentMethod(this.getPaymentmethod());
 		quotationCreate.setBank(this.getBank());
 
-
-		EnterpriseQuotationDTO response = rbvdr403.executeCreateQuotation(quotationCreate);
-        if(!Objects.equals(this.getAdvice(), null)){
-			this.setSeverity(Severity.WARN);
-		}
-		else {
+		try {
+			EnterpriseQuotationDTO response = rbvdr403.executeCreateQuotation(quotationCreate);
 			if (nonNull(response)) {
 				LOGGER.info("RBVDT40201PETransaction - Response : {}", response.toString());
 				LOGGER.info("RBVDT40201PETransaction - product: {}", response.getProduct());
@@ -89,6 +86,12 @@ public class RBVDT40201PETransaction extends AbstractRBVDT40201PETransaction {
 			}
 
 		}
+	  catch (
+	BusinessException be) {
+
+		this.setSeverity(Severity.ENR);
+
+	}
 	}
 
 
