@@ -23,7 +23,7 @@ public class PlanDAO {
         return planBOList.stream()
                 .map(planBO -> {
                     PlanDTO planDTO = new PlanDTO();
-                    planDTO.setId(planBO.getPlan().toString());
+                    planDTO.setId(String.format("%02d", planBO.getPlan()));
                     planDTO.setIsSelected(false);
                     planDTO.setName(planBO.getDescripcionPlan());
                     planDTO.setIsRecommended(false);
@@ -67,9 +67,9 @@ public class PlanDAO {
     private static void addPlansId(List<PlanBO> planBOList) {
 
         Map<Long, Long> planMap = new HashMap<>();
-        planMap.put(534254L, 01l);
-        planMap.put(534273L, 03l);
-        planMap.put(534272L, 02l);
+        planMap.put(534254L, 01L);
+        planMap.put(534273L, 03L);
+        planMap.put(534272L, 02L);
 
         // Asignar valores específicos a los objetos PlanBO basados en su campo plan
         planBOList.forEach(planBO -> {
