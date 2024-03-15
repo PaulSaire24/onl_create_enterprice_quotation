@@ -213,7 +213,52 @@ catch (BusinessException e){
 
 		rbvdR302.executeCreateQuotation(requestInput);
 	}
+	@Test
+	public void executeTestAddAdvice1(){
+		this.requestInput = createInputAmountZero();
+		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
+		InsuranceEnterpriseResponseBO payload = new InsuranceEnterpriseResponseBO();
+		payload.setPayload(responseRimacMock);
+		when(consumerExternalServiceMock.callRimacService(any(), any(), any(), any())).thenReturn(payload);
+		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
+		List<Map<String, Object>> listPlan = createPlan();
+		responseQueryModalities = new HashMap<>();
+		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
+				.thenReturn(responseQueryModalities);
+		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
+				.thenReturn(1);
+		when(pisdr402.executeGetListASingleRow(anyString(), anyMap()))
+				.thenReturn(listPlan);
+		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
+		when(pisdr401.executeGetProductById(anyString(), anyMap()))
+				.thenReturn(createProduct());
 
+		rbvdR302.executeCreateQuotation(requestInput);
+	}
+	@Test
+	public void executeTestAddAdvice2(){
+		this.requestInput = createInputNumberEmployeesZero();
+		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
+		InsuranceEnterpriseResponseBO payload = new InsuranceEnterpriseResponseBO();
+		payload.setPayload(responseRimacMock);
+		when(consumerExternalServiceMock.callRimacService(any(), any(), any(), any())).thenReturn(payload);
+		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
+		List<Map<String, Object>> listPlan = createPlan();
+		responseQueryModalities = new HashMap<>();
+		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
+				.thenReturn(responseQueryModalities);
+		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
+				.thenReturn(1);
+		when(pisdr402.executeGetListASingleRow(anyString(), anyMap()))
+				.thenReturn(listPlan);
+		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
+		when(pisdr401.executeGetProductById(anyString(), anyMap()))
+				.thenReturn(createProduct());
+
+		rbvdR302.executeCreateQuotation(requestInput);
+	}
 	private QuotationResponseBO createRimacResponse(){
 		QuotationResponseBO responseBO = new QuotationResponseBO();
 
@@ -471,7 +516,7 @@ catch (BusinessException e){
 		employees.setEmployeesNumber(Long.valueOf(30));
 		AmountDTO monthlyPayrollAmount = new AmountDTO();
 		monthlyPayrollAmount.setCurrency("PEN");
-		monthlyPayrollAmount.setAmount(BigDecimal.valueOf(20.00).doubleValue());
+		monthlyPayrollAmount.setAmount(BigDecimal.valueOf(200.00).doubleValue());
 		employees.setMonthlyPayrollAmount((monthlyPayrollAmount));
 		product.setId("503");
 		contacto.setContactDetailType("EMAIL");
@@ -493,6 +538,19 @@ catch (BusinessException e){
 		input.setLastChangeBranchId("0072");
 		input.setPaymentMethod(paymentMethodDTO);
 		input.setBank(bank);
+		return input;
+	}
+	private EnterpriseQuotationDTO createInputAmountZero(){
+		EnterpriseQuotationDTO input = createInput();
+		AmountDTO monthlyPayrollAmount = new AmountDTO();
+		monthlyPayrollAmount.setCurrency("PEN");
+		monthlyPayrollAmount.setAmount(BigDecimal.valueOf(200.00).doubleValue());
+		input.getEmployees().setMonthlyPayrollAmount(monthlyPayrollAmount);
+		return input;
+	}
+	private EnterpriseQuotationDTO createInputNumberEmployeesZero(){
+		EnterpriseQuotationDTO input = createInput();
+		input.getEmployees().setEmployeesNumber(Long.valueOf(30));
 		return input;
 	}
 	private Object createProduct(){

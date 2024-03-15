@@ -1,8 +1,10 @@
 package com.bbva.rbvd.lib.r403.impl;
 
 
+import com.bbva.apx.exception.business.BusinessException;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
 
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ParticipantDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseInputBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 
@@ -48,11 +50,11 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 	@Override
 	public EnterpriseQuotationDTO executeCreateQuotation(EnterpriseQuotationDTO quotationCreate) {
 		LOGGER.info("RBVDR403Impl - executeCreateQuotation() | START");
-
 		EnterpriseQuotationDTO response;
 
 		LOGGER.info("RBVDR403Impl - executeCreateQuotation() | arguments: {}",quotationCreate.toString());
 
+		validInput(quotationCreate);
 		Map<String, Object> argumentsForGetProductId = ProductMap.createArgumentsForGetProductId(
 				quotationCreate.getProduct().getId());
 		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - argumentsForGetProductId: {} ***", argumentsForGetProductId);
@@ -150,5 +152,22 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		LOGGER.info("***** executeCreateQuotation - getInsurancePruductId | productId: {} *****",productId);
 
 		return productId;
+	}
+	public void validInput(EnterpriseQuotationDTO input){
+	if (input.getEmployees().getMonthlyPayrollAmount().getAmount()<= 0.0){
+		this.addAdviceWithDescription("RBVD10094947",
+				"Error el monto no puede ser menor a cero");
+	}
+	else if (input.getEmployees().getEmployeesNumber()<= 0L){
+		this.addAdviceWithDescription("RBVD10094946",
+				"Error el numero de empleados no puede ser menor a cero");
+	}
+		List<ParticipantDTO> participant = input.getParticipants();
+
+		// Validar que el tipo de documento de cada participante sea "RUC" usando lambdas
+		participant.stream()
+				.filter(participants -> !"RUC".equals(participants.getIdentityDocument().getDocumentType()))
+				.forEach(participants ->this.addAdviceWithDescription("RBVD10094948",
+						"Error el tipo de Documento solo puede ser RUC"));
 	}
 }
