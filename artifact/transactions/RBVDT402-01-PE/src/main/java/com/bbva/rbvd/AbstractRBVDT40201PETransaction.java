@@ -1,10 +1,12 @@
 package com.bbva.rbvd;
 
 import com.bbva.elara.transaction.AbstractTransaction;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.BankDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ContactDetailsDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.DescriptionDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EmployeesDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ParticipantDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.PaymentMethodDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ProductDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ValidityPeriodDTO;
 import java.util.Date;
@@ -59,6 +61,20 @@ public abstract class AbstractRBVDT40201PETransaction extends AbstractTransactio
 	 */
 	protected List<ParticipantDTO> getParticipants(){
 		return (List<ParticipantDTO>)this.getParameter("participants");
+	}
+
+	/**
+	 * Return value for input parameter paymentMethod
+	 */
+	protected PaymentMethodDTO getPaymentmethod(){
+		return (PaymentMethodDTO)this.getParameter("paymentMethod");
+	}
+
+	/**
+	 * Return value for input parameter bank
+	 */
+	protected BankDTO getBank(){
+		return (BankDTO)this.getParameter("bank");
 	}
 
 	/**
@@ -129,5 +145,19 @@ public abstract class AbstractRBVDT40201PETransaction extends AbstractTransactio
 	 */
 	protected void setStatus(final DescriptionDTO field){
 		this.addParameter("status", field);
+	}
+
+	/**
+	 * Set value for PaymentMethodDTO output parameter paymentMethod
+	 */
+	protected void setPaymentmethod(final PaymentMethodDTO field){
+		this.addParameter("paymentMethod", field);
+	}
+
+	/**
+	 * Set value for BankDTO output parameter bank
+	 */
+	protected void setBank(final BankDTO field){
+		this.addParameter("bank", field);
 	}
 }
