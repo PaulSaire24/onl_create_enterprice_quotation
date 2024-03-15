@@ -101,6 +101,8 @@ public class RBVDT40201PETransactionTest {
 	}
 	private EnterpriseQuotationDTO createInput(){
 		EnterpriseQuotationDTO input = new EnterpriseQuotationDTO();
+		PaymentMethodDTO paymentMethodDTO = new PaymentMethodDTO();
+		BankDTO bank = new BankDTO();
 		ProductDTO product = new ProductDTO();
 		List<ContactDetailsDTO> contactDetails = new ArrayList<>();
 		List<ParticipantDTO> participantes = new ArrayList<>();
@@ -143,6 +145,8 @@ public class RBVDT40201PETransactionTest {
 		input.setBusinessAgent(busunessAgent);
 		input.setContactDetails(contactDetails);
         input.setQuotationDate(LocalDate.now());
+		input.setPaymentMethod(paymentMethodDTO);
+		input.setBank(bank);
 
 		return input;
 	}

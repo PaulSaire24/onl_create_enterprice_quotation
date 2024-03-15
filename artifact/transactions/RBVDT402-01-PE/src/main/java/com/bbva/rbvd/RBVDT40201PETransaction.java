@@ -55,6 +55,9 @@ public class RBVDT40201PETransaction extends AbstractRBVDT40201PETransaction {
 		quotationCreate.setTraceId(traceId);
 		quotationCreate.setSourceBranchCode(branchCode);
 		quotationCreate.setLastChangeBranchId(branchCode);
+		quotationCreate.setPaymentMethod(this.getPaymentmethod());
+		quotationCreate.setBank(this.getBank());
+
 
 		EnterpriseQuotationDTO response = rbvdr403.executeCreateQuotation(quotationCreate);
 
@@ -74,6 +77,8 @@ public class RBVDT40201PETransaction extends AbstractRBVDT40201PETransaction {
 			this.setValidityperiod(response.getValidityPeriod());
 			this.setQuotationreference(response.getQuotationReference());
 			this.setQuotationdate(Date.from(response.getQuotationDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+			this.setPaymentmethod(response.getPaymentMethod());
+			this.setBank(response.getBank());
 			this.setHttpResponseCode(HttpResponseCode.HTTP_CODE_200, Severity.OK);
 		} else {
 			this.setSeverity(Severity.ENR);

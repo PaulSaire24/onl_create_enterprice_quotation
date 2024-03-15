@@ -437,6 +437,8 @@ catch (BusinessException e){
 	}
 	private EnterpriseQuotationDTO createInput(){
 		EnterpriseQuotationDTO input = new EnterpriseQuotationDTO();
+		BankDTO bank = new BankDTO();
+		PaymentMethodDTO paymentMethodDTO = new PaymentMethodDTO();
 		ProductDTO product = new ProductDTO();
 		List<Long> planes2 = new ArrayList<>();
 		planes2.add(1234124l);
@@ -486,8 +488,8 @@ catch (BusinessException e){
 		input.setTraceId("traceId");
 		input.setSourceBranchCode("0072");
 		input.setLastChangeBranchId("0072");
-
-
+		input.setPaymentMethod(paymentMethodDTO);
+		input.setBank(bank);
 		return input;
 	}
 	private Object createProduct(){
