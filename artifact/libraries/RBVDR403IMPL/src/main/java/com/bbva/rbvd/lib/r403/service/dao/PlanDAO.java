@@ -9,19 +9,17 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.FinancingBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PlanDAO {
 
     //MEJORAR, EL APPLICATION PASAR POR SETTER O CONSTRUCTOR A ESTA CLASE
-    public List<PlanDTO> getPlanInfo(List<PlanBO> planBOList, ApplicationConfigurationService applicationConfigurationService,List<Long> plansList){
+    public List<PlanDTO> getPlanInfo(List<PlanBO> planBOList, ApplicationConfigurationService applicationConfigurationService){
         if (Objects.isNull(planBOList)) {
             return Collections.emptyList();
         }
-        addPlansId(plansList,planBOList);
+        addPlansId(planBOList);
         return planBOList.stream()
                 .map(planBO -> {
                     PlanDTO planDTO = new PlanDTO();
@@ -66,13 +64,21 @@ public class PlanDAO {
                 })
                 .collect(Collectors.toList());
     }
-    private static void addPlansId(List<Long> rimacPlan,List<PlanBO> planBOList) {
+    private static void addPlansId(List<PlanBO> planBOList) {
 
-        rimacPlan.forEach(id ->
-                planBOList.forEach(planBO ->
-                        planBO.setPlan(id)
-                )
-        );
+        Map<Long, Long> planMap = new HashMap<>();
+        planMap.put(534254L, 01l);
+        planMap.put(534273L, 03l);
+        planMap.put(534272L, 02l);
+
+        // Asignar valores específicos a los objetos PlanBO basados en su campo plan
+        planBOList.forEach(planBO -> {
+            Long planValue = planBO.getPlan();
+            if (planMap.containsKey(planValue)) {
+                planBO.setPlan(planMap.get(planValue));
+            }
+        })
+        ;
     }
     private static List<DescriptionDTO> mapBenefits(PlanBO rimacPlan) {
         if (CollectionUtils.isEmpty(rimacPlan.getAsistencias())) {

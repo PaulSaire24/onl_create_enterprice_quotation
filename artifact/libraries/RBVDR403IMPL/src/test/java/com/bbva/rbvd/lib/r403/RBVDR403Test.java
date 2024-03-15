@@ -62,6 +62,7 @@ public class RBVDR403Test {
 	@Mock
 	private PISDR402 pisdr402;
 	private Map<String, Object> responseQueryModalities;
+	private List<Map<String, Object>> responseQueryPlans;
 	private Map<String, Object> responseQuery;
 
 	private EnterpriseQuotationDTO requestInput;
@@ -80,13 +81,15 @@ public class RBVDR403Test {
 		payload.setPayload(responseRimacMock);
 		when(consumerExternalServiceMock.callRimacService(any(), any(), any(), any())).thenReturn(payload);
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
-
+		List<Map<String, Object>> listPlan = createPlan();
 		responseQueryModalities = new HashMap<>();
 		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
 				.thenReturn(1);
+		when(pisdr402.executeGetListASingleRow(anyString(), anyMap()))
+				.thenReturn(listPlan);
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
 				.thenReturn(createProduct());
@@ -241,7 +244,7 @@ catch (BusinessException e){
 		coverageBO.setMoneda("pen");
 		coverageBO.setCobertura(1l);
 
-		plan1.setPlan(1l);
+		plan1.setPlan(534254L);
 		plan1.setFinanciamientos(financingBOList);
 		plan1.setPrimaNeta(new BigDecimal(1000));
 		plan1.setMoneda("pen");
@@ -294,7 +297,7 @@ catch (BusinessException e){
 		coverageBO.setMoneda("pen");
 		coverageBO.setCobertura(1l);
 		coverageBOList.add(coverageBO);
-		plan1.setPlan(1l);
+		plan1.setPlan(534254L);
 		plan1.setCoberturas(coverageBOList);
 		plan1.setFinanciamientos(financingBOList);
 		plan1.setPrimaNeta(new BigDecimal(1000));
@@ -345,7 +348,7 @@ catch (BusinessException e){
 		installmentFinancingBOS.add(installment1);
 
 		financing.setCuotasFinanciamiento(installmentFinancingBOS);
-		financing.setFinanciamiento(1l);
+		financing.setFinanciamiento(534273L);
 		financingBOList.add(financing);
 		List<CoverageBO> coverageBOList = new ArrayList<>();
 		CoverageBO coverageBO = new CoverageBO();
@@ -409,7 +412,7 @@ catch (BusinessException e){
 		coverageBO.setMoneda("pen");
 		coverageBO.setCobertura(1l);
 		coverageBOList.add(coverageBO);
-		plan1.setPlan(1l);
+		plan1.setPlan(534272L);
 		plan1.setCoberturas(coverageBOList);
 		plan1.setFinanciamientos(financingBOList);
 		plan1.setPrimaNeta(new BigDecimal(1000));
@@ -501,5 +504,14 @@ catch (BusinessException e){
 		return product;
 
 	}
+	private List<Map<String, Object>> createPlan(){
+		List<Map<String, Object>> listPlans = new ArrayList<>();
+		Map<String, Object> mapPlans = new HashMap<>();
+		mapPlans.put("nombre", "Juan");
+		mapPlans.put("INSURANCE_MODALITY_TYPE", 01l);
+		mapPlans.put("ciudad", "Madrid");
+		listPlans.add(mapPlans);
+		return listPlans;
 
+	}
 }
