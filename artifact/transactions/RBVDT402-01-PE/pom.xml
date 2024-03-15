@@ -44,7 +44,6 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- End test dependencies -->
-
 		<dependency>
 			<groupId>com.bbva.rbvd</groupId>
 			<artifactId>RBVDR403</artifactId>
