@@ -166,7 +166,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 
 		// Validar que el tipo de documento de cada participante sea "RUC" usando lambdas
 		participant.stream()
-				.filter(participants -> !"RUC".equals(participants.getIdentityDocument().getDocumentType()))
+				.filter(participants -> !"RUC".equals(participants.getIdentityDocument().getDocumentType().getId()))
 				.forEach(participants ->this.addAdviceWithDescription("RBVD10094948",
 						"Error el tipo de Documento solo puede ser RUC"));
 	}
