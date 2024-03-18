@@ -8,6 +8,7 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ParticipantDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseInputBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 
+import com.bbva.rbvd.dto.enterpriseinsurance.utils.ConstantsUtil;
 import com.bbva.rbvd.lib.r403.service.dao.IInsurancePlanDAO;
 import com.bbva.rbvd.lib.r403.service.dao.ISimulationDAO;
 import com.bbva.rbvd.lib.r403.service.dao.ISimulationProductDAO;
@@ -23,7 +24,11 @@ import com.bbva.rbvd.lib.r403.service.dao.impl.InsuranceSimulationDAOImpl;
 import com.bbva.rbvd.lib.r403.service.impl.ConsumerExternalService;
 import com.bbva.rbvd.lib.r403.transform.bean.QuotationBean;
 import com.bbva.rbvd.lib.r403.transform.bean.QuotationRimac;
-import com.bbva.rbvd.lib.r403.transform.map.*;
+import com.bbva.rbvd.lib.r403.transform.map.QuotationMap;
+import com.bbva.rbvd.lib.r403.transform.map.PlansMap;
+import com.bbva.rbvd.lib.r403.transform.map.SimulationMap;
+import com.bbva.rbvd.lib.r403.transform.map.SimulationProductMap;
+import com.bbva.rbvd.lib.r403.transform.map.ProductMap;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +69,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() -  product from DB: {}***", productMap);
 
 		BigDecimal insuranceProductId = getInsurancePruductId(productMap);
-		String productName = (String) productMap.get(ContansUtils.Mapper.FIELD_PRODUCT_SHORT_DESC);
+		String productName = (String) productMap.get(ConstantsUtil.InsuranceProduct.FIELD_PRODUCT_SHORT_DESC);
 		quotationCreate.getProduct().setName(productName);
 
 		Map<String, Object> argumentsForGetPlansId = PlansMap.createArgumentsForGetPlansId(
@@ -82,7 +87,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 
 		planList.forEach(mapa -> {
 			mapa.entrySet().stream()
-					.filter(entry -> ContansUtils.Mapper.FIELD_INSURANCE_COMPANY_MODALITY_ID.equals(entry.getKey()))
+					.filter(entry -> ConstantsUtil.InsurancePrdModality.FIELD_INSURANCE_COMPANY_MODALITY_ID.equals(entry.getKey()))
 					.map(Map.Entry::getValue)
 					.filter(value -> value instanceof Long || value instanceof String)
 					.map(value -> value instanceof Long ? (Long) value : Long.parseLong((String) value))
@@ -149,7 +154,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		return simulationNextValue;
 	}
 	public BigDecimal getInsurancePruductId(Map<String, Object> productMap){
-		BigDecimal productId = (BigDecimal) productMap.get(ContansUtils.Mapper.FIELD_INSURANCE_PRODUCT_ID);
+		BigDecimal productId = (BigDecimal) productMap.get(ConstantsUtil.QuotationModMap.INSURANCE_PRODUCT_ID);
 		LOGGER.info("***** executeCreateQuotation - getInsurancePruductId | productId: {} *****",productId);
 
 		return productId;

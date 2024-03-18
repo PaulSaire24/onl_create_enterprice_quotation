@@ -45,7 +45,13 @@ public class PlanDAO {
         if (Objects.isNull(rimacPlan.getPrimaNeta()) || Objects.isNull(rimacPlan.getMoneda())) {
             return null;
         }
-
+        if(rimacPlan.getMoneda().equals("PEN")||
+                rimacPlan.getMoneda().equals("SOL")){
+            rimacPlan.setMoneda("PEN");
+        }
+        else{
+            rimacPlan.setMoneda("USD");
+        }
         AmountDTO totalInstallmentPlan = new AmountDTO();
         totalInstallmentPlan.setAmount(rimacPlan.getPrimaNeta().doubleValue());
         totalInstallmentPlan.setCurrency(rimacPlan.getMoneda());
@@ -127,10 +133,10 @@ public class PlanDAO {
         paymentAmount.setAmount(rimacPlan.getCuotasFinanciamiento().get(0).getMonto().doubleValue());
         if(rimacPlan.getCuotasFinanciamiento().get(0).getMoneda().equals("PEN")||
                 rimacPlan.getCuotasFinanciamiento().get(0).getMoneda().equals("SOL")){
-            rimacPlan.getCuotasFinanciamiento().get(0).setMoneda("P");
+            rimacPlan.getCuotasFinanciamiento().get(0).setMoneda("PEN");
         }
         else{
-            rimacPlan.getCuotasFinanciamiento().get(0).setMoneda("D");
+            rimacPlan.getCuotasFinanciamiento().get(0).setMoneda("USD");
         }
         paymentAmount.setCurrency(rimacPlan.getCuotasFinanciamiento().get(0).getMoneda());
 

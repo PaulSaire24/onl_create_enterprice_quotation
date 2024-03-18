@@ -17,14 +17,14 @@ public class SimulationProductMap {
                                                                               EnterpriseQuotationDTO response, BigDecimal productId) {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put(ConstantsUtil.InsuranceSimulation.FIELD_INSURANCE_SIMULATION_ID, nextId);
-        arguments.put(ContansUtils.Mapper.FIELD_OR_FILTER_INSURANCE_PRODUCT_ID, productId);
+        arguments.put(ConstantsUtil.QuotationModMap.INSURANCE_PRODUCT_ID, productId);
         arguments.put(ContansUtils.Mapper.FIELD_CAMPAIGN_FACTOR_TYPE, null);
         arguments.put(ContansUtils.Mapper.FIELD_CAMPAIGN_OFFER_1_AMOUNT, 0);
         arguments.put(ContansUtils.Mapper.FIELD_CAMPAIGN_FACTOR_PER, 0);
         arguments.put(ConstantsUtil.InsurancePrdModality.FIELD_SALE_CHANNEL_ID, response.getSaleChannelId());
-        arguments.put(ContansUtils.Mapper.FIELD_SOURCE_BRANCH_ID, response.getSourceBranchCode());
-        arguments.put(ContansUtils.Mapper.FIELD_CREATION_USER_ID, response.getCreationUser());
-        arguments.put(ContansUtils.Mapper.FIELD_USER_AUDIT_ID, response.getUserAudit());
+        arguments.put(ConstantsUtil.QuotationMap.SOURCE_BRANCH_ID, response.getSourceBranchCode());
+        arguments.put(ConstantsUtil.QuotationMap.CREATION_USER_ID, response.getCreationUser());
+        arguments.put(ConstantsUtil.QuotationMap.USER_AUDIT_ID, response.getUserAudit());
 
         return arguments;
     }
