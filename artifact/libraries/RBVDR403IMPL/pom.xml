@@ -91,13 +91,13 @@
 		</dependency>
 		<dependency>
 			<groupId>com.bbva.pisd</groupId>
-			<artifactId>PISDR402</artifactId>
-			<version>0.1.4</version>
+			<artifactId>PISDR014</artifactId>
+			<version>0.11.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.bbva.pisd</groupId>
-			<artifactId>PISDR014</artifactId>
-			<version>0.11.0</version>
+			<artifactId>PISDR402</artifactId>
+			<version>0.2.0</version>
 		</dependency>
 	</dependencies>
 	<build>
