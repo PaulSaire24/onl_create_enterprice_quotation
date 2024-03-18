@@ -27,6 +27,7 @@ import com.bbva.rbvd.lib.r403.transform.map.*;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 
 import java.math.BigDecimal;
@@ -153,20 +154,24 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 
 		return productId;
 	}
-	public void validInput(EnterpriseQuotationDTO input){
-	if (input.getEmployees().getMonthlyPayrollAmount().getAmount()<= 0.0){
-		throw new BusinessException("RBVD10094947", false, "ERROR EL MONTO NO PUEDE SER MENOR A CERO");
-	}
-	else if (input.getEmployees().getEmployeesNumber()<= 0L){
-		throw new BusinessException("RBVD10094946", false, "Error el numero de empleados no puede ser menor a cero");
+	public void validInput(EnterpriseQuotationDTO input) throws BusinessException {
 
-	}
 		List<ParticipantDTO> participant = input.getParticipants();
+		if (input.getEmployees().getMonthlyPayrollAmount().getAmount() <= 0.0) {
+			LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - getAmount: {} ***", input.getEmployees().getMonthlyPayrollAmount().getAmount());
+			throw new BusinessException("RBVD10094947", false, "ERROR EL MONTO NO PUEDE SER MENOR A CERO");
+		} else if (input.getEmployees().getEmployeesNumber() <= 0L) {
+			LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - getAmount: {} ***", input.getEmployees().getEmployeesNumber());
+			throw new BusinessException("RBVD10094946", false, "ERROR EL NUMERO DE EMPLEADOS NO PUEDE SER MENOR A CERO");
 
-		// Validar que el tipo de documento de cada participante sea "RUC" usando lambdas
-		participant.stream()
-				.filter(participants -> !"RUC".equals(participants.getIdentityDocument().getDocumentType().getId()))
-				.forEach(participants ->this.addAdviceWithDescription("RBVD10094948",
-						"Error el tipo de Documento solo puede ser RUC"));
+		}
+		if (!CollectionUtils.isEmpty(participant)) {
+			// Validar que el tipo de documento de cada participante sea "RUC" usando lambdas
+			participant.stream()
+					.filter(participants -> !"RUC".equals(participants.getIdentityDocument().getDocumentType().getId()))
+					.forEach(participants -> {
+						throw new BusinessException("RBVD10094948", false, "ERROR EL TIPO DE DOCUMENTO SOLO PUEDE SER RUC");
+					});
+		}
 	}
 }

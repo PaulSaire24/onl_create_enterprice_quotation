@@ -86,13 +86,11 @@ public class RBVDT40201PETransaction extends AbstractRBVDT40201PETransaction {
 			}
 
 		}
-	  catch (
-	BusinessException be) {
+		catch (BusinessException be) {
+			this.addAdvice("T3YM10000001");
+			this.setSeverity(Severity.ENR);
 
-		this.setSeverity(Severity.ENR);
-
+		}
 	}
-	}
-
 
 }

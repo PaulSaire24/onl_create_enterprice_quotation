@@ -1,5 +1,6 @@
 package com.bbva.rbvd;
 
+import com.bbva.apx.exception.business.BusinessException;
 import com.bbva.elara.domain.transaction.Context;
 import com.bbva.elara.domain.transaction.Severity;
 import com.bbva.elara.domain.transaction.TransactionParameter;
@@ -95,6 +96,19 @@ public class RBVDT40201PETransactionTest {
 		assertNotNull(this.transaction);
 
 		when(rbvdR403.executeCreateQuotation(anyObject())).thenReturn(null);
+		this.transaction.execute();
+
+		assertEquals(Severity.ENR, this.transaction.getSeverity());
+	}
+	@Test
+	public void testThrowBussinessException() {
+
+		assertNotNull(this.transaction);
+
+		when(rbvdR403.executeCreateQuotation(anyObject())).
+				thenThrow(new BusinessException("RBVD10094948", false, "ERROR EL TIPO DE DOCUMENTO SOLO PUEDE SER RUC")
+					);
+
 		this.transaction.execute();
 
 		assertEquals(Severity.ENR, this.transaction.getSeverity());

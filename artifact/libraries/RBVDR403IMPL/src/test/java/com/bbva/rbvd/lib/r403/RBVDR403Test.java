@@ -122,6 +122,33 @@ public class RBVDR403Test {
 
 		}}
 	@Test
+	public void executeTestDNI(){
+		this.requestInput = createInputDNI();
+		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
+		InsuranceEnterpriseResponseBO payload = new InsuranceEnterpriseResponseBO();
+		payload.setPayload(responseRimacMock);
+		when(consumerExternalServiceMock.callRimacService(any(), any(), any(), any())).thenReturn(payload);
+		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
+		List<Map<String, Object>> listPlan = createPlan();
+		responseQueryModalities = new HashMap<>();
+		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
+				.thenReturn(responseQueryModalities);
+		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
+				.thenReturn(1);
+		when(pisdr402.executeGetListASingleRow(anyString(), anyMap()))
+				.thenReturn(listPlan);
+		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
+		when(pisdr401.executeGetProductById(anyString(), anyMap()))
+				.thenReturn(createProduct());
+		try {
+			rbvdR302.executeCreateQuotation(requestInput);
+		}
+		catch (BusinessException e){
+
+		}
+	}
+	@Test
 	public void executeTestKO(){
 		this.requestInput =createInput();
 		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
@@ -498,6 +525,62 @@ catch (BusinessException e){
 		responseBO.setCotizaciones(cotizaciones);
 		responseBO.setPlanes(planes2);
 		return responseBO;
+	}private EnterpriseQuotationDTO createInputDNI(){
+		EnterpriseQuotationDTO input = new EnterpriseQuotationDTO();
+		BankDTO bank = new BankDTO();
+		PaymentMethodDTO paymentMethodDTO = new PaymentMethodDTO();
+		ProductDTO product = new ProductDTO();
+		List<Long> planes2 = new ArrayList<>();
+		planes2.add(1234124l);
+		List<ContactDetailsDTO> contactDetails = new ArrayList<>();
+		List<ParticipantDTO> participantes = new ArrayList<>();
+		ContactDetailsDTO contacto1 = new ContactDetailsDTO();
+		ContactDTO contacto = new ContactDTO();
+		ParticipantDTO participnt1 = new ParticipantDTO();
+		DescriptionDTO participantType = new DescriptionDTO();
+		EmployeesDTO employees = new EmployeesDTO();
+		DescriptionDTO busunessAgent = new DescriptionDTO();
+
+		participnt1.setId("P041360");
+		IdentityDocumentDTO document = new IdentityDocumentDTO();
+		DescriptionDTO documentType = new DescriptionDTO();
+		document.setDocumentNumber("73186739");
+		documentType.setId("DNI");
+
+		document.setDocumentType(documentType);
+		participnt1.setIdentityDocument(document);
+		participantType.setId("123456");
+		participantType.setName("Contract");
+		participnt1.setParticipantType(participantType);
+		participantes.add(participnt1);
+		busunessAgent.setId("P021322");
+		employees.setAreMajorityAge(true);
+		employees.setEmployeesNumber(Long.valueOf(30));
+		AmountDTO monthlyPayrollAmount = new AmountDTO();
+		monthlyPayrollAmount.setCurrency("PEN");
+		monthlyPayrollAmount.setAmount(BigDecimal.valueOf(200.00).doubleValue());
+		employees.setMonthlyPayrollAmount((monthlyPayrollAmount));
+		product.setId("503");
+		contacto.setContactDetailType("EMAIL");
+		contacto.setAddress("marco.yovera@bbva.com");
+		contacto1.setContact(contacto);
+		contactDetails.add(contacto1);
+
+		input.setProduct(product);
+		input.setParticipants(participantes);
+		input.setQuotationReference("2312313");
+		input.setEmployees(employees);
+		input.setBusinessAgent(busunessAgent);
+		input.setContactDetails(contactDetails);
+		input.setSaleChannelId("PC");
+		input.setUserAudit("zg01293");
+		input.setCreationUser("zg01293");
+		input.setTraceId("traceId");
+		input.setSourceBranchCode("0072");
+		input.setLastChangeBranchId("0072");
+		input.setPaymentMethod(paymentMethodDTO);
+		input.setBank(bank);
+		return input;
 	}
 	private EnterpriseQuotationDTO createInput(){
 		EnterpriseQuotationDTO input = new EnterpriseQuotationDTO();
@@ -519,7 +602,7 @@ catch (BusinessException e){
 		IdentityDocumentDTO document = new IdentityDocumentDTO();
 		DescriptionDTO documentType = new DescriptionDTO();
 		document.setDocumentNumber("73186739");
-		documentType.setId("DNI");
+		documentType.setId("RUC");
 
 		document.setDocumentType(documentType);
 		participnt1.setIdentityDocument(document);
