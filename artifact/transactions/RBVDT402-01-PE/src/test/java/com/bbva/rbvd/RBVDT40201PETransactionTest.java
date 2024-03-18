@@ -131,7 +131,7 @@ public class RBVDT40201PETransactionTest {
 		IdentityDocumentDTO document = new IdentityDocumentDTO();
 		DescriptionDTO documentType = new DescriptionDTO();
 		document.setDocumentNumber("73186739");
-		documentType.setId("DNI");
+		documentType.setId("RUC");
 		documentType.setDescription("DNI");
 		document.setDocumentType(documentType);
 		participnt1.setIdentityDocument(document);
