@@ -16,6 +16,7 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.*;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.utils.ConstantsUtil;
 import com.bbva.rbvd.lib.r403.impl.RBVDR403Impl;
 
 import com.bbva.rbvd.lib.r403.service.dao.PlanDAO;
@@ -83,7 +84,7 @@ public class RBVDR403Test {
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
 		List<Map<String, Object>> listPlan = createPlan();
 		responseQueryModalities = new HashMap<>();
-		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
@@ -106,7 +107,7 @@ public class RBVDR403Test {
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenThrow(new RestClientException(""));
 
 		responseQueryModalities = new HashMap<>();
-		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
@@ -131,7 +132,7 @@ public class RBVDR403Test {
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
 		List<Map<String, Object>> listPlan = createPlan();
 		responseQueryModalities = new HashMap<>();
-		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
@@ -158,7 +159,7 @@ public class RBVDR403Test {
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
 
 		responseQueryModalities = new HashMap<>();
-		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
@@ -185,7 +186,7 @@ catch (BusinessException e){
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
 
 		responseQueryModalities = new HashMap<>();
-		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
@@ -207,7 +208,7 @@ catch (BusinessException e){
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
 
 		responseQueryModalities = new HashMap<>();
-		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
@@ -229,7 +230,7 @@ catch (BusinessException e){
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
 
 		responseQueryModalities = new HashMap<>();
-		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
@@ -250,7 +251,7 @@ catch (BusinessException e){
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
 		List<Map<String, Object>> listPlan = createPlan();
 		responseQueryModalities = new HashMap<>();
-		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
@@ -278,7 +279,7 @@ catch (BusinessException e){
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
 		List<Map<String, Object>> listPlan = createPlan();
 		responseQueryModalities = new HashMap<>();
-		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))

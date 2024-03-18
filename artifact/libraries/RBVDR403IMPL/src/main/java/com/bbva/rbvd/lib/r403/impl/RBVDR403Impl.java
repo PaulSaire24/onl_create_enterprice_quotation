@@ -108,7 +108,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		BigDecimal nextId = this.getInsuranceSimulationId();
 
 		QuotationRimac quotationRimac = new QuotationRimac(this.applicationConfigurationService);
-		response = quotationRimac.mapInQuotationResponse(quotationCreate,responseRimac,nextId);
+		response = quotationRimac.mapInQuotationResponse(quotationCreate,responseRimac,nextId,planList);
 		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - response: {} ***",response);
 		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - response.ContactDetails: {} ***",response.getContactDetails());
 

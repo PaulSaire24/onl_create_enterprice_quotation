@@ -18,9 +18,9 @@ public class InsuranceSimulationDAOImpl implements IInsuranceSimulationDAO {
     @Override
     public BigDecimal getSimulationNextVal() {
 
-        Map<String, Object> responseGetInsuranceSimulationMap = this.pisdR402.executeGetASingleRow(ConstantsUtil.QueriesName.QUERY_SELECT_INSURANCE_SIMULATION_ID_ENTERPRISE,new HashMap<>());
+        Map<String, Object> responseGetInsuranceSimulationMap = this.pisdR402.executeGetASingleRow(ConstantsUtil.QueriesName.QUERY_SELECT_NEXT_VAL_INSURANCE_SIMULATION_ENTERPRISE,new HashMap<>());
 
-        return (BigDecimal) responseGetInsuranceSimulationMap.get(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL);
+        return (BigDecimal) responseGetInsuranceSimulationMap.get(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL);
     }
 
 

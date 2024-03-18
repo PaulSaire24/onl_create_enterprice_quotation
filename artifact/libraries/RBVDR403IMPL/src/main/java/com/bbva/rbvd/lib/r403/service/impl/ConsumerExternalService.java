@@ -27,7 +27,7 @@ public class ConsumerExternalService {
 
         LOGGER.info("***** RBVDR403Impl - executeSimulationRimacService ***** Request body: {}", requestJson);
 
-        String uri = ContansUtils.Querys.URI_RIMAC_CREARCOTIZACION;
+        String uri = ContansUtils.Uri.URI_RIMAC_CREARCOTIZACION;
 
         SignatureAWS signatureAWS = pisdr014.executeSignatureConstruction(requestJson , HttpMethod.POST,
                 uri, null, traceId);

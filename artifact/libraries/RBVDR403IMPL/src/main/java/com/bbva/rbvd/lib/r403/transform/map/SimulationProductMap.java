@@ -18,9 +18,9 @@ public class SimulationProductMap {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put(ConstantsUtil.InsuranceSimulation.FIELD_INSURANCE_SIMULATION_ID, nextId);
         arguments.put(ConstantsUtil.QuotationModMap.INSURANCE_PRODUCT_ID, productId);
-        arguments.put(ContansUtils.Mapper.FIELD_CAMPAIGN_FACTOR_TYPE, null);
-        arguments.put(ContansUtils.Mapper.FIELD_CAMPAIGN_OFFER_1_AMOUNT, 0);
-        arguments.put(ContansUtils.Mapper.FIELD_CAMPAIGN_FACTOR_PER, 0);
+        arguments.put(ConstantsUtil.QuotationModMap.FIELD_CAMPAIGN_FACTOR_TYPE, null);
+        arguments.put(ConstantsUtil.QuotationModMap.FIELD_CAMPAIGN_OFFER_1_AMOUNT, 0);
+        arguments.put(ConstantsUtil.QuotationModMap.FIELD_CAMPAIGN_FACTOR_PER, 0);
         arguments.put(ConstantsUtil.InsurancePrdModality.FIELD_SALE_CHANNEL_ID, response.getSaleChannelId());
         arguments.put(ConstantsUtil.QuotationMap.SOURCE_BRANCH_ID, response.getSourceBranchCode());
         arguments.put(ConstantsUtil.QuotationMap.CREATION_USER_ID, response.getCreationUser());

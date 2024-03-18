@@ -7,19 +7,24 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.AssistanceBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.CoverageBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.FinancingBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
+import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PlanDAO {
 
     //MEJORAR, EL APPLICATION PASAR POR SETTER O CONSTRUCTOR A ESTA CLASE
-    public List<PlanDTO> getPlanInfo(List<PlanBO> planBOList, ApplicationConfigurationService applicationConfigurationService){
+    public List<PlanDTO> getPlanInfo(List<PlanBO> planBOList, ApplicationConfigurationService applicationConfigurationService, List<Map<String, Object>> planList){
         if (Objects.isNull(planBOList)) {
             return Collections.emptyList();
         }
-        addPlansId(planBOList);
+        addPlansId(planBOList,planList);
         return planBOList.stream()
                 .map(planBO -> {
                     String[] plaName = planBO.getDescripcionPlan().split(" ");
@@ -69,26 +74,22 @@ public class PlanDAO {
                     CoverageDTO coverageDTO = new CoverageDTO();
                     coverageDTO.setCoverageType(mapCoverageType(coverageBO,applicationConfigurationService));
                     coverageDTO.setId(coverageBO.getCobertura().toString());
-                    coverageDTO.setDescription(coverageBO.getObservacionCobertura());
-                    coverageDTO.setName(coverageBO.getDescripcionCobertura());
+                    coverageDTO.setDescription(coverageBO.getNumeroSueldos()+ContansUtils.rimacInput.REMUNERACIONES);
+                    coverageDTO.setName(coverageBO.getObservacionCobertura());
                     return coverageDTO;
                 })
                 .collect(Collectors.toList());
     }
-    private static void addPlansId(List<PlanBO> planBOList) {
+    private static void addPlansId(List<PlanBO> planBOList,List<Map<String, Object>> planList) {
 
-        Map<Long, Long> planMap = new HashMap<>();
-        planMap.put(534254L, 01L);
-        planMap.put(534273L, 03L);
-        planMap.put(534272L, 02L);
+        Map<Long, Long> idToTypeMap = planList.stream()
+                .collect(Collectors.toMap(
+                        map -> (Long) map.get("INSURANCE_COMPANY_MODALITY_ID"),
+                        map -> (Long) map.get("INSURANCE_MODALITY_TYPE")));
 
-        // Asignar valores específicos a los objetos PlanBO basados en su campo plan
-        planBOList.forEach(planBO -> {
-            Long planValue = planBO.getPlan();
-            if (planMap.containsKey(planValue)) {
-                planBO.setPlan(planMap.get(planValue));
-            }
-        })
+        // Update the PlanBO objects using the map
+        planBOList.forEach(planBO -> planBO.setPlan(idToTypeMap.getOrDefault(planBO.getPlan(), null)));
+
         ;
     }
     private static List<DescriptionDTO> mapBenefits(PlanBO rimacPlan) {

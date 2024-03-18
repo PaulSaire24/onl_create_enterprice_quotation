@@ -3,7 +3,6 @@ package com.bbva.rbvd.lib.r403.transform.map;
 import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ParticipantDTO;
-import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dto.CreateQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.utils.ConstantsUtil;
@@ -12,7 +11,10 @@ import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Date;
+import java.util.List;
 
 public class SimulationMap {
 
@@ -26,7 +28,7 @@ public class SimulationMap {
 
         arguments.put(ConstantsUtil.InsuranceSimulation.FIELD_INSURANCE_SIMULATION_ID, nextId);
         arguments.put(ConstantsUtil.InsuranceSimulation.FIELD_INSRNC_COMPANY_SIMULATION_ID,responseRimac.getCotizaciones().get(0).getCotizacion());
-        arguments.put(ContansUtils.Mapper.FIELD_CUST_SIMULATION_EXPIRED_DATE, dateFormat.format(new Date()));
+        arguments.put(ConstantsUtil.InsuranceSimulation.FIELD_CUST_SIMULATION_EXPIRED_DATE, dateFormat.format(new Date()));
 
 
         if (!CollectionUtils.isEmpty(responseDTO.getParticipants()) && checkParticipant(responseDTO.getParticipants()).equals(true)) {
@@ -40,17 +42,17 @@ public class SimulationMap {
             arguments.put(ConstantsUtil.QuotationMap.PARTICIPANT_PERSONAL_ID, null);
         }
 
-        arguments.put(ContansUtils.Mapper.FIELD_CUSTOMER_SIMULATION_DATE, dateFormat.format(new Date()));
-        arguments.put(ContansUtils.Mapper.FIELD_BANK_FACTOR_TYPE, null);
-        arguments.put(ContansUtils.Mapper.FIELD_BANK_FACTOR_AMOUNT, null);
-        arguments.put(ContansUtils.Mapper.FIELD_REGISTRY_SITUATION_TYPE, "01");
-        arguments.put(ContansUtils.Mapper.FIELD_BANK_FACTOR_PER, null);
+        arguments.put(ConstantsUtil.InsuranceSimulation.FIELD_CUSTOMER_SIMULATION_DATE, dateFormat.format(new Date()));
+        arguments.put(ConstantsUtil.InsuranceSimulation.FIELD_BANK_FACTOR_TYPE, null);
+        arguments.put(ConstantsUtil.InsuranceSimulation.FIELD_BANK_FACTOR_AMOUNT, null);
+        arguments.put(ConstantsUtil.InsuranceSimulation.FIELD_REGISTRY_SITUATION_TYPE, "01");
+        arguments.put(ConstantsUtil.InsuranceSimulation.FIELD_BANK_FACTOR_PER, null);
         arguments.put(ConstantsUtil.QuotationMap.SOURCE_BRANCH_ID, responseDTO.getSourceBranchCode());
         arguments.put(ConstantsUtil.QuotationMap.CREATION_USER_ID, responseDTO.getCreationUser());
         arguments.put(ConstantsUtil.QuotationMap.USER_AUDIT_ID, responseDTO.getUserAudit());
-        arguments.put(ContansUtils.Mapper.FIELD_INSURED_CUSTOMER_NAME, null);
-        arguments.put(ContansUtils.Mapper.FIELD_CLIENT_LAST_NAME, null);
-        arguments.put(ContansUtils.Mapper.FIELD_CUSTOMER_SEGMENT_NAME, null);
+        arguments.put(ConstantsUtil.QuotationMap.FIELD_INSURED_CUSTOMER_NAME, null);
+        arguments.put(ConstantsUtil.QuotationMap.FIELD_CLIENT_LAST_NAME, null);
+        arguments.put(ConstantsUtil.QuotationMap.FIELD_CUSTOMER_SEGMENT_NAME, null);
         return arguments;
     }
 
