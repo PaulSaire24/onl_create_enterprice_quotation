@@ -1,11 +1,14 @@
 package com.bbva.rbvd.lib.r403.impl;
 
 
+import com.bbva.apx.exception.business.BusinessException;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
 
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ParticipantDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseInputBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 
+import com.bbva.rbvd.dto.enterpriseinsurance.utils.ConstantsUtil;
 import com.bbva.rbvd.lib.r403.service.dao.IInsurancePlanDAO;
 import com.bbva.rbvd.lib.r403.service.dao.ISimulationDAO;
 import com.bbva.rbvd.lib.r403.service.dao.ISimulationProductDAO;
@@ -21,10 +24,15 @@ import com.bbva.rbvd.lib.r403.service.dao.impl.InsuranceSimulationDAOImpl;
 import com.bbva.rbvd.lib.r403.service.impl.ConsumerExternalService;
 import com.bbva.rbvd.lib.r403.transform.bean.QuotationBean;
 import com.bbva.rbvd.lib.r403.transform.bean.QuotationRimac;
-import com.bbva.rbvd.lib.r403.transform.map.*;
+import com.bbva.rbvd.lib.r403.transform.map.QuotationMap;
+import com.bbva.rbvd.lib.r403.transform.map.PlansMap;
+import com.bbva.rbvd.lib.r403.transform.map.SimulationMap;
+import com.bbva.rbvd.lib.r403.transform.map.SimulationProductMap;
+import com.bbva.rbvd.lib.r403.transform.map.ProductMap;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 
 import java.math.BigDecimal;
@@ -48,11 +56,11 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 	@Override
 	public EnterpriseQuotationDTO executeCreateQuotation(EnterpriseQuotationDTO quotationCreate) {
 		LOGGER.info("RBVDR403Impl - executeCreateQuotation() | START");
-
 		EnterpriseQuotationDTO response;
 
 		LOGGER.info("RBVDR403Impl - executeCreateQuotation() | arguments: {}",quotationCreate.toString());
 
+		validInput(quotationCreate);
 		Map<String, Object> argumentsForGetProductId = ProductMap.createArgumentsForGetProductId(
 				quotationCreate.getProduct().getId());
 		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - argumentsForGetProductId: {} ***", argumentsForGetProductId);
@@ -61,7 +69,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() -  product from DB: {}***", productMap);
 
 		BigDecimal insuranceProductId = getInsurancePruductId(productMap);
-		String productName = (String) productMap.get(ContansUtils.Mapper.FIELD_PRODUCT_SHORT_DESC);
+		String productName = (String) productMap.get(ConstantsUtil.InsuranceProduct.FIELD_PRODUCT_SHORT_DESC);
 		quotationCreate.getProduct().setName(productName);
 
 		Map<String, Object> argumentsForGetPlansId = PlansMap.createArgumentsForGetPlansId(
@@ -79,7 +87,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 
 		planList.forEach(mapa -> {
 			mapa.entrySet().stream()
-					.filter(entry -> ContansUtils.Mapper.FIELD_INSURANCE_COMPANY_MODALITY_ID.equals(entry.getKey()))
+					.filter(entry -> ConstantsUtil.InsurancePrdModality.FIELD_INSURANCE_COMPANY_MODALITY_ID.equals(entry.getKey()))
 					.map(Map.Entry::getValue)
 					.filter(value -> value instanceof Long || value instanceof String)
 					.map(value -> value instanceof Long ? (Long) value : Long.parseLong((String) value))
@@ -100,7 +108,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		BigDecimal nextId = this.getInsuranceSimulationId();
 
 		QuotationRimac quotationRimac = new QuotationRimac(this.applicationConfigurationService);
-		response = quotationRimac.mapInQuotationResponse(quotationCreate,responseRimac,nextId);
+		response = quotationRimac.mapInQuotationResponse(quotationCreate,responseRimac,nextId,planList);
 		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - response: {} ***",response);
 		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - response.ContactDetails: {} ***",response.getContactDetails());
 
@@ -146,9 +154,30 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		return simulationNextValue;
 	}
 	public BigDecimal getInsurancePruductId(Map<String, Object> productMap){
-		BigDecimal productId = (BigDecimal) productMap.get(ContansUtils.Mapper.FIELD_INSURANCE_PRODUCT_ID);
+		BigDecimal productId = (BigDecimal) productMap.get(ConstantsUtil.QuotationModMap.INSURANCE_PRODUCT_ID);
 		LOGGER.info("***** executeCreateQuotation - getInsurancePruductId | productId: {} *****",productId);
 
 		return productId;
+	}
+	public void validInput(EnterpriseQuotationDTO input) throws BusinessException {
+
+		List<ParticipantDTO> participant = input.getParticipants();
+		if (input.getEmployees().getMonthlyPayrollAmount().getAmount() <= 0.0) {
+			LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - getAmount: {} ***", input.getEmployees().getMonthlyPayrollAmount().getAmount());
+			throw new BusinessException("RBVD10094947", false, "ERROR EL MONTO NO PUEDE SER MENOR A CERO");
+
+		} else if (input.getEmployees().getEmployeesNumber() <= 0L) {
+			LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - getAmount: {} ***", input.getEmployees().getEmployeesNumber());
+			throw new BusinessException("RBVD10094946", false, "ERROR EL NUMERO DE EMPLEADOS NO PUEDE SER MENOR A CERO");
+
+		}
+		if (!CollectionUtils.isEmpty(participant)) {
+			// Validar que el tipo de documento de cada participante sea "RUC" usando lambdas
+			participant.stream()
+					.filter(participants -> !"RUC".equals(participants.getIdentityDocument().getDocumentType().getId()))
+					.forEach(participants -> {
+						throw new BusinessException("RBVD10094948", false, "ERROR EL TIPO DE DOCUMENTO SOLO PUEDE SER RUC");
+					});
+		}
 	}
 }

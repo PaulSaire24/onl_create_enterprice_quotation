@@ -16,6 +16,7 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.*;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.utils.ConstantsUtil;
 import com.bbva.rbvd.lib.r403.impl.RBVDR403Impl;
 
 import com.bbva.rbvd.lib.r403.service.dao.PlanDAO;
@@ -62,6 +63,7 @@ public class RBVDR403Test {
 	@Mock
 	private PISDR402 pisdr402;
 	private Map<String, Object> responseQueryModalities;
+	private List<Map<String, Object>> responseQueryPlans;
 	private Map<String, Object> responseQuery;
 
 	private EnterpriseQuotationDTO requestInput;
@@ -80,13 +82,15 @@ public class RBVDR403Test {
 		payload.setPayload(responseRimacMock);
 		when(consumerExternalServiceMock.callRimacService(any(), any(), any(), any())).thenReturn(payload);
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
-
+		List<Map<String, Object>> listPlan = createPlan();
 		responseQueryModalities = new HashMap<>();
-		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
 				.thenReturn(1);
+		when(pisdr402.executeGetListASingleRow(anyString(), anyMap()))
+				.thenReturn(listPlan);
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
 				.thenReturn(createProduct());
@@ -103,7 +107,7 @@ public class RBVDR403Test {
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenThrow(new RestClientException(""));
 
 		responseQueryModalities = new HashMap<>();
-		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
@@ -119,6 +123,33 @@ public class RBVDR403Test {
 
 		}}
 	@Test
+	public void executeTestDNI(){
+		this.requestInput = createInputDNI();
+		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
+		InsuranceEnterpriseResponseBO payload = new InsuranceEnterpriseResponseBO();
+		payload.setPayload(responseRimacMock);
+		when(consumerExternalServiceMock.callRimacService(any(), any(), any(), any())).thenReturn(payload);
+		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
+		List<Map<String, Object>> listPlan = createPlan();
+		responseQueryModalities = new HashMap<>();
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
+				.thenReturn(responseQueryModalities);
+		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
+				.thenReturn(1);
+		when(pisdr402.executeGetListASingleRow(anyString(), anyMap()))
+				.thenReturn(listPlan);
+		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
+		when(pisdr401.executeGetProductById(anyString(), anyMap()))
+				.thenReturn(createProduct());
+		try {
+			rbvdR302.executeCreateQuotation(requestInput);
+		}
+		catch (BusinessException e){
+
+		}
+	}
+	@Test
 	public void executeTestKO(){
 		this.requestInput =createInput();
 		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
@@ -128,7 +159,7 @@ public class RBVDR403Test {
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
 
 		responseQueryModalities = new HashMap<>();
-		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
@@ -155,7 +186,7 @@ catch (BusinessException e){
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
 
 		responseQueryModalities = new HashMap<>();
-		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
@@ -177,7 +208,7 @@ catch (BusinessException e){
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
 
 		responseQueryModalities = new HashMap<>();
-		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
@@ -199,7 +230,7 @@ catch (BusinessException e){
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
 
 		responseQueryModalities = new HashMap<>();
-		responseQueryModalities.put(ContansUtils.Querys.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
 		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
 				.thenReturn(responseQueryModalities);
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
@@ -210,7 +241,62 @@ catch (BusinessException e){
 
 		rbvdR302.executeCreateQuotation(requestInput);
 	}
+	@Test
+	public void executeTestAddAdvice1(){
+		this.requestInput = createInputAmountZero();
+		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
+		InsuranceEnterpriseResponseBO payload = new InsuranceEnterpriseResponseBO();
+		payload.setPayload(responseRimacMock);
+		when(consumerExternalServiceMock.callRimacService(any(), any(), any(), any())).thenReturn(payload);
+		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
+		List<Map<String, Object>> listPlan = createPlan();
+		responseQueryModalities = new HashMap<>();
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
+				.thenReturn(responseQueryModalities);
+		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
+				.thenReturn(1);
+		when(pisdr402.executeGetListASingleRow(anyString(), anyMap()))
+				.thenReturn(listPlan);
+		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
+		when(pisdr401.executeGetProductById(anyString(), anyMap()))
+				.thenReturn(createProduct());
 
+		try {
+			rbvdR302.executeCreateQuotation(requestInput);
+		}
+		catch (BusinessException e){
+
+		}
+	}
+	@Test
+	public void executeTestAddAdvice2(){
+		this.requestInput = createInputNumberEmployeesZero();
+		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
+		InsuranceEnterpriseResponseBO payload = new InsuranceEnterpriseResponseBO();
+		payload.setPayload(responseRimacMock);
+		when(consumerExternalServiceMock.callRimacService(any(), any(), any(), any())).thenReturn(payload);
+		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
+		List<Map<String, Object>> listPlan = createPlan();
+		responseQueryModalities = new HashMap<>();
+		responseQueryModalities.put(ConstantsUtil.QueriesName.FIELD_Q_PISD_SIMULATION_ID0_NEXTVAL, new BigDecimal(1));
+		when(pisdr402.executeGetASingleRow(anyString(), anyMap()))
+				.thenReturn(responseQueryModalities);
+		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
+				.thenReturn(1);
+		when(pisdr402.executeGetListASingleRow(anyString(), anyMap()))
+				.thenReturn(listPlan);
+		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
+		when(pisdr401.executeGetProductById(anyString(), anyMap()))
+				.thenReturn(createProduct());
+
+		try {
+			rbvdR302.executeCreateQuotation(requestInput);
+		}
+		catch (BusinessException e){
+
+		}
+	}
 	private QuotationResponseBO createRimacResponse(){
 		QuotationResponseBO responseBO = new QuotationResponseBO();
 
@@ -241,16 +327,16 @@ catch (BusinessException e){
 		coverageBO.setMoneda("pen");
 		coverageBO.setCobertura(1l);
 
-		plan1.setPlan(1l);
+		plan1.setPlan(534254L);
 		plan1.setFinanciamientos(financingBOList);
 		plan1.setPrimaNeta(new BigDecimal(1000));
 		plan1.setMoneda("pen");
-
+		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
 		plan2.setPlan(2l);
 		plan2.setFinanciamientos(financingBOList);
 		plan2.setPrimaNeta(new BigDecimal(1000));
 		plan2.setMoneda("pen");
-
+		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
 		List<QuotationBO> cotizaciones = new ArrayList<>();
 		QuotationBO cotizaciones1 = new QuotationBO();
 		QuotationBO cotizaciones2 = new QuotationBO();
@@ -294,15 +380,18 @@ catch (BusinessException e){
 		coverageBO.setMoneda("pen");
 		coverageBO.setCobertura(1l);
 		coverageBOList.add(coverageBO);
-		plan1.setPlan(1l);
+		plan1.setPlan(534254L);
 		plan1.setCoberturas(coverageBOList);
 		plan1.setFinanciamientos(financingBOList);
 		plan1.setPrimaNeta(new BigDecimal(1000));
 		plan1.setMoneda("pen");
+		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
+
 		plan2.setPlan(2l);
 		plan2.setFinanciamientos(financingBOList);
 		plan2.setPrimaNeta(new BigDecimal(1000));
 		plan2.setMoneda("pen");
+		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
 
 		List<QuotationBO> cotizaciones = new ArrayList<>();
 		QuotationBO cotizaciones1 = new QuotationBO();
@@ -345,7 +434,7 @@ catch (BusinessException e){
 		installmentFinancingBOS.add(installment1);
 
 		financing.setCuotasFinanciamiento(installmentFinancingBOS);
-		financing.setFinanciamiento(1l);
+		financing.setFinanciamiento(534273L);
 		financingBOList.add(financing);
 		List<CoverageBO> coverageBOList = new ArrayList<>();
 		CoverageBO coverageBO = new CoverageBO();
@@ -359,12 +448,13 @@ catch (BusinessException e){
 		plan1.setPrimaNeta(new BigDecimal(1000));
 		plan1.setMoneda("pen");
 		plan1.setAsistencias(assistanceBOList);
+		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
 		planes.add(plan1);
 		plan2.setPlan(2l);
 		plan2.setFinanciamientos(financingBOList);
 		plan2.setPrimaNeta(new BigDecimal(1000));
 		plan2.setMoneda("pen");
-
+		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
 		List<QuotationBO> cotizaciones = new ArrayList<>();
 		QuotationBO cotizaciones1 = new QuotationBO();
 		QuotationBO cotizaciones2 = new QuotationBO();
@@ -409,16 +499,18 @@ catch (BusinessException e){
 		coverageBO.setMoneda("pen");
 		coverageBO.setCobertura(1l);
 		coverageBOList.add(coverageBO);
-		plan1.setPlan(1l);
+		plan1.setPlan(534272L);
 		plan1.setCoberturas(coverageBOList);
 		plan1.setFinanciamientos(financingBOList);
 		plan1.setPrimaNeta(new BigDecimal(1000));
 		plan1.setMoneda("pen");
+		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
 		planes.add(plan1);
 		plan2.setPlan(2l);
 		plan2.setFinanciamientos(financingBOList);
 		plan2.setPrimaNeta(new BigDecimal(1000));
 		plan2.setMoneda("pen");
+		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
 
 		List<QuotationBO> cotizaciones = new ArrayList<>();
 		QuotationBO cotizaciones1 = new QuotationBO();
@@ -434,9 +526,10 @@ catch (BusinessException e){
 		responseBO.setCotizaciones(cotizaciones);
 		responseBO.setPlanes(planes2);
 		return responseBO;
-	}
-	private EnterpriseQuotationDTO createInput(){
+	}private EnterpriseQuotationDTO createInputDNI(){
 		EnterpriseQuotationDTO input = new EnterpriseQuotationDTO();
+		BankDTO bank = new BankDTO();
+		PaymentMethodDTO paymentMethodDTO = new PaymentMethodDTO();
 		ProductDTO product = new ProductDTO();
 		List<Long> planes2 = new ArrayList<>();
 		planes2.add(1234124l);
@@ -466,7 +559,7 @@ catch (BusinessException e){
 		employees.setEmployeesNumber(Long.valueOf(30));
 		AmountDTO monthlyPayrollAmount = new AmountDTO();
 		monthlyPayrollAmount.setCurrency("PEN");
-		monthlyPayrollAmount.setAmount(BigDecimal.valueOf(20.00).doubleValue());
+		monthlyPayrollAmount.setAmount(BigDecimal.valueOf(200.00).doubleValue());
 		employees.setMonthlyPayrollAmount((monthlyPayrollAmount));
 		product.setId("503");
 		contacto.setContactDetailType("EMAIL");
@@ -486,8 +579,78 @@ catch (BusinessException e){
 		input.setTraceId("traceId");
 		input.setSourceBranchCode("0072");
 		input.setLastChangeBranchId("0072");
+		input.setPaymentMethod(paymentMethodDTO);
+		input.setBank(bank);
+		return input;
+	}
+	private EnterpriseQuotationDTO createInput(){
+		EnterpriseQuotationDTO input = new EnterpriseQuotationDTO();
+		BankDTO bank = new BankDTO();
+		PaymentMethodDTO paymentMethodDTO = new PaymentMethodDTO();
+		ProductDTO product = new ProductDTO();
+		List<Long> planes2 = new ArrayList<>();
+		planes2.add(1234124l);
+		List<ContactDetailsDTO> contactDetails = new ArrayList<>();
+		List<ParticipantDTO> participantes = new ArrayList<>();
+		ContactDetailsDTO contacto1 = new ContactDetailsDTO();
+		ContactDTO contacto = new ContactDTO();
+		ParticipantDTO participnt1 = new ParticipantDTO();
+		DescriptionDTO participantType = new DescriptionDTO();
+		EmployeesDTO employees = new EmployeesDTO();
+		DescriptionDTO busunessAgent = new DescriptionDTO();
 
+		participnt1.setId("P041360");
+		IdentityDocumentDTO document = new IdentityDocumentDTO();
+		DescriptionDTO documentType = new DescriptionDTO();
+		document.setDocumentNumber("73186739");
+		documentType.setId("RUC");
 
+		document.setDocumentType(documentType);
+		participnt1.setIdentityDocument(document);
+		participantType.setId("123456");
+		participantType.setName("Contract");
+		participnt1.setParticipantType(participantType);
+		participantes.add(participnt1);
+		busunessAgent.setId("P021322");
+		employees.setAreMajorityAge(true);
+		employees.setEmployeesNumber(Long.valueOf(30));
+		AmountDTO monthlyPayrollAmount = new AmountDTO();
+		monthlyPayrollAmount.setCurrency("PEN");
+		monthlyPayrollAmount.setAmount(BigDecimal.valueOf(200.00).doubleValue());
+		employees.setMonthlyPayrollAmount((monthlyPayrollAmount));
+		product.setId("503");
+		contacto.setContactDetailType("EMAIL");
+		contacto.setAddress("marco.yovera@bbva.com");
+		contacto1.setContact(contacto);
+		contactDetails.add(contacto1);
+
+		input.setProduct(product);
+		input.setParticipants(participantes);
+		input.setQuotationReference("2312313");
+		input.setEmployees(employees);
+		input.setBusinessAgent(busunessAgent);
+		input.setContactDetails(contactDetails);
+		input.setSaleChannelId("PC");
+		input.setUserAudit("zg01293");
+		input.setCreationUser("zg01293");
+		input.setTraceId("traceId");
+		input.setSourceBranchCode("0072");
+		input.setLastChangeBranchId("0072");
+		input.setPaymentMethod(paymentMethodDTO);
+		input.setBank(bank);
+		return input;
+	}
+	private EnterpriseQuotationDTO createInputAmountZero(){
+		EnterpriseQuotationDTO input = createInput();
+		AmountDTO monthlyPayrollAmount = new AmountDTO();
+		monthlyPayrollAmount.setCurrency("PEN");
+		monthlyPayrollAmount.setAmount(BigDecimal.valueOf(0.00).doubleValue());
+		input.getEmployees().setMonthlyPayrollAmount(monthlyPayrollAmount);
+		return input;
+	}
+	private EnterpriseQuotationDTO createInputNumberEmployeesZero(){
+		EnterpriseQuotationDTO input = createInput();
+		input.getEmployees().setEmployeesNumber(Long.valueOf(0));
 		return input;
 	}
 	private Object createProduct(){
@@ -499,5 +662,14 @@ catch (BusinessException e){
 		return product;
 
 	}
+	private List<Map<String, Object>> createPlan(){
+		List<Map<String, Object>> listPlans = new ArrayList<>();
+		Map<String, Object> mapPlans = new HashMap<>();
+		mapPlans.put("nombre", "Juan");
+		mapPlans.put("INSURANCE_MODALITY_TYPE", "01");
+		mapPlans.put("INSURANCE_MODALITY_TYPEINSURANCE_COMPANY_MODALITY_ID", "534254");
+		listPlans.add(mapPlans);
+		return listPlans;
 
+	}
 }
