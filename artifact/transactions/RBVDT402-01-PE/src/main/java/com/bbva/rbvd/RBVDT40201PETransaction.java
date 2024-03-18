@@ -1,7 +1,8 @@
 package com.bbva.rbvd;
 
+
+import com.bbva.apx.exception.business.BusinessException;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
-import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dto.CreateQuotationDTO;
 import com.bbva.rbvd.lib.r403.RBVDR403;
 import com.bbva.elara.domain.transaction.RequestHeaderParamsName;
 import com.bbva.elara.domain.transaction.Severity;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Objects;
 
 import static java.util.Objects.nonNull;
 
@@ -55,31 +57,40 @@ public class RBVDT40201PETransaction extends AbstractRBVDT40201PETransaction {
 		quotationCreate.setTraceId(traceId);
 		quotationCreate.setSourceBranchCode(branchCode);
 		quotationCreate.setLastChangeBranchId(branchCode);
+		quotationCreate.setPaymentMethod(this.getPaymentmethod());
+		quotationCreate.setBank(this.getBank());
 
-		EnterpriseQuotationDTO response = rbvdr403.executeCreateQuotation(quotationCreate);
+		try {
+			EnterpriseQuotationDTO response = rbvdr403.executeCreateQuotation(quotationCreate);
+			if (nonNull(response)) {
+				LOGGER.info("RBVDT40201PETransaction - Response : {}", response.toString());
+				LOGGER.info("RBVDT40201PETransaction - product: {}", response.getProduct());
+				LOGGER.info("RBVDT40201PETransaction - quotation reference : {}", response.getQuotationReference());
+				LOGGER.info("RBVDT40201PETransaction - contactdetail : {}", response.getContactDetails());
 
-		if(nonNull(response)) {
-			LOGGER.info("RBVDT40201PETransaction - Response : {}",response.toString());
-			LOGGER.info("RBVDT40201PETransaction - product: {}",response.getProduct());
-			LOGGER.info("RBVDT40201PETransaction - quotation reference : {}",response.getQuotationReference());
-			LOGGER.info("RBVDT40201PETransaction - contactdetail : {}",response.getContactDetails());
+				this.setProduct(response.getProduct());
+				this.setParticipants(response.getParticipants());
+				this.setEmployees(response.getEmployees());
+				this.setStatus(response.getStatus());
+				this.setId(response.getId());
+				this.setBusinessagent(response.getBusinessAgent());
+				this.setContactdetails(response.getContactDetails());
+				this.setValidityperiod(response.getValidityPeriod());
+				this.setQuotationreference(response.getQuotationReference());
+				this.setQuotationdate(Date.from(response.getQuotationDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+				this.setPaymentmethod(response.getPaymentMethod());
+				this.setBank(response.getBank());
+				this.setHttpResponseCode(HttpResponseCode.HTTP_CODE_200, Severity.OK);
+			} else {
+				this.setSeverity(Severity.ENR);
+			}
 
-			this.setProduct(response.getProduct());
-			this.setParticipants(response.getParticipants());
-			this.setEmployees(response.getEmployees());
-			this.setStatus(response.getStatus());
-			this.setId(response.getId());
-			this.setBusinessagent(response.getBusinessAgent());
-			this.setContactdetails(response.getContactDetails());
-			this.setValidityperiod(response.getValidityPeriod());
-			this.setQuotationreference(response.getQuotationReference());
-			this.setQuotationdate(Date.from(response.getQuotationDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-			this.setHttpResponseCode(HttpResponseCode.HTTP_CODE_200, Severity.OK);
-		} else {
-			this.setSeverity(Severity.ENR);
 		}
+		catch (BusinessException be) {
+			this.addAdvice(be.getAdviceCode());
+			this.setSeverity(Severity.ENR);
 
-
+		}
 	}
 
 }

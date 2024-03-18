@@ -11,9 +11,9 @@ import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.springframework.util.CollectionUtils;
 
 
-import java.util.*;
-
-
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class  QuotationBean {
 

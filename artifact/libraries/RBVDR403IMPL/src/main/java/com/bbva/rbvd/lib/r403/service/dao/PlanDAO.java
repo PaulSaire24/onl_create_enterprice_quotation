@@ -7,27 +7,35 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.AssistanceBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.CoverageBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.FinancingBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
+import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PlanDAO {
 
     //MEJORAR, EL APPLICATION PASAR POR SETTER O CONSTRUCTOR A ESTA CLASE
-    public List<PlanDTO> getPlanInfo(List<PlanBO> planBOList, ApplicationConfigurationService applicationConfigurationService){
+    public List<PlanDTO> getPlanInfo(List<PlanBO> planBOList, ApplicationConfigurationService applicationConfigurationService, List<Map<String, Object>> planList){
         if (Objects.isNull(planBOList)) {
             return Collections.emptyList();
         }
-
+        addPlansId(planBOList,planList);
         return planBOList.stream()
                 .map(planBO -> {
+                    String[] plaName = planBO.getDescripcionPlan().split(" ");
+                    String planName = null;
+                    if (plaName.length >= 2) {
+                       planName = plaName[0] + " " + plaName[1];
+                        }
                     PlanDTO planDTO = new PlanDTO();
-                    planDTO.setId(planBO.getPlan().toString());
+                    planDTO.setId(String.format("%02d", planBO.getPlan()));
                     planDTO.setIsSelected(false);
-                    planDTO.setName(planBO.getDescripcionPlan());
+                    planDTO.setName(planName);
                     planDTO.setIsRecommended(false);
                     planDTO.setInstallmentPlans(mapInstallmentPlans(planBO,applicationConfigurationService));
                     planDTO.setCoverages(mapCoverages(planBO,applicationConfigurationService));
@@ -42,7 +50,13 @@ public class PlanDAO {
         if (Objects.isNull(rimacPlan.getPrimaNeta()) || Objects.isNull(rimacPlan.getMoneda())) {
             return null;
         }
-
+        if(rimacPlan.getMoneda().equals("PEN")||
+                rimacPlan.getMoneda().equals("SOL")){
+            rimacPlan.setMoneda("PEN");
+        }
+        else{
+            rimacPlan.setMoneda("USD");
+        }
         AmountDTO totalInstallmentPlan = new AmountDTO();
         totalInstallmentPlan.setAmount(rimacPlan.getPrimaNeta().doubleValue());
         totalInstallmentPlan.setCurrency(rimacPlan.getMoneda());
@@ -60,11 +74,29 @@ public class PlanDAO {
                     CoverageDTO coverageDTO = new CoverageDTO();
                     coverageDTO.setCoverageType(mapCoverageType(coverageBO,applicationConfigurationService));
                     coverageDTO.setId(coverageBO.getCobertura().toString());
-                    coverageDTO.setDescription(coverageBO.getObservacionCobertura());
-                    coverageDTO.setName(coverageBO.getDescripcionCobertura());
+                    coverageDTO.setDescription(coverageBO.getNumeroSueldos()+ContansUtils.rimacInput.REMUNERACIONES);
+                    coverageDTO.setName(coverageBO.getObservacionCobertura());
                     return coverageDTO;
                 })
                 .collect(Collectors.toList());
+    }
+    private static void addPlansId(List<PlanBO> planBOList,List<Map<String, Object>> planList) {
+
+        Map<String, String> idToTypeMap = planList.stream()
+                .collect(Collectors.toMap(
+                        map -> (String) map.get("INSURANCE_COMPANY_MODALITY_ID"),
+                        map -> (String) map.get("INSURANCE_MODALITY_TYPE")));
+        if(Objects.nonNull(idToTypeMap) && !idToTypeMap.isEmpty()) {
+            // Update the PlanBO objects using the map
+            planBOList.forEach(planBO -> {
+                String planId = planBO.getPlan().toString(); // Accede al atributo plan y conviértelo a cadena
+                if (planId != null) {
+                    // Convertir la cadena a int y luego a Long para eliminar los ceros a la izquierda
+                    int intValue = Integer.parseInt(idToTypeMap.getOrDefault(planId, "0"));
+                    planBO.setPlan((long) intValue);
+                }
+            });
+        }
     }
     private static List<DescriptionDTO> mapBenefits(PlanBO rimacPlan) {
         if (CollectionUtils.isEmpty(rimacPlan.getAsistencias())) {
@@ -108,10 +140,10 @@ public class PlanDAO {
         paymentAmount.setAmount(rimacPlan.getCuotasFinanciamiento().get(0).getMonto().doubleValue());
         if(rimacPlan.getCuotasFinanciamiento().get(0).getMoneda().equals("PEN")||
                 rimacPlan.getCuotasFinanciamiento().get(0).getMoneda().equals("SOL")){
-            rimacPlan.getCuotasFinanciamiento().get(0).setMoneda("P");
+            rimacPlan.getCuotasFinanciamiento().get(0).setMoneda("PEN");
         }
         else{
-            rimacPlan.getCuotasFinanciamiento().get(0).setMoneda("D");
+            rimacPlan.getCuotasFinanciamiento().get(0).setMoneda("USD");
         }
         paymentAmount.setCurrency(rimacPlan.getCuotasFinanciamiento().get(0).getMoneda());
 

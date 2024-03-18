@@ -21,5 +21,5 @@ public class InsurancePlanDAO implements IInsurancePlanDAO {
 
     @Override
     public List<Map<String, Object>> getPlansId(Map<String, Object> argumentsForGetPlans) {
-        return this.pisdR402.executeGetListASingleRow(ContansUtils.Querys.GET_MODALITY_TYPE_BY_PRODUCT_ID,argumentsForGetPlans);
+        return this.pisdR402.executeGetListASingleRow(ConstantsUtil.QueriesName.GET_MODALITY_TYPE_BY_PRODUCT_ID,argumentsForGetPlans);
     }}

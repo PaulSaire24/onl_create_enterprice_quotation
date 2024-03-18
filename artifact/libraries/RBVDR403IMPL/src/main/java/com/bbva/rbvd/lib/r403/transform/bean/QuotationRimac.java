@@ -14,11 +14,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
-
 public class QuotationRimac {
 
     private final ApplicationConfigurationService applicationConfigurationService;
@@ -28,13 +28,13 @@ public class QuotationRimac {
     }
 
     public EnterpriseQuotationDTO mapInQuotationResponse(EnterpriseQuotationDTO input,
-                                                         InsuranceEnterpriseResponseBO payload, BigDecimal nextId) {
+                                                         InsuranceEnterpriseResponseBO payload, BigDecimal nextId,List<Map<String, Object>> planList) {
 
         QuotationResponseBO responseRimac = payload.getPayload();
         PlanDAO planDAO = new PlanDAO();
 
         input.getProduct().setPlans(!CollectionUtils.isEmpty(responseRimac.getCotizaciones())
-                ? planDAO.getPlanInfo(listPlans(responseRimac.getCotizaciones()),this.applicationConfigurationService) : null);
+                ? planDAO.getPlanInfo(listPlans(responseRimac.getCotizaciones()),this.applicationConfigurationService,planList) : null);
         input.setId(generateQuotationId(nextId, input));
         if(CollectionUtils.isEmpty(responseRimac.getCotizaciones())){
             input.setValidityPeriod(null);

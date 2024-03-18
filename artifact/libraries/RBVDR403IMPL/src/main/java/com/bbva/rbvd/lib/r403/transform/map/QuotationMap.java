@@ -1,7 +1,6 @@
 package com.bbva.rbvd.lib.r403.transform.map;
 
 import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
-import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.DescriptionDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ParticipantDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
@@ -16,7 +15,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Date;
+import java.util.List;
 
 public class QuotationMap {
 
@@ -35,31 +37,31 @@ public class QuotationMap {
 
         // Convertir LocalDateTime a Date
         Date date = Date.from(fechaFinDate.atZone(ZoneId.systemDefault()).toInstant());
-        arguments.put(ContansUtils.Mapper.FIELD_INSURANCE_COMPANY_QUOTA_ID,firstQuotation.getCotizacion());
-        arguments.put(ContansUtils.Mapper.FIELD_POLICY_QUOTA_END_VALIDITY_DATE, dateFormatEnd.format(date));
-        arguments.put(ConstantsUtil.InsuranceSimulation.FIELD_INSURANCE_SIMULATION_ID, nextId);
+        arguments.put(ConstantsUtil.QuotationMap.INSURANCE_COMPANY_QUOTA_ID,firstQuotation.getCotizacion());
+        arguments.put(ConstantsUtil.QuotationMap.POLICY_QUOTA_END_VALIDITY_DATE, dateFormatEnd.format(date));
+        arguments.put(ConstantsUtil.QuotationMap.INSURANCE_SIMULATION_ID, nextId);
 
         if (!CollectionUtils.isEmpty(responseDTO.getParticipants()) && checkParticipant(responseDTO.getParticipants()).equals(true)) {
 
-            arguments.put(ContansUtils.Mapper.FIELD_CUSTOMER_ID, responseDTO.getParticipants().get(0).getId());
-            arguments.put(ContansUtils.Mapper.FIELD_PERSONAL_DOC_TYPE, applicationConfigurationService.getProperty(responseDTO.getParticipants().get(0).getIdentityDocument().getDocumentType().getId()));
-            arguments.put(ContansUtils.Mapper.FIELD_PARTICIPANT_PERSONAL_ID, responseDTO.getParticipants().get(0).getIdentityDocument().getDocumentNumber());
+            arguments.put(ConstantsUtil.QuotationMap.CUSTOMER_ID, responseDTO.getParticipants().get(0).getId());
+            arguments.put(ConstantsUtil.QuotationMap.PERSONAL_DOC_TYPE, applicationConfigurationService.getProperty(responseDTO.getParticipants().get(0).getIdentityDocument().getDocumentType().getId()));
+            arguments.put(ConstantsUtil.QuotationMap.PARTICIPANT_PERSONAL_ID, responseDTO.getParticipants().get(0).getIdentityDocument().getDocumentNumber());
         } else {
-            arguments.put(ContansUtils.Mapper.FIELD_CUSTOMER_ID, null);
-            arguments.put(ContansUtils.Mapper.FIELD_PERSONAL_DOC_TYPE, null);
-            arguments.put(ContansUtils.Mapper.FIELD_PARTICIPANT_PERSONAL_ID, null);
+            arguments.put(ConstantsUtil.QuotationMap.CUSTOMER_ID, null);
+            arguments.put(ConstantsUtil.QuotationMap.PERSONAL_DOC_TYPE, null);
+            arguments.put(ConstantsUtil.QuotationMap.PARTICIPANT_PERSONAL_ID, null);
         }
 
-        arguments.put(ContansUtils.Mapper.FIELD_POLICY_QUOTA_INTERNAL_ID, responseDTO.getId());
-        arguments.put(ContansUtils.Mapper.FIELD_QUOTE_DATE, dateFormat.format(new Date()));
-        arguments.put(ContansUtils.Mapper.FIELD_POLICY_QUOTA_STATUS_TYPE, "COT");
-        arguments.put(ContansUtils.Mapper.FIELD_LAST_CHANGE_BRANCH_ID, responseDTO.getLastChangeBranchId());
-        arguments.put(ContansUtils.Mapper.FIELD_SOURCE_BRANCH_ID, responseDTO.getSourceBranchCode());
-        arguments.put(ContansUtils.Mapper.FIELD_CREATION_USER_ID, responseDTO.getCreationUser());
-        arguments.put(ContansUtils.Mapper.FIELD_USER_AUDIT_ID, responseDTO.getUserAudit());
-        arguments.put(ContansUtils.Mapper.FIELD_INSURED_CUSTOMER_NAME, null);
-        arguments.put(ContansUtils.Mapper.FIELD_CLIENT_LAST_NAME, null);
-        arguments.put(ContansUtils.Mapper.FIELD_RFQ_INTERNAL_ID, responseDTO.getQuotationReference());
+        arguments.put(ConstantsUtil.QuotationMap.POLICY_QUOTA_INTERNAL_ID, responseDTO.getId());
+        arguments.put(ConstantsUtil.QuotationMap.QUOTE_DATE, dateFormat.format(new Date()));
+        arguments.put(ConstantsUtil.QuotationMap.FIELD_POLICY_QUOTA_STATUS_TYPE, "COT");
+        arguments.put(ConstantsUtil.QuotationMap.LAST_CHANGE_BRANCH_ID, responseDTO.getLastChangeBranchId());
+        arguments.put(ConstantsUtil.QuotationMap.SOURCE_BRANCH_ID, responseDTO.getSourceBranchCode());
+        arguments.put(ConstantsUtil.QuotationMap.CREATION_USER_ID, responseDTO.getCreationUser());
+        arguments.put(ConstantsUtil.QuotationMap.USER_AUDIT_ID, responseDTO.getUserAudit());
+        arguments.put(ConstantsUtil.QuotationMap.FIELD_INSURED_CUSTOMER_NAME, null);
+        arguments.put(ConstantsUtil.QuotationMap.FIELD_CLIENT_LAST_NAME, null);
+        arguments.put(ConstantsUtil.QuotationMap.FIELD_RFQ_INTERNAL_ID, responseDTO.getQuotationReference());
 
         return arguments;
     }
