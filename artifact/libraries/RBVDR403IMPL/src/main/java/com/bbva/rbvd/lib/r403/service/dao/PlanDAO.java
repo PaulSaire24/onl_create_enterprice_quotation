@@ -7,6 +7,7 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.AssistanceBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.CoverageBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.FinancingBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
+import com.bbva.rbvd.lib.r403.impl.utils.ValidMaps;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.springframework.util.CollectionUtils;
 
@@ -86,7 +87,7 @@ public class PlanDAO {
                 .collect(Collectors.toMap(
                         map -> (String) map.get("INSURANCE_COMPANY_MODALITY_ID"),
                         map -> (String) map.get("INSURANCE_MODALITY_TYPE")));
-         if(mapIsNullOrEmpty(idToTypeMap)) {
+         if(!ValidMaps.mapIsNullOrEmpty(idToTypeMap)) {
             // Update the PlanBO objects using the map
             planBOList.forEach(planBO -> {
                 String planId = planBO.getPlan().toString(); // Accede al atributo plan y conviértelo a cadena
@@ -97,9 +98,6 @@ public class PlanDAO {
                 }
             });
         }
-    }
-    public static boolean mapIsNullOrEmpty(Map<?,?> mapa){
-        return mapa == null || mapa.isEmpty();
     }
     private static List<DescriptionDTO> mapBenefits(PlanBO rimacPlan) {
         if (CollectionUtils.isEmpty(rimacPlan.getAsistencias())) {
