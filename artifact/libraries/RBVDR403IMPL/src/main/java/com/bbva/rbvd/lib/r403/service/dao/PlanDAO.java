@@ -86,11 +86,11 @@ public class PlanDAO {
                 .collect(Collectors.toMap(
                         map -> (String) map.get("INSURANCE_COMPANY_MODALITY_ID"),
                         map -> (String) map.get("INSURANCE_MODALITY_TYPE")));
-
-        // Update the PlanBO objects using the map
-        planBOList.forEach(planBO -> planBO.setPlan(Long.parseLong(idToTypeMap.getOrDefault(planBO.getPlan(), null))));
-
-        ;
+        if(Objects.nonNull(idToTypeMap) && !idToTypeMap.isEmpty()) {
+            // Update the PlanBO objects using the map
+            planBOList.forEach(planBO ->
+                    planBO.setPlan(Long.parseLong(idToTypeMap.getOrDefault(Objects.nonNull(planBO.getPlan()), null))));
+        }
     }
     private static List<DescriptionDTO> mapBenefits(PlanBO rimacPlan) {
         if (CollectionUtils.isEmpty(rimacPlan.getAsistencias())) {
