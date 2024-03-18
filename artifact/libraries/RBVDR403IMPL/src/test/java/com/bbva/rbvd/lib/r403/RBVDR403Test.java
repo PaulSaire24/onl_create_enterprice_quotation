@@ -666,8 +666,8 @@ catch (BusinessException e){
 		List<Map<String, Object>> listPlans = new ArrayList<>();
 		Map<String, Object> mapPlans = new HashMap<>();
 		mapPlans.put("nombre", "Juan");
-		mapPlans.put("INSURANCE_MODALITY_TYPE", 01l);
-		mapPlans.put("ciudad", "Madrid");
+		mapPlans.put("INSURANCE_MODALITY_TYPE", "01");
+		mapPlans.put("INSURANCE_MODALITY_TYPEINSURANCE_COMPANY_MODALITY_ID", "534254");
 		listPlans.add(mapPlans);
 		return listPlans;
 

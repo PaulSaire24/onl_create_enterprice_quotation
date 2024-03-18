@@ -88,8 +88,14 @@ public class PlanDAO {
                         map -> (String) map.get("INSURANCE_MODALITY_TYPE")));
         if(Objects.nonNull(idToTypeMap) && !idToTypeMap.isEmpty()) {
             // Update the PlanBO objects using the map
-            planBOList.forEach(planBO ->
-                    planBO.setPlan(Long.parseLong(idToTypeMap.getOrDefault(Objects.nonNull(planBO.getPlan()), null))));
+            planBOList.forEach(planBO -> {
+                String planId = planBO.getPlan().toString(); // Accede al atributo plan y conviértelo a cadena
+                if (planId != null) {
+                    // Convertir la cadena a int y luego a Long para eliminar los ceros a la izquierda
+                    int intValue = Integer.parseInt(idToTypeMap.getOrDefault(planId, "0"));
+                    planBO.setPlan((long) intValue);
+                }
+            });
         }
     }
     private static List<DescriptionDTO> mapBenefits(PlanBO rimacPlan) {
