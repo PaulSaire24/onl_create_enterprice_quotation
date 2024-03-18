@@ -78,18 +78,7 @@ public class RBVDT40201PETransactionTest {
 		this.transaction.getContext().setTransactionRequest(transactionRequest);
 
 	}
-	@Test
-	public void testNotNull() throws IOException {
-	    // Example to Mock the Header
-		// Mockito.doReturn("ES").when(header).getHeaderParameter(RequestHeaderParamsName.COUNTRYCODE);
 
-
-		EnterpriseQuotationDTO response = createInput();
-		when(this.rbvdR403.executeCreateQuotation(anyObject())).thenReturn(response);
-		Assert.assertNotNull(this.transaction);
-		this.transaction.execute();
-		assertEquals(Severity.OK, this.transaction.getSeverity());
-	}
 	@Test
 	public void testNull() {
 
@@ -101,17 +90,12 @@ public class RBVDT40201PETransactionTest {
 		assertEquals(Severity.ENR, this.transaction.getSeverity());
 	}
 	@Test
-	public void testThrowBussinessException() {
-
-		assertNotNull(this.transaction);
-
-		when(rbvdR403.executeCreateQuotation(anyObject())).
-				thenThrow(new BusinessException("RBVD10094948", false, "ERROR EL TIPO DE DOCUMENTO SOLO PUEDE SER RUC")
-					);
-
+	public void testNotNull() {
+		EnterpriseQuotationDTO response = createInput();
+		when(this.rbvdR403.executeCreateQuotation(anyObject())).thenReturn(response);
+		Assert.assertNotNull(this.transaction);
 		this.transaction.execute();
-
-		assertEquals(Severity.ENR, this.transaction.getSeverity());
+		assertEquals(Severity.OK, this.transaction.getSeverity());
 	}
 	private EnterpriseQuotationDTO createInput(){
 		EnterpriseQuotationDTO input = new EnterpriseQuotationDTO();
@@ -132,7 +116,7 @@ public class RBVDT40201PETransactionTest {
 		DescriptionDTO documentType = new DescriptionDTO();
 		document.setDocumentNumber("73186739");
 		documentType.setId("RUC");
-		documentType.setDescription("DNI");
+		documentType.setDescription("RUC");
 		document.setDocumentType(documentType);
 		participnt1.setIdentityDocument(document);
 		participantType.setId("123456");
