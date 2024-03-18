@@ -8,6 +8,7 @@ import com.bbva.elara.domain.transaction.RequestHeaderParamsName;
 import com.bbva.elara.domain.transaction.Severity;
 import com.bbva.elara.domain.transaction.response.HttpResponseCode;
 
+import org.apache.cxf.wsdl11.SOAPBindingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,7 +88,8 @@ public class RBVDT40201PETransaction extends AbstractRBVDT40201PETransaction {
 
 		}
 		catch (BusinessException be) {
-			this.addAdvice("T3YM10000001");
+			this.addAdvice(be.getAdviceCode());
+			System.out.println(be.getAdviceCode());
 			this.setSeverity(Severity.ENR);
 
 		}

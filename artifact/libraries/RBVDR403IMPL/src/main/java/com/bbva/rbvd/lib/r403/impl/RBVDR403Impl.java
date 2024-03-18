@@ -160,6 +160,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 		if (input.getEmployees().getMonthlyPayrollAmount().getAmount() <= 0.0) {
 			LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - getAmount: {} ***", input.getEmployees().getMonthlyPayrollAmount().getAmount());
 			throw new BusinessException("RBVD10094947", false, "ERROR EL MONTO NO PUEDE SER MENOR A CERO");
+
 		} else if (input.getEmployees().getEmployeesNumber() <= 0L) {
 			LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - getAmount: {} ***", input.getEmployees().getEmployeesNumber());
 			throw new BusinessException("RBVD10094946", false, "ERROR EL NUMERO DE EMPLEADOS NO PUEDE SER MENOR A CERO");
