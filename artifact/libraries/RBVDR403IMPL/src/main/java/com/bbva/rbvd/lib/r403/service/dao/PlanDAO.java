@@ -82,13 +82,13 @@ public class PlanDAO {
     }
     private static void addPlansId(List<PlanBO> planBOList,List<Map<String, Object>> planList) {
 
-        Map<Long, Long> idToTypeMap = planList.stream()
+        Map<String, String> idToTypeMap = planList.stream()
                 .collect(Collectors.toMap(
-                        map -> (Long) map.get("INSURANCE_COMPANY_MODALITY_ID"),
-                        map -> (Long) map.get("INSURANCE_MODALITY_TYPE")));
+                        map -> (String) map.get("INSURANCE_COMPANY_MODALITY_ID"),
+                        map -> (String) map.get("INSURANCE_MODALITY_TYPE")));
 
         // Update the PlanBO objects using the map
-        planBOList.forEach(planBO -> planBO.setPlan(idToTypeMap.getOrDefault(planBO.getPlan(), null)));
+        planBOList.forEach(planBO -> planBO.setPlan(Long.parseLong(idToTypeMap.getOrDefault(planBO.getPlan(), null))));
 
         ;
     }
