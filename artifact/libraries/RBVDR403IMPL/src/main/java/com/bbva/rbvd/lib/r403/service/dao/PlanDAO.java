@@ -22,10 +22,15 @@ public class PlanDAO {
         addPlansId(planBOList);
         return planBOList.stream()
                 .map(planBO -> {
+                    String[] plaName = planBO.getDescripcionPlan().split(" ");
+                    String planName = null;
+                    if (plaName.length >= 2) {
+                       planName = plaName[0] + " " + plaName[1];
+                        }
                     PlanDTO planDTO = new PlanDTO();
                     planDTO.setId(String.format("%02d", planBO.getPlan()));
                     planDTO.setIsSelected(false);
-                    planDTO.setName(planBO.getDescripcionPlan().replaceFirst("\\s+\\w+\\s+\\w+\\s+\\d+", ""));
+                    planDTO.setName(planName);
                     planDTO.setIsRecommended(false);
                     planDTO.setInstallmentPlans(mapInstallmentPlans(planBO,applicationConfigurationService));
                     planDTO.setCoverages(mapCoverages(planBO,applicationConfigurationService));
