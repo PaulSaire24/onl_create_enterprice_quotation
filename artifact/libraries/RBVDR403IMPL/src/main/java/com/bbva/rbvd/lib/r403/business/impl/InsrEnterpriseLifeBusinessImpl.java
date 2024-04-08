@@ -49,7 +49,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
 
         PayloadStore payloadStore = new PayloadStore();
         List<Long> plansToRimac = filterRimacPlansId(payloadConfig.getPlansInformation());
-        InsuranceEnterpriseInputBO rimacInput = QuotationBean.createQuotationDAO(payloadConfig.getInput(),plansToRimac,
+        InsuranceEnterpriseInputBO rimacInput = QuotationBean.createQuotationDAO(payloadConfig.getInput(),plansToRimac,payloadConfig.getCompanyQuotaId(),
                 this.applicationConfigurationService);
         ConsumerExternalService consumerExternalService = new ConsumerExternalService();
         InsuranceEnterpriseResponseBO responseRimac = consumerExternalService.callRimacService(rimacInput,

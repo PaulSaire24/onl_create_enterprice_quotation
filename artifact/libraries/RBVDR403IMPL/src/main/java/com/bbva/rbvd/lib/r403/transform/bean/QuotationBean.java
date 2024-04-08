@@ -20,7 +20,7 @@ public class  QuotationBean {
     private QuotationBean(){}
 
     public static InsuranceEnterpriseInputBO createQuotationDAO(EnterpriseQuotationDTO quotationCreate,
-                                List<Long> planList, ApplicationConfigurationService applicationConfigurationService){
+                                List<Long> planList, String productName,ApplicationConfigurationService applicationConfigurationService){
 
         if(quotationCreate.getEmployees() == null){
             return null;
@@ -29,7 +29,7 @@ public class  QuotationBean {
         InsuranceEnterpriseInputBO payload = new InsuranceEnterpriseInputBO();
         QuotationInputBO companyQuotationPayloadBO = new QuotationInputBO();
 
-        companyQuotationPayloadBO.setProducto(quotationCreate.getProduct().getName());
+        companyQuotationPayloadBO.setProducto(productName);
         companyQuotationPayloadBO.setDatosParticulares(getDatosParticulares(quotationCreate.getEmployees()));
         companyQuotationPayloadBO.setPlanes(planList);
 
