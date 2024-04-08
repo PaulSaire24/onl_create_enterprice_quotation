@@ -19,9 +19,7 @@ import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResp
 import com.bbva.rbvd.dto.enterpriseinsurance.utils.ConstantsUtil;
 import com.bbva.rbvd.lib.r403.impl.RBVDR403Impl;
 
-import com.bbva.rbvd.lib.r403.service.dao.PlanDAO;
 import com.bbva.rbvd.lib.r403.service.impl.ConsumerExternalService;
-import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,13 +28,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.web.client.RestClientException;
 
 
-import javax.ws.rs.HttpMethod;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
@@ -95,7 +93,8 @@ public class RBVDR403Test {
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
 				.thenReturn(createProduct());
 
-		rbvdR302.executeCreateQuotation(requestInput);
+		EnterpriseQuotationDTO response = rbvdR302.executeCreateQuotation(requestInput);
+
 	}
 	@Test
 	public void executeTestRimacFail(){
@@ -180,7 +179,7 @@ catch (BusinessException e){
 		this.requestInput =createInput();
 		QuotationResponseBO responseRimacMock = createRimacResponseOBL();
 		InsuranceEnterpriseResponseBO payload = new InsuranceEnterpriseResponseBO();
-		payload.setPayload(responseRimacMock);
+		payload.setPayload(	responseRimacMock);
 		// DTO establecido en el test
 		when(consumerExternalServiceMock.callRimacService(any(), any(), any(), any())).thenReturn(payload);
 		when(externalAPIConector.postForObject(anyString(), any(), any())).thenReturn(payload);
@@ -195,7 +194,13 @@ catch (BusinessException e){
 				.thenReturn(createProduct());
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 
-		rbvdR302.executeCreateQuotation(requestInput);
+		EnterpriseQuotationDTO response = rbvdR302.executeCreateQuotation(requestInput);
+		assertNotNull(response);
+		assertEquals(response.getProduct().getPlans().get(0).getId(),"534254");
+		assertEquals(response.getProduct().getPlans().get(1).getId(),"02");
+		assertEquals(response.getProduct().getPlans().get(0).getName(),"PLAN PLATA");
+		assertEquals(response.getProduct().getPlans().get(1).getName(),"PLAN PLATA");
+		assertEquals(response.getProduct().getPlans().get(1).getName(),"PLAN PLATA");
 	}
 	@Test
 	public void executeTestOkfULLINC(){
@@ -217,7 +222,13 @@ catch (BusinessException e){
 				.thenReturn(1);
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 
-		rbvdR302.executeCreateQuotation(requestInput);
+		EnterpriseQuotationDTO response = rbvdR302.executeCreateQuotation(requestInput);
+		assertNotNull(response);
+		assertEquals(response.getProduct().getPlans().get(0).getId(),"01");
+		assertEquals(response.getProduct().getPlans().get(1).getId(),"02");
+		assertEquals(response.getProduct().getPlans().get(0).getName(),"PLAN PLATA");
+		assertEquals(response.getProduct().getPlans().get(1).getName(),"PLAN PLATA");
+		assertEquals(response.getProduct().getPlans().get(1).getName(),"PLAN PLATA");
 	}
 	@Test
 	public void executeTestOkfULLOPC(){
@@ -239,7 +250,13 @@ catch (BusinessException e){
 				.thenReturn(1);
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 
-		rbvdR302.executeCreateQuotation(requestInput);
+		EnterpriseQuotationDTO response = rbvdR302.executeCreateQuotation(requestInput);
+		assertNotNull(response);
+		assertEquals(response.getProduct().getPlans().get(0).getId(),"534272");
+		assertEquals(response.getProduct().getPlans().get(1).getId(),"02");
+		assertEquals(response.getProduct().getPlans().get(0).getName(),"PLAN PLATA");
+		assertEquals(response.getProduct().getPlans().get(1).getName(),"PLAN PLATA");
+		assertEquals(response.getProduct().getPlans().get(1).getName(),"PLAN PLATA");
 	}
 	@Test
 	public void executeTestAddAdvice1(){
@@ -332,7 +349,7 @@ catch (BusinessException e){
 		plan1.setPrimaNeta(new BigDecimal(1000));
 		plan1.setMoneda("pen");
 		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
-		plan2.setPlan(2l);
+		plan2.setPlan(534254L);
 		plan2.setFinanciamientos(financingBOList);
 		plan2.setPrimaNeta(new BigDecimal(1000));
 		plan2.setMoneda("pen");
@@ -531,6 +548,7 @@ catch (BusinessException e){
 		BankDTO bank = new BankDTO();
 		PaymentMethodDTO paymentMethodDTO = new PaymentMethodDTO();
 		ProductDTO product = new ProductDTO();
+		product.setId("842");
 		List<Long> planes2 = new ArrayList<>();
 		planes2.add(1234124l);
 		List<ContactDetailsDTO> contactDetails = new ArrayList<>();
@@ -618,7 +636,7 @@ catch (BusinessException e){
 		monthlyPayrollAmount.setCurrency("PEN");
 		monthlyPayrollAmount.setAmount(BigDecimal.valueOf(200.00).doubleValue());
 		employees.setMonthlyPayrollAmount((monthlyPayrollAmount));
-		product.setId("503");
+		product.setId("842");
 		contacto.setContactDetailType("EMAIL");
 		contacto.setAddress("marco.yovera@bbva.com");
 		contacto1.setContact(contacto);
@@ -665,9 +683,9 @@ catch (BusinessException e){
 	private List<Map<String, Object>> createPlan(){
 		List<Map<String, Object>> listPlans = new ArrayList<>();
 		Map<String, Object> mapPlans = new HashMap<>();
-		mapPlans.put("nombre", "Juan");
+		mapPlans.put("INSURANCE_MODALITY_NAME", "PLAN SOLES");
 		mapPlans.put("INSURANCE_MODALITY_TYPE", "01");
-		mapPlans.put("INSURANCE_MODALITY_TYPEINSURANCE_COMPANY_MODALITY_ID", "534254");
+		mapPlans.put("INSURANCE_COMPANY_MODALITY_ID", "534254");
 		listPlans.add(mapPlans);
 		return listPlans;
 

@@ -26,4 +26,10 @@ public class QuotationDAOImpl implements IQuotationDAO {
             throw RBVDValidation.build(RBVDErrors.INSERTION_ERROR_IN_SIMULATION_PRD_TABLE);
         }
     }
+    @Override
+    public void deleteQuotation(Map<String, Object> argument) {
+
+        this.pisdR402.executeInsertSingleRow("PISD.DELETE_INSURED_QUOTATION_ENTERPRISE",argument);
+
+    }
 }

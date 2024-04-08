@@ -1,5 +1,4 @@
-package com.bbva.rbvd.lib.r403.service.dao;
-
+package com.bbva.rbvd.lib.r403.transform.list.impl;
 
 import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.*;
@@ -7,32 +6,38 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.AssistanceBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.CoverageBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.FinancingBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceModalityDAO;
 import com.bbva.rbvd.lib.r403.impl.utils.ValidMaps;
+import com.bbva.rbvd.lib.r403.transform.list.IListEnterprisePlan;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.Objects;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class PlanDAO {
+public class ListEnterprisePlan implements IListEnterprisePlan {
 
-    //MEJORAR, EL APPLICATION PASAR POR SETTER O CONSTRUCTOR A ESTA CLASE
-    public List<PlanDTO> getPlanInfo(List<PlanBO> planBOList, ApplicationConfigurationService applicationConfigurationService, List<Map<String, Object>> planList){
+
+    private final ApplicationConfigurationService applicationConfigurationService;
+
+    public ListEnterprisePlan(ApplicationConfigurationService applicationConfigurationService) {
+        this.applicationConfigurationService = applicationConfigurationService;
+    }
+    @Override
+    public List<PlanDTO> getPlanInfo(List<PlanBO> planBOList, ApplicationConfigurationService applicationConfigurationService,
+                                     List<InsuranceModalityDAO> planList){
         if (Objects.isNull(planBOList)) {
             return Collections.emptyList();
         }
+        addPlansName(planBOList,planList);
         addPlansId(planBOList,planList);
         return planBOList.stream()
                 .map(planBO -> {
                     String[] plaName = planBO.getDescripcionPlan().split(" ");
                     String planName = null;
                     if (plaName.length >= 2) {
-                       planName = plaName[0] + " " + plaName[1];
-                        }
+                        planName = plaName[0] + " " + plaName[1];
+                    }
                     PlanDTO planDTO = new PlanDTO();
                     planDTO.setId(String.format("%02d", planBO.getPlan()));
                     planDTO.setIsSelected(false);
@@ -46,7 +51,6 @@ public class PlanDAO {
                 })
                 .collect(Collectors.toList());
     }
-
     private static AmountDTO mapTotalInstallmentPlans(PlanBO rimacPlan) {
         if (Objects.isNull(rimacPlan.getPrimaNeta()) || Objects.isNull(rimacPlan.getMoneda())) {
             return null;
@@ -65,7 +69,7 @@ public class PlanDAO {
         return totalInstallmentPlan;
     }
 
-    private static List<CoverageDTO> mapCoverages(PlanBO rimacPlan,ApplicationConfigurationService applicationConfigurationService) {
+    private static List<CoverageDTO> mapCoverages(PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
         if (CollectionUtils.isEmpty(rimacPlan.getCoberturas())) {
             return Collections.emptyList();
         }
@@ -75,19 +79,19 @@ public class PlanDAO {
                     CoverageDTO coverageDTO = new CoverageDTO();
                     coverageDTO.setCoverageType(mapCoverageType(coverageBO,applicationConfigurationService));
                     coverageDTO.setId(coverageBO.getCobertura().toString());
-                    coverageDTO.setDescription(coverageBO.getNumeroSueldos()+ContansUtils.rimacInput.REMUNERACIONES);
+                    coverageDTO.setDescription(coverageBO.getNumeroSueldos()+ ContansUtils.rimacInput.REMUNERACIONES);
                     coverageDTO.setName(coverageBO.getObservacionCobertura());
                     return coverageDTO;
                 })
                 .collect(Collectors.toList());
     }
-    private static void addPlansId(List<PlanBO> planBOList,List<Map<String, Object>> planList) {
+    private static void addPlansId(List<PlanBO> planBOList,List<InsuranceModalityDAO> planList) {
 
         Map<String, String> idToTypeMap = planList.stream()
                 .collect(Collectors.toMap(
-                        map -> (String) map.get("INSURANCE_COMPANY_MODALITY_ID"),
-                        map -> (String) map.get("INSURANCE_MODALITY_TYPE")));
-         if(!ValidMaps.mapIsNullOrEmpty(idToTypeMap)) {
+                        map -> map.getInsuranceCompanyModalityId(),
+                        map -> map.getInsuranceModalityType()));
+        if(!ValidMaps.mapIsNullOrEmpty(idToTypeMap)) {
             // Update the PlanBO objects using the map
             planBOList.forEach(planBO -> {
                 String planId = planBO.getPlan().toString(); // Accede al atributo plan y conviértelo a cadena
@@ -95,6 +99,26 @@ public class PlanDAO {
                     // Convertir la cadena a int y luego a Long para eliminar los ceros a la izquierda
                     int intValue = Integer.parseInt(idToTypeMap.getOrDefault(planId, "0"));
                     planBO.setPlan((long) intValue);
+                }
+            });
+            planBOList.sort(Comparator.comparingLong(PlanBO::getPlan));
+        }
+    }
+    private static void addPlansName(List<PlanBO> planBOList,List<InsuranceModalityDAO> planList) {
+
+        Map<String, String> nameToIdMap = planList.stream()
+                .collect(Collectors.toMap(
+                        //PONER EN EL DTO LA CLAVE
+                        map ->  map.getInsuranceCompanyModalityId(),
+                        map ->  map.getInsuranceModalityName()));
+        if(!ValidMaps.mapIsNullOrEmpty(nameToIdMap)) {
+            // Actualiza PlanBO usando el mapa
+            planBOList.forEach(planBO -> {
+                String planId = planBO.getPlan().toString(); // Accede al atributo plan y conviértelo a cadena
+                if (planId != null) {
+                    // Convertir la cadena a int y luego a Long para eliminar los ceros a la izquierda
+                    String intValue =nameToIdMap.getOrDefault(planId, "0");
+                    planBO.setDescripcionPlan(intValue);
                 }
             });
         }
@@ -116,7 +140,7 @@ public class PlanDAO {
                 })
                 .collect(Collectors.toList());
     }
-    private static List<InstallmentPlansDTO> mapInstallmentPlans(PlanBO rimacPlan,ApplicationConfigurationService applicationConfigurationService) {
+    private static List<InstallmentPlansDTO> mapInstallmentPlans(PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
         if (CollectionUtils.isEmpty(rimacPlan.getFinanciamientos())) {
             return Collections.emptyList();
         }
@@ -139,6 +163,7 @@ public class PlanDAO {
 
         AmountDTO paymentAmount = new AmountDTO();
         paymentAmount.setAmount(rimacPlan.getCuotasFinanciamiento().get(0).getMonto().doubleValue());
+        //PONER EN EL DTO LA CLAVE
         if(rimacPlan.getCuotasFinanciamiento().get(0).getMoneda().equals("PEN")||
                 rimacPlan.getCuotasFinanciamiento().get(0).getMoneda().equals("SOL")){
             rimacPlan.getCuotasFinanciamiento().get(0).setMoneda("PEN");
@@ -150,31 +175,18 @@ public class PlanDAO {
 
         return paymentAmount;
     }
-    private static DescriptionDTO mapCoverageType(CoverageBO coverageBO,ApplicationConfigurationService applicationConfigurationService) {
+    private static DescriptionDTO mapCoverageType(CoverageBO coverageBO, ApplicationConfigurationService applicationConfigurationService) {
         if (Objects.isNull(coverageBO.getCondicion())) {
             return null;
         }
 
         DescriptionDTO coverageType = new DescriptionDTO();
+        //PONER EN EL DTO LA CLAVE
         String condition = applicationConfigurationService.getProperty("COVERAGE_TYPE_" + coverageBO.getCondicion());
         coverageType.setId(condition);
         coverageType.setName(condition);
 
         return coverageType;
-    }
-    private static String getCondicionforCoverageType(CoverageBO rimacPlan) {
-
-        String condicion =null;
-        if(rimacPlan.getCondicion().equals("OBL")){
-            condicion = "MAIN";
-        }
-        else if(rimacPlan.getCondicion().equals("INC")){
-            condicion = "INCLUDED";
-        }
-        else if(rimacPlan.getCondicion().equals("OPC")){
-            condicion = "ADDITIONAL";
-        }
-        return condicion;
     }
     private static DescriptionDTO mapPeriod(FinancingBO rimacPlan,ApplicationConfigurationService applicationConfigurationService) {
         DescriptionDTO period = new DescriptionDTO();
@@ -182,10 +194,10 @@ public class PlanDAO {
         if (Objects.isNull(rimacPlan.getPeriodicidad())) {
             return null;
         }
-
+        //PONER EN EL DTO LA CLAVE
         period.setId(applicationConfigurationService.getProperty("PERIODICITY_ID_" + rimacPlan.getPeriodicidad()));
         period.setName(applicationConfigurationService.getProperty("PERIODICITY_NAME_" + rimacPlan.getPeriodicidad()));
 
         return period;
     }
-}
+    }
