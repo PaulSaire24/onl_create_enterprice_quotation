@@ -7,7 +7,6 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ValidityPeriodDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceModalityDAO;
-import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceQuotationDAO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseInputBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationBO;
@@ -135,7 +134,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         String product = input.getProduct().getId();
         return input.getSourceBranchCode().concat(product).concat(simulationId).concat("00");
     }
-    public static String generateSecondQuotationId(BigDecimal nextId,EnterpriseQuotationDTO input,List<InsuranceQuotationDAO> policyIdList) {
+    public static String generateSecondQuotationId(BigDecimal nextId,EnterpriseQuotationDTO input,List<String> policyIdList) {
 
         String simulationId = nextId.toString();
         String product = input.getProduct().getId();
@@ -144,9 +143,9 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
             lastDigits = "01";
         } else if (policyIdList.size() > 1) {
             String subString = "00";
-            for (InsuranceQuotationDAO policy : policyIdList) {
-                if (!policy.getPolicyQuotaInternalId().substring(policy.getPolicyQuotaInternalId().length() - 2).equals(subString)) {
-                    int intValueOfPolicy = Integer.parseInt(policy.getPolicyQuotaInternalId().substring(policy.getPolicyQuotaInternalId().length() - 2));
+            for (String policy : policyIdList) {
+                if (!policy.substring(policy.length() - 2).equals(subString)) {
+                    int intValueOfPolicy = Integer.parseInt(policy.substring(policy.length() - 2));
                     int nextValue = intValueOfPolicy + 1;
                     String policyQuotaInternalNextId = String.valueOf(nextValue);
                     lastDigits = policyQuotaInternalNextId;
@@ -156,16 +155,16 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         }
         return input.getSourceBranchCode().concat(product).concat(simulationId).concat(lastDigits);
     }
-    public static String getFirstQuotationId(List<InsuranceQuotationDAO> policyIdList) {
+    public static String getFirstQuotationId(List<String> policyIdList) {
 
         String policyQuotaInternalId = new String();
         if (policyIdList.size() == 1) {
             policyQuotaInternalId = null;
         } else if (policyIdList.size() > 1) {
             String subString = "00";
-            for (InsuranceQuotationDAO policy : policyIdList) {
-                if (!policy.getPolicyQuotaInternalId().substring(policy.getPolicyQuotaInternalId().length() - 2).equals(subString)) {
-                    policyQuotaInternalId = policy.getPolicyQuotaInternalId();
+            for (String policy : policyIdList) {
+                if (!policy.substring(policy.length() - 2).equals(subString)) {
+                    policyQuotaInternalId = policy;
                     break;
                 }
             }

@@ -5,7 +5,6 @@ import com.bbva.pisd.lib.r402.PISDR402;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceProductDAO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceModalityDAO;
-import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceQuotationDAO;
 import com.bbva.rbvd.lib.r403.pattern.PreCreateQuotation;
 import com.bbva.rbvd.lib.r403.service.dao.IEnterprisePolicyQuotaInternalIdDAO;
 import com.bbva.rbvd.lib.r403.service.dao.IEnterpriseProductDAO;
@@ -42,7 +41,7 @@ public class CreateQuotationParameter implements PreCreateQuotation {
         BigDecimal nextId = this.getInsuranceSimulationId();
 
         if(!input.getQuotationReference().equals(null)) {
-            List<InsuranceQuotationDAO> policyQuotaInternalId = getPolicyIdInfo(input.getQuotationReference());
+            List<String> policyQuotaInternalId = getPolicyIdInfo(input.getQuotationReference());
             payloadConfig.setPolicyQuotaInternalIdList(policyQuotaInternalId);
         }
         payloadConfig.setInput(input);
@@ -69,11 +68,11 @@ public class CreateQuotationParameter implements PreCreateQuotation {
         List<InsuranceModalityDAO> plansInfo = iEnterprisePlanDAO.getPlansId(productTypeId,Channel);
         return plansInfo;
     }
-    public List<InsuranceQuotationDAO> getPolicyIdInfo(String rfkInternalId){
+    public List<String> getPolicyIdInfo(String rfkInternalId){
         LOGGER.info("***** executeCreateQuotation - getProductInfo START *****");
 
         IEnterprisePolicyQuotaInternalIdDAO enterprisePolicyQuotaInternalIdDAO = new EnterprisePolicyQuotaInternalIdDAO(pisdR402);
-        List<InsuranceQuotationDAO> policyQuotaInternalId = enterprisePolicyQuotaInternalIdDAO.getPolicyQuotaInternalId(rfkInternalId);
+        List<String> policyQuotaInternalId = enterprisePolicyQuotaInternalIdDAO.getPolicyQuotaInternalId(rfkInternalId);
 
         LOGGER.info("***** executeCreateQuotation - getPolicyIdInfo | policyQuotaInternalId Value: {} *****",policyQuotaInternalId);
         return policyQuotaInternalId;

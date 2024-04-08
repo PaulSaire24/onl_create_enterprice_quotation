@@ -114,10 +114,10 @@ public class ListEnterprisePlan implements IListEnterprisePlan {
         if(!ValidMaps.mapIsNullOrEmpty(nameToIdMap)) {
             // Actualiza PlanBO usando el mapa
             planBOList.forEach(planBO -> {
-                String planId = planBO.getPlan().toString(); // Accede al atributo plan y conviértelo a cadena
-                if (planId != null) {
+                String planName = planBO.getPlan().toString(); // Accede al atributo plan y conviértelo a cadena
+                if (planName != null) {
                     // Convertir la cadena a int y luego a Long para eliminar los ceros a la izquierda
-                    String intValue =nameToIdMap.getOrDefault(planId, "0");
+                    String intValue =nameToIdMap.getOrDefault(planName, "0");
                     planBO.setDescripcionPlan(intValue);
                 }
             });

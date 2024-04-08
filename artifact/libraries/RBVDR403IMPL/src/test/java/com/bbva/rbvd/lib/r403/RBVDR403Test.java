@@ -232,7 +232,7 @@ catch (BusinessException e){
 	}
 	@Test
 	public void executeTestOkfULLOPC(){
-		this.requestInput =createInput();
+		this.requestInput =createInputQuotationReference();
 		QuotationResponseBO responseRimacMock = createRimacResponseOPC();
 		InsuranceEnterpriseResponseBO payload = new InsuranceEnterpriseResponseBO();
 		payload.setPayload(responseRimacMock);
@@ -248,15 +248,19 @@ catch (BusinessException e){
 				.thenReturn(createProduct());
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
 				.thenReturn(1);
+		when(pisdr402.executeGetListASingleRow("PISD.GET_MODALITY_TYPE_BY_PRODUCT_ID",getArgumentsPlans()))
+				.thenReturn(createPlan());
+		when(pisdr402.executeGetListASingleRow("PISD.GET_PRODUCT_INFO_BY_INTERNAL_ID_AND_PRODUCT_TYPE",getArgumentsPolicy()))
+				.thenReturn(getPolicy());
+
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 
 		EnterpriseQuotationDTO response = rbvdR302.executeCreateQuotation(requestInput);
 		assertNotNull(response);
-		assertEquals(response.getProduct().getPlans().get(0).getId(),"534272");
-		assertEquals(response.getProduct().getPlans().get(1).getId(),"02");
-		assertEquals(response.getProduct().getPlans().get(0).getName(),"PLAN PLATA");
-		assertEquals(response.getProduct().getPlans().get(1).getName(),"PLAN PLATA");
-		assertEquals(response.getProduct().getPlans().get(1).getName(),"PLAN PLATA");
+		assertEquals(response.getProduct().getPlans().get(0).getId(),"00");
+		assertEquals(response.getProduct().getPlans().get(1).getId(),"01");
+		assertEquals(response.getProduct().getPlans().get(1).getName(),"PLAN SOLES");
+
 	}
 	@Test
 	public void executeTestAddAdvice1(){
@@ -516,7 +520,7 @@ catch (BusinessException e){
 		coverageBO.setMoneda("pen");
 		coverageBO.setCobertura(1l);
 		coverageBOList.add(coverageBO);
-		plan1.setPlan(534272L);
+		plan1.setPlan(534254L);
 		plan1.setCoberturas(coverageBOList);
 		plan1.setFinanciamientos(financingBOList);
 		plan1.setPrimaNeta(new BigDecimal(1000));
@@ -584,7 +588,7 @@ catch (BusinessException e){
 		contacto.setAddress("marco.yovera@bbva.com");
 		contacto1.setContact(contacto);
 		contactDetails.add(contacto1);
-
+        input.setQuotationReference("01720842640900");
 		input.setProduct(product);
 		input.setParticipants(participantes);
 		input.setQuotationReference("2312313");
@@ -658,6 +662,11 @@ catch (BusinessException e){
 		input.setBank(bank);
 		return input;
 	}
+	private EnterpriseQuotationDTO createInputQuotationReference(){
+		EnterpriseQuotationDTO input = createInput();
+		input.setQuotationReference("01720842678900");
+		return input;
+	}
 	private EnterpriseQuotationDTO createInputAmountZero(){
 		EnterpriseQuotationDTO input = createInput();
 		AmountDTO monthlyPayrollAmount = new AmountDTO();
@@ -675,7 +684,7 @@ catch (BusinessException e){
 		Map<String, Object> productMap = new HashMap<>();
 		productMap.put("nombre", "Juan");
 		productMap.put("INSURANCE_PRODUCT_ID", new BigDecimal(842.0));
-		productMap.put("ciudad", "Madrid");
+		productMap.put("INSURANCE_PRODUCT_NAME", "Madrid");
 		Object product = productMap;
 		return product;
 
@@ -688,6 +697,33 @@ catch (BusinessException e){
 		mapPlans.put("INSURANCE_COMPANY_MODALITY_ID", "534254");
 		listPlans.add(mapPlans);
 		return listPlans;
+
+	}
+	private List<Map<String, Object>> getPolicy(){
+		List<Map<String, Object>> listPlans = new ArrayList<>();
+		Map<String, Object> mapPolicy = new HashMap<>();
+		mapPolicy.put("POLICY_QUOTA_INTERNAL_ID", "01720842678900");
+		Map<String, Object> mapPolicy2 = new HashMap<>();
+		mapPolicy2.put("POLICY_QUOTA_INTERNAL_ID", "01720842678901");
+		listPlans.add(mapPolicy);
+		listPlans.add(mapPolicy2);
+		return listPlans;
+
+	}
+	private Map<String, Object> getArgumentsPlans(){
+
+		Map<String, Object> arguments = new HashMap<>();
+		arguments.put(ConstantsUtil.InsurancePrdModality.FIELD_INSURANCE_PRODUCT_ID, new BigDecimal(842));
+		arguments.put(ConstantsUtil.InsurancePrdModality.FIELD_SALE_CHANNEL_ID, "PC");
+		return arguments;
+
+	}
+	private Map<String, Object> getArgumentsPolicy(){
+
+		Map<String, Object> arguments = new HashMap<>();
+		arguments.put(ConstantsUtil.QuotationMap.FIELD_RFQ_INTERNAL_ID, "01720842678900");
+		arguments.put(ConstantsUtil.QuotationMap.POLICY_QUOTA_INTERNAL_ID, "01720842678900");
+		return arguments;
 
 	}
 }

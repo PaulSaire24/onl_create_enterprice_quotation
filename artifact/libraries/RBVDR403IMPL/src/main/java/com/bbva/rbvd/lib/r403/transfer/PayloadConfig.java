@@ -2,7 +2,7 @@ package com.bbva.rbvd.lib.r403.transfer;
 
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceModalityDAO;
-import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceQuotationDAO;
+
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceProductDAO;
 
 import java.math.BigDecimal;
@@ -14,7 +14,7 @@ public class PayloadConfig {
     private InsuranceProductDAO productInformationBySimulation;
     private BigDecimal insuranceProductId;
     private List<InsuranceModalityDAO> plansInformation;
-    private List<InsuranceQuotationDAO> policyQuotaInternalIdList;
+    private List<String> policyQuotaInternalIdList;
     private BigDecimal nextSimulationId;
     public EnterpriseQuotationDTO getInput() {
         return input;
@@ -56,11 +56,11 @@ public class PayloadConfig {
         this.plansInformation = plansInformation;
     }
 
-    public List<InsuranceQuotationDAO> getPolicyQuotaInternalIdList() {
+    public List<String> getPolicyQuotaInternalIdList() {
         return policyQuotaInternalIdList;
     }
 
-    public void setPolicyQuotaInternalIdList(List<InsuranceQuotationDAO> policyQuotaInternalIdList) {
+    public void setPolicyQuotaInternalIdList(List<String> policyQuotaInternalIdList) {
         this.policyQuotaInternalIdList = policyQuotaInternalIdList;
     }
 
