@@ -54,7 +54,7 @@ public class CreateQuotationStore implements PostCreateQuotation {
         ISimulationDAO iSimulationDAO = new SimulationDAOImpl(this.pisdR402);
         ISimulationProductDAO iSimulationProductDAO = new SimulationProductDAOImpl(this.pisdR402);
         IQuotationDAO iQuotationDAO = new QuotationDAOImpl(this.pisdR402);
-        if(payloadStore.getOutput().getQuotationReference().equals(null) || payloadStore.getFirstPolicyQuotaInternalId()==null) {
+        if(payloadStore.getOutput().getQuotationReference()==null || payloadStore.getFirstPolicyQuotaInternalId()==null) {
             iSimulationDAO.insertSimulation(argumentsForSaveSimulation);
             iSimulationProductDAO.insertSimulationProduct(argumentsForSaveSimulationProd);
             iQuotationDAO.insertQuotation(argumentsForSaveQuotation);

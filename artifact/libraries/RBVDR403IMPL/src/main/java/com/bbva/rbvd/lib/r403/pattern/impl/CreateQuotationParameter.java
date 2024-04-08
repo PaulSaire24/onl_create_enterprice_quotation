@@ -40,7 +40,7 @@ public class CreateQuotationParameter implements PreCreateQuotation {
         List<InsuranceModalityDAO> plans = getPlanInfo(product.getInsuranceProductId(),input.getSaleChannelId());
         BigDecimal nextId = this.getInsuranceSimulationId();
 
-        if(!input.getQuotationReference().equals(null)) {
+        if(input.getQuotationReference()!=null) {
             List<String> policyQuotaInternalId = getPolicyIdInfo(input.getQuotationReference());
             payloadConfig.setPolicyQuotaInternalIdList(policyQuotaInternalId);
         }
