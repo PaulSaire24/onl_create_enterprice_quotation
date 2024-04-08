@@ -35,7 +35,7 @@ public class CreateQuotationStore implements PostCreateQuotation {
         this.saveQuotation(payloadStore);
     }
     public void saveQuotation(PayloadStore payloadStore) {
-        LOGGER.info("***** SimulationStore - saveQuotationMod START - arguments: payloadStore {} *****", payloadStore);
+        LOGGER.info("***** SimulationStore - saveQuotationMod START - argument: payloadStore {} *****", payloadStore);
         SimulationMap simulationMap = new SimulationMap();
         Map<String, Object> argumentsForSaveSimulation = simulationMap.createArgumentsForSaveSimulation(payloadStore.getNextSimulationId(),
                 payloadStore.getOutput(), payloadStore.getRimacResponse(),this.applicationConfigurationService);
