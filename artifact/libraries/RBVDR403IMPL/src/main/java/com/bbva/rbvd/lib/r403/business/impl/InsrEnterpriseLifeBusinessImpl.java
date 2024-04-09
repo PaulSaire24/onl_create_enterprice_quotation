@@ -56,7 +56,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
                 payloadConfig.getInput().getTraceId(),this.pisdR014,this.externalApiConnector);
         EnterpriseQuotationDTO response = mapInQuotationResponse(payloadConfig.getInput(),responseRimac,
                 payloadConfig.getNextSimulationId(),payloadConfig.getPlansInformation(),payloadConfig.getCompanyQuotaId());
-        if(!payloadConfig.getPolicyQuotaInternalIdList().isEmpty() && payloadConfig.getPolicyQuotaInternalIdList()!=null){
+        if(payloadConfig.getPolicyQuotaInternalIdList()!=null){
            String firstPolicyQuotaInternalId;
             firstPolicyQuotaInternalId = getFirstQuotationId(payloadConfig.getPolicyQuotaInternalIdList());
             response.setId(generateSecondQuotationId(payloadConfig.getNextSimulationId(),payloadConfig.getInput(),payloadConfig.getPolicyQuotaInternalIdList()));
