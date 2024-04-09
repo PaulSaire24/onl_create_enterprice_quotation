@@ -23,7 +23,7 @@ public class EnterprisePolicyQuotaInternalIdDAO implements IEnterprisePolicyQuot
     public List<String> getPolicyQuotaInternalId(String rfkInternalId) {
         Map<String, Object> argumentsForGetPlansId = PolicyQuotaInternalIdMap.createArgumentsForGetPolicyId(
                 rfkInternalId);
-        List<Map<String,Object>> productResponse= this.pisdR402.executeGetListASingleRow("PISD.GET_PRODUCT_INFO_BY_INTERNAL_ID_AND_PRODUCT_TYPE",argumentsForGetPlansId);
+        List<Map<String,Object>> productResponse= this.pisdR402.executeGetListASingleRow("PISD.GET_QUOTATION_POLICY_ID",argumentsForGetPlansId);
 
         return PolicyQuotaInternalIdBean.getPolicyQuotaInternalId(productResponse);
     }
