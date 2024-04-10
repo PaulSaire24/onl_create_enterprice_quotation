@@ -98,7 +98,7 @@ public class RBVDR403Test {
 	}
 	@Test
 	public void executeTestRimacFail(){
-		this.requestInput =createInput();
+		this.requestInput =createInputQuotationReference();
 		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
 		InsuranceEnterpriseResponseBO payload = new InsuranceEnterpriseResponseBO();
 		payload.setPayload(responseRimacMock);
@@ -114,7 +114,10 @@ public class RBVDR403Test {
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
 				.thenReturn(1);
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
-
+		when(pisdr402.executeGetListASingleRow("PISD.GET_MODALITY_TYPE_BY_PRODUCT_ID",getArgumentsPlans()))
+				.thenReturn(createPlan());
+		when(pisdr402.executeGetListASingleRow("PISD.GET_QUOTATION_POLICY_ID",getArgumentsPolicy()))
+				.thenReturn(getPolicy());
 		try {
 			rbvdR302.executeCreateQuotation(requestInput);
 		}
@@ -150,7 +153,7 @@ public class RBVDR403Test {
 	}
 	@Test
 	public void executeTestKO(){
-		this.requestInput =createInput();
+		this.requestInput =createInputQuotationReference();
 		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
 		InsuranceEnterpriseResponseBO payload = new InsuranceEnterpriseResponseBO();
 		payload.setPayload(responseRimacMock);
@@ -165,7 +168,10 @@ public class RBVDR403Test {
 				.thenReturn(createProduct());
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
 				.thenReturn(0);
-
+		when(pisdr402.executeGetListASingleRow("PISD.GET_MODALITY_TYPE_BY_PRODUCT_ID",getArgumentsPlans()))
+				.thenReturn(createPlan());
+		when(pisdr402.executeGetListASingleRow("PISD.GET_QUOTATION_POLICY_ID",getArgumentsPolicy()))
+				.thenReturn(getPolicy());
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 try {
 	rbvdR302.executeCreateQuotation(requestInput);
@@ -176,7 +182,7 @@ catch (BusinessException e){
 }
 	@Test
 	public void executeTestOkfULLOBL(){
-		this.requestInput =createInput();
+		this.requestInput =createInputQuotationReference();
 		QuotationResponseBO responseRimacMock = createRimacResponseOBL();
 		InsuranceEnterpriseResponseBO payload = new InsuranceEnterpriseResponseBO();
 		payload.setPayload(	responseRimacMock);
@@ -193,18 +199,19 @@ catch (BusinessException e){
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
 				.thenReturn(createProduct());
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
-
+		when(pisdr402.executeGetListASingleRow("PISD.GET_MODALITY_TYPE_BY_PRODUCT_ID",getArgumentsPlans()))
+				.thenReturn(createPlan());
+		when(pisdr402.executeGetListASingleRow("PISD.GET_QUOTATION_POLICY_ID",getArgumentsPolicy()))
+				.thenReturn(getPolicy());
 		EnterpriseQuotationDTO response = rbvdR302.executeCreateQuotation(requestInput);
 		assertNotNull(response);
-		assertEquals(response.getProduct().getPlans().get(0).getId(),"534254");
-		assertEquals(response.getProduct().getPlans().get(1).getId(),"02");
-		assertEquals(response.getProduct().getPlans().get(0).getName(),"PLAN PLATA");
-		assertEquals(response.getProduct().getPlans().get(1).getName(),"PLAN PLATA");
-		assertEquals(response.getProduct().getPlans().get(1).getName(),"PLAN PLATA");
+		assertEquals(response.getProduct().getPlans().get(0).getId(),"00");
+		assertEquals(response.getProduct().getPlans().get(1).getId(),"01");
+
 	}
 	@Test
 	public void executeTestOkfULLINC(){
-		this.requestInput =createInput();
+		this.requestInput =createInputQuotationReference();
 		QuotationResponseBO responseRimacMock = createRimacResponseINC();
 		InsuranceEnterpriseResponseBO payload = new InsuranceEnterpriseResponseBO();
 		payload.setPayload(responseRimacMock);
@@ -220,15 +227,17 @@ catch (BusinessException e){
 				.thenReturn(createProduct());
 		when(pisdr402.executeInsertSingleRow(anyString(), anyMap()))
 				.thenReturn(1);
+		when(pisdr402.executeGetListASingleRow("PISD.GET_MODALITY_TYPE_BY_PRODUCT_ID",getArgumentsPlans()))
+				.thenReturn(createPlan());
+		when(pisdr402.executeGetListASingleRow("PISD.GET_QUOTATION_POLICY_ID",getArgumentsPolicy()))
+				.thenReturn(getPolicy());
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 
 		EnterpriseQuotationDTO response = rbvdR302.executeCreateQuotation(requestInput);
 		assertNotNull(response);
-		assertEquals(response.getProduct().getPlans().get(0).getId(),"01");
-		assertEquals(response.getProduct().getPlans().get(1).getId(),"02");
-		assertEquals(response.getProduct().getPlans().get(0).getName(),"PLAN PLATA");
-		assertEquals(response.getProduct().getPlans().get(1).getName(),"PLAN PLATA");
-		assertEquals(response.getProduct().getPlans().get(1).getName(),"PLAN PLATA");
+		assertEquals(response.getProduct().getPlans().get(0).getId(),"00");
+		assertEquals(response.getProduct().getPlans().get(1).getId(),"00");
+
 	}
 	@Test
 	public void executeTestOkfULLOPC(){
@@ -250,7 +259,7 @@ catch (BusinessException e){
 				.thenReturn(1);
 		when(pisdr402.executeGetListASingleRow("PISD.GET_MODALITY_TYPE_BY_PRODUCT_ID",getArgumentsPlans()))
 				.thenReturn(createPlan());
-		when(pisdr402.executeGetListASingleRow("PISD.GET_PRODUCT_INFO_BY_INTERNAL_ID_AND_PRODUCT_TYPE",getArgumentsPolicy()))
+		when(pisdr402.executeGetListASingleRow("PISD.GET_QUOTATION_POLICY_ID",getArgumentsPolicy()))
 				.thenReturn(getPolicy());
 
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());

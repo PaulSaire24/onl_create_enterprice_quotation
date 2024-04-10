@@ -3,14 +3,18 @@ package com.bbva.rbvd.lib.r403.business.impl;
 import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
 import com.bbva.elara.utility.api.connector.APIConnector;
 import com.bbva.pisd.lib.r014.PISDR014;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ContactDetailsDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ValidityPeriodDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.FinancingBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceModalityDAO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseInputBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.modifyquotation.rimac.QuotationDetailBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.utils.ConstantsUtil;
 import com.bbva.rbvd.lib.r403.business.IInsrEnterpriseLifeBusiness;
 import com.bbva.rbvd.lib.r403.service.impl.ConsumerExternalService;
 import com.bbva.rbvd.lib.r403.transfer.PayloadConfig;
@@ -48,7 +52,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
                 payloadConfig);
 
         PayloadStore payloadStore = new PayloadStore();
-        List<Long> plansToRimac = filterRimacPlansId(payloadConfig.getPlansInformation());
+        List<Long> plansToRimac = filterRimacPlansId(payloadConfig.getPlanSelected());
         InsuranceEnterpriseInputBO rimacInput = QuotationBean.createQuotationDAO(payloadConfig.getInput(),plansToRimac,payloadConfig.getCompanyQuotaId(),
                 this.applicationConfigurationService);
         ConsumerExternalService consumerExternalService = new ConsumerExternalService();
@@ -56,28 +60,59 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
                 payloadConfig.getInput().getTraceId(),this.pisdR014,this.externalApiConnector);
         EnterpriseQuotationDTO response = mapInQuotationResponse(payloadConfig.getInput(),responseRimac,
                 payloadConfig.getNextSimulationId(),payloadConfig.getPlansInformation(),payloadConfig.getCompanyQuotaId());
+        FinancingBO financing = getFinancingBO(responseRimac.getPayload().getCotizaciones().get(0));
+        ContactDetailsDTO contactMobile = getContactDetailByType(payloadConfig.getInput(), ConstantsUtil.ContactDetailtype.MOBILE);
+        ContactDetailsDTO contactEmail = getContactDetailByType(payloadConfig.getInput(),ConstantsUtil.ContactDetailtype.EMAIL);
+        String mobile = null;
+        String email = null;
+        if(contactMobile != null){
+            mobile = contactMobile.getContact().getNumber();
+        }
+
+        if(contactEmail != null){
+            email = contactEmail.getContact().getAddress();
+        }
+
+        if (financing != null) {
+            payloadStore.setFechaInicio(financing.getFechaInicio());
+            payloadStore.setFechaFin(financing.getFechaFin());
+            payloadStore.setPremiumAmount(!CollectionUtils.isEmpty(financing.getCuotasFinanciamiento())?
+                    financing.getCuotasFinanciamiento().get(ConstantsUtil.NumberConstants.ZERO).getMonto(): null);
+           }
         if(payloadConfig.getPolicyQuotaInternalIdList()!=null){
-           String firstPolicyQuotaInternalId;
+            String firstPolicyQuotaInternalId;
             firstPolicyQuotaInternalId = getFirstQuotationId(payloadConfig.getPolicyQuotaInternalIdList());
             response.setId(generateSecondQuotationId(payloadConfig.getNextSimulationId(),payloadConfig.getInput(),payloadConfig.getPolicyQuotaInternalIdList()));
             payloadStore.setFirstPolicyQuotaInternalId(firstPolicyQuotaInternalId);
         }
-
+        payloadStore.setAddress(email);
+        payloadStore.setNumber(mobile);
         payloadStore.setOutput(response);
         payloadStore.setRimacResponse(responseRimac);
         payloadStore.setPolicyQuotaInternalId(response.getId());
         payloadStore.setNextSimulationId(payloadConfig.getNextSimulationId());
         payloadStore.setInsuranceProductId(payloadConfig.getInsuranceProductId());
+        payloadStore.setPlanSelected(payloadConfig.getPlanSelected());
         LOGGER.info("***** InsrEnterpriseLifeBusinessImpl - doEnterpriseLife END | return payloadStore: {} *****", payloadStore);
 
         return payloadStore;
     }
-    private static List<Long> filterRimacPlansId(List<InsuranceModalityDAO> plans) {
-        List<Long> planIds;
-         planIds = plans.stream()
-                .map(dto -> Long.parseLong(dto.getInsuranceCompanyModalityId()))
-                .collect(Collectors.toList());
-        return planIds;
+    private static ContactDetailsDTO getContactDetailByType(EnterpriseQuotationDTO input, String detailType){
+        ContactDetailsDTO contactDetailsDTO = null;
+
+        if(input.getContactDetails() != null && !input.getContactDetails().isEmpty()){
+            contactDetailsDTO = input.getContactDetails().stream()
+                    .filter(contactDTO -> detailType.equals(contactDTO.getContact().getContactDetailType()))
+                    .findFirst().orElse(null);
+        }
+        return contactDetailsDTO;
+    }
+    private static List<Long> filterRimacPlansId(String plans) {
+        List<Long> firstPlan = new ArrayList<>();
+        if (plans != null) {
+            firstPlan.add(Long.parseLong(plans));
+        }
+        return firstPlan;
     }
     private EnterpriseQuotationDTO mapInQuotationResponse(EnterpriseQuotationDTO input,
                                                           InsuranceEnterpriseResponseBO payload, BigDecimal nextId,
@@ -101,6 +136,14 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
 
 
         return input;
+    }
+    private static FinancingBO getFinancingBO(QuotationBO quotationDetail) {
+        PlanBO plan = quotationDetail.getPlan();
+        FinancingBO firstFinancing;
+        firstFinancing = plan.getFinanciamientos().stream()
+                .filter(financingBO -> financingBO.getPeriodicidad().equalsIgnoreCase(ConstantsUtil.FinancingPeriodicity.ANUAL))
+                .findFirst().orElse(null);
+        return firstFinancing;
     }
 
     private ValidityPeriodDTO createValidityPeriodDTO(String fechaFinVigencia){
@@ -146,6 +189,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
             for (String policy : policyIdList) {
                 if (!policy.substring(policy.length() - 2).equals(subString)) {
                     int intValueOfPolicy = Integer.parseInt(policy.substring(policy.length() - 2));
+                    LOGGER.info("***** InsrEnterpriseLifeBusinessImpl - generateSecondQuotationId | intValueOfPolicy: {} *****", intValueOfPolicy);
                     int nextValue = intValueOfPolicy + 1;
                     String policyQuotaInternalNextId = String.valueOf(nextValue);
                     lastDigits = policyQuotaInternalNextId;

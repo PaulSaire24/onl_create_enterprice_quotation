@@ -5,17 +5,10 @@ import com.bbva.pisd.dto.insurance.dao.SimulationProductDAO;
 import com.bbva.pisd.lib.r402.PISDR402;
 import com.bbva.rbvd.dto.enterpriseinsurance.modifyquotation.dao.InsuranceQuotationModDAO;
 import com.bbva.rbvd.lib.r403.pattern.PostCreateQuotation;
-import com.bbva.rbvd.lib.r403.service.dao.IQuotationDAO;
-import com.bbva.rbvd.lib.r403.service.dao.ISimulationDAO;
-import com.bbva.rbvd.lib.r403.service.dao.ISimulationProductDAO;
-import com.bbva.rbvd.lib.r403.service.dao.impl.QuotationDAOImpl;
-import com.bbva.rbvd.lib.r403.service.dao.impl.SimulationDAOImpl;
-import com.bbva.rbvd.lib.r403.service.dao.impl.SimulationProductDAOImpl;
+import com.bbva.rbvd.lib.r403.service.dao.*;
+import com.bbva.rbvd.lib.r403.service.dao.impl.*;
 import com.bbva.rbvd.lib.r403.transfer.PayloadStore;
-import com.bbva.rbvd.lib.r403.transform.map.QuotationDeleteMap;
-import com.bbva.rbvd.lib.r403.transform.map.QuotationMap;
-import com.bbva.rbvd.lib.r403.transform.map.SimulationMap;
-import com.bbva.rbvd.lib.r403.transform.map.SimulationProductMap;
+import com.bbva.rbvd.lib.r403.transform.map.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,24 +43,56 @@ public class CreateQuotationStore implements PostCreateQuotation {
         Map<String, Object> argumentsForSaveSimulationProd = SimulationProductMap.createArgumentsForSaveSimulationProduct(payloadStore.getNextSimulationId(),
                 payloadStore.getOutput(),payloadStore.getInsuranceProductId());
         LOGGER.info("***** SimulationStore - executeCreateQuotation() - argumentsForSaveSimulationProd: {} ***",argumentsForSaveSimulationProd);
+        Map<String, Object> argumentsForSaveSimulationCoLife = SimulationCompanyLifeMap.argumentsToSaveSimuCompanyLife(payloadStore.getNextSimulationId(),
+                payloadStore.getOutput(),payloadStore,payloadStore.getInsuranceProductId());
+        LOGGER.info("***** SimulationStore - executeCreateQuotation() - argumentsForSaveSimulationCoLife: {} ***",argumentsForSaveSimulationCoLife);
+        Map<String, Object> argumentsForSaveQuotationCoLife = QuoteCompanyLifeMap.argumentsToSaveQuoteCompanyLife(payloadStore.getOutput(),
+                payloadStore,payloadStore.getInsuranceProductId());
+        LOGGER.info("***** SimulationStore - executeCreateQuotation() - argumentsForSaveSimulationCoLife: {} ***",argumentsForSaveSimulationCoLife);
+        Map<String, Object> argumentsForSaveQuotationMod = QuotationModMap.argumentsToSaveQuotationMod(payloadStore.getOutput(),
+                payloadStore,payloadStore.getInsuranceProductId());
+        LOGGER.info("***** SimulationStore - executeCreateQuotation() - argumentsForSaveSimulationCoLife: {} ***",argumentsForSaveSimulationCoLife);
+
 
         ISimulationDAO iSimulationDAO = new SimulationDAOImpl(this.pisdR402);
         ISimulationProductDAO iSimulationProductDAO = new SimulationProductDAOImpl(this.pisdR402);
+        IEnterpriseSimulationCompanyLifeDAO enterpriseSimulationCompanyLifeDAO = new EnterpriseSimulationCompanyLifeDAO(this.pisdR402);
+        IEnterpriseQuotationCompanyLifeDAO enterpriseQuotationCompanyLifeDAO = new EnterpriseQuotationCompanyLifeDAOImpl(this.pisdR402);
+        IEnterpriseQuotationModDAO enterpriseQuotationModDAO = new EnterpriseQuotationModDAOImpl(this.pisdR402);
+
+
         IQuotationDAO iQuotationDAO = new QuotationDAOImpl(this.pisdR402);
-        if(payloadStore.getOutput().getQuotationReference()==null || payloadStore.getFirstPolicyQuotaInternalId()==null) {
+        if(payloadStore.getOutput().getQuotationReference()==null) {
             iSimulationDAO.insertSimulation(argumentsForSaveSimulation);
             iSimulationProductDAO.insertSimulationProduct(argumentsForSaveSimulationProd);
+            enterpriseSimulationCompanyLifeDAO.insertLifeEnterpriseSimuCompanyLife(argumentsForSaveSimulationCoLife);
             iQuotationDAO.insertQuotation(argumentsForSaveQuotation);
         }
-        else{
+        else if(payloadStore.getOutput().getQuotationReference()!=null && payloadStore.getFirstPolicyQuotaInternalId()==null){
+            iSimulationDAO.insertSimulation(argumentsForSaveSimulation);
+            iSimulationProductDAO.insertSimulationProduct(argumentsForSaveSimulationProd);
+            enterpriseSimulationCompanyLifeDAO.insertLifeEnterpriseSimuCompanyLife(argumentsForSaveSimulationCoLife);
+            iQuotationDAO.insertQuotation(argumentsForSaveQuotation);
+            enterpriseQuotationModDAO.insertLifeEnterpriseQuotationMod(argumentsForSaveQuotationMod);
+            enterpriseQuotationCompanyLifeDAO.insertLifeEnterpriseQuoteCompanyLife(argumentsForSaveQuotationCoLife);
+        }
+        else {
             QuotationDeleteMap quotationDeleteMap = new QuotationDeleteMap();
             Map<String, Object> argumentsForDeleteQuotation = quotationDeleteMap.createArgumentsForDeleteQuotation(payloadStore.getFirstPolicyQuotaInternalId());
             LOGGER.info("***** SimulationStore - executeCreateQuotation() - argumentsForSaveQuotation: {} ***", argumentsForSaveQuotation);
 
             iSimulationDAO.insertSimulation(argumentsForSaveSimulation);
             iSimulationProductDAO.insertSimulationProduct(argumentsForSaveSimulationProd);
+            enterpriseSimulationCompanyLifeDAO.insertLifeEnterpriseSimuCompanyLife(argumentsForSaveSimulationCoLife);
+            enterpriseQuotationCompanyLifeDAO.executeDeleteQuoteCompanyLife(payloadStore.getFirstPolicyQuotaInternalId(),
+                    payloadStore.getInsuranceProductId());
+            enterpriseQuotationModDAO.executeDeleteQuotationMod(payloadStore.getFirstPolicyQuotaInternalId(),
+                    payloadStore.getInsuranceProductId());
             iQuotationDAO.deleteQuotation(argumentsForDeleteQuotation);
+
             iQuotationDAO.insertQuotation(argumentsForSaveQuotation);
+            enterpriseQuotationModDAO.insertLifeEnterpriseQuotationMod(argumentsForSaveQuotationMod);
+            enterpriseQuotationCompanyLifeDAO.insertLifeEnterpriseQuoteCompanyLife(argumentsForSaveQuotationCoLife);
         }
     }
 

@@ -12,6 +12,13 @@ public class PayloadStore {
     private BigDecimal nextSimulationId;
     private BigDecimal insuranceProductId;
     private String firstPolicyQuotaInternalId;
+    private String planSelected;
+    private String fechaInicio;
+    private String fechaFin;
+    private BigDecimal premiumAmount;
+    private String address;
+    private String number;
+
     public EnterpriseQuotationDTO getOutput() {
         return output;
     }
@@ -58,5 +65,53 @@ public class PayloadStore {
 
     public void setFirstPolicyQuotaInternalId(String firstPolicyQuotaInternalId) {
         this.firstPolicyQuotaInternalId = firstPolicyQuotaInternalId;
+    }
+
+    public String getPlanSelected() {
+        return planSelected;
+    }
+
+    public void setPlanSelected(String planSelected) {
+        this.planSelected = planSelected;
+    }
+
+    public String getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(String fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public String getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(String fechaFin) {
+        this.fechaFin = fechaFin;
+    }
+
+    public BigDecimal getPremiumAmount() {
+        return premiumAmount;
+    }
+
+    public void setPremiumAmount(BigDecimal premiumAmount) {
+        this.premiumAmount = premiumAmount;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 }

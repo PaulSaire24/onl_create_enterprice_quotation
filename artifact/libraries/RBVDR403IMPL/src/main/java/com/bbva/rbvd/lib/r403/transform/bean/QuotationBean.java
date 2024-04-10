@@ -25,18 +25,18 @@ public class  QuotationBean {
         if(quotationCreate.getEmployees() == null){
             return null;
         }
-
         InsuranceEnterpriseInputBO payload = new InsuranceEnterpriseInputBO();
         QuotationInputBO companyQuotationPayloadBO = new QuotationInputBO();
-
+        List<Long> firstPlanList = new ArrayList<>();
         companyQuotationPayloadBO.setProducto(productName);
         companyQuotationPayloadBO.setDatosParticulares(getDatosParticulares(quotationCreate.getEmployees()));
-        companyQuotationPayloadBO.setPlanes(planList);
+        companyQuotationPayloadBO.setPlanes(firstPlanList);
 
         if (isFirstCall(quotationCreate.getQuotationReference())) {
             companyQuotationPayloadBO.setTipoCotizacion("R");
         } else {
             companyQuotationPayloadBO.setTipoCotizacion("C");
+            companyQuotationPayloadBO.setPlanes(planList);
         }
 
         String currency = quotationCreate.getEmployees().getMonthlyPayrollAmount().getCurrency();

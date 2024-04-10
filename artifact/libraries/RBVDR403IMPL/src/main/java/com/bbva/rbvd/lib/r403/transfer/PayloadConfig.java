@@ -16,6 +16,7 @@ public class PayloadConfig {
     private List<InsuranceModalityDAO> plansInformation;
     private List<String> policyQuotaInternalIdList;
     private BigDecimal nextSimulationId;
+    private String planSelected;
     public EnterpriseQuotationDTO getInput() {
         return input;
     }
@@ -70,5 +71,13 @@ public class PayloadConfig {
 
     public void setNextSimulationId(BigDecimal nextSimulationId) {
         this.nextSimulationId = nextSimulationId;
+    }
+
+    public String getPlanSelected() {
+        return planSelected;
+    }
+
+    public void setPlanSelected(String planSelected) {
+        this.planSelected = planSelected;
     }
 }

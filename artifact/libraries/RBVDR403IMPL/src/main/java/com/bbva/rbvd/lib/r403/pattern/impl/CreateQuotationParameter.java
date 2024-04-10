@@ -6,14 +6,8 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceProductDAO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceModalityDAO;
 import com.bbva.rbvd.lib.r403.pattern.PreCreateQuotation;
-import com.bbva.rbvd.lib.r403.service.dao.IEnterprisePolicyQuotaInternalIdDAO;
-import com.bbva.rbvd.lib.r403.service.dao.IEnterpriseProductDAO;
-import com.bbva.rbvd.lib.r403.service.dao.IEnterprisePlanDAO;
-import com.bbva.rbvd.lib.r403.service.dao.IInsuranceSimulationDAO;
-import com.bbva.rbvd.lib.r403.service.dao.impl.EnterprisePolicyQuotaInternalIdDAO;
-import com.bbva.rbvd.lib.r403.service.dao.impl.EnterpriseProductDAO;
-import com.bbva.rbvd.lib.r403.service.dao.impl.EnterprisePlanDAO;
-import com.bbva.rbvd.lib.r403.service.dao.impl.InsuranceSimulationDAOImpl;
+import com.bbva.rbvd.lib.r403.service.dao.*;
+import com.bbva.rbvd.lib.r403.service.dao.impl.*;
 import com.bbva.rbvd.lib.r403.transfer.PayloadConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +36,9 @@ public class CreateQuotationParameter implements PreCreateQuotation {
 
         if(input.getQuotationReference()!=null) {
             List<String> policyQuotaInternalId = getPolicyIdInfo(input.getQuotationReference());
+            String planSelected = getPlanSelected(policyQuotaInternalId);
             payloadConfig.setPolicyQuotaInternalIdList(policyQuotaInternalId);
+            payloadConfig.setPlanSelected(planSelected);
         }
         payloadConfig.setInput(input);
         payloadConfig.setProductInformationBySimulation(product);
@@ -69,7 +65,7 @@ public class CreateQuotationParameter implements PreCreateQuotation {
         return plansInfo;
     }
     public List<String> getPolicyIdInfo(String rfkInternalId){
-        LOGGER.info("***** executeCreateQuotation - getProductInfo START *****");
+        LOGGER.info("***** executeCreateQuotation - getPolicyIdInfo START *****");
 
         IEnterprisePolicyQuotaInternalIdDAO enterprisePolicyQuotaInternalIdDAO = new EnterprisePolicyQuotaInternalIdDAO(pisdR402);
         List<String> policyQuotaInternalId = enterprisePolicyQuotaInternalIdDAO.getPolicyQuotaInternalId(rfkInternalId);
@@ -85,6 +81,15 @@ public class CreateQuotationParameter implements PreCreateQuotation {
 
         LOGGER.info("***** executeCreateQuotation - getInsuranceSimulationId | simulationNextValue: {} *****",simulationNextValue);
         return simulationNextValue;
+    }
+    public String getPlanSelected(List<String> rfkInternalId){
+        LOGGER.info("***** executeCreateQuotation - getPlanSelected START *****");
+
+        IEnterprisePlanSelectedDAO enterprisePlanSelectedDAO = new EnterprisePlanSelectedDAO(pisdR402);
+        String planSelected = enterprisePlanSelectedDAO.getPlanSelected(rfkInternalId);
+
+        LOGGER.info("***** executeCreateQuotation - getPlanSelected | planSelected Value: {} *****",planSelected);
+        return planSelected;
     }
     public static final class Builder {
         private PISDR401 pisdR401;
