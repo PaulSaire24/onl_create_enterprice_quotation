@@ -143,10 +143,12 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
     }
     private static FinancingBO getFinancingBO(QuotationBO quotationDetail) {
         PlanBO plan = quotationDetail.getPlan();
-        FinancingBO firstFinancing;
-        firstFinancing = plan.getFinanciamientos().stream()
-                .filter(financingBO -> financingBO.getPeriodicidad().equalsIgnoreCase(ConstantsUtil.FinancingPeriodicity.ANUAL))
-                .findFirst().orElse(null);
+        FinancingBO firstFinancing = new FinancingBO();
+        if (plan != null && plan.getFinanciamientos() != null) {
+            firstFinancing = plan.getFinanciamientos().stream()
+                    .filter(financingBO -> financingBO.getPeriodicidad().equalsIgnoreCase(ConstantsUtil.FinancingPeriodicity.ANUAL))
+                    .findFirst().orElse(null);
+        }
         return firstFinancing;
     }
 
