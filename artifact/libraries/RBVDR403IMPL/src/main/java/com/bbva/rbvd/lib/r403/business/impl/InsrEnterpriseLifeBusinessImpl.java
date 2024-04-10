@@ -52,7 +52,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
                 payloadConfig);
 
         PayloadStore payloadStore = new PayloadStore();
-        List<Long> plansToRimac = filterRimacPlansId(payloadConfig.getPlanSelected());
+        List<Long> plansToRimac = filterRimacPlansId(payloadConfig.getPlanSelected(),payloadConfig.getPlansInformation());
         InsuranceEnterpriseInputBO rimacInput = QuotationBean.createQuotationDAO(payloadConfig.getInput(),plansToRimac,payloadConfig.getCompanyQuotaId(),
                 this.applicationConfigurationService);
         ConsumerExternalService consumerExternalService = new ConsumerExternalService();
@@ -107,10 +107,14 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         }
         return contactDetailsDTO;
     }
-    private static List<Long> filterRimacPlansId(String plans) {
+    private static List<Long> filterRimacPlansId(String plans,List<InsuranceModalityDAO> planList) {
         List<Long> firstPlan = new ArrayList<>();
         if (plans != null) {
-            firstPlan.add(Long.parseLong(plans));
+            firstPlan=  planList.stream()
+                    .filter(dto -> dto.getInsuranceModalityType().equals(plans))
+                    .map(dto -> Long.parseLong(dto.getInsuranceCompanyModalityId()))
+                    .collect(Collectors.toList());
+
         }
         return firstPlan;
     }

@@ -62,6 +62,7 @@ public class CreateQuotationParameter implements PreCreateQuotation {
 
         IEnterprisePlanDAO iEnterprisePlanDAO = new EnterprisePlanDAO(this.pisdR402);
         List<InsuranceModalityDAO> plansInfo = iEnterprisePlanDAO.getPlansId(productTypeId,Channel);
+        LOGGER.info("***** executeCreateQuotation - plansInfo: {}  ****",plansInfo);
         return plansInfo;
     }
     public List<String> getPolicyIdInfo(String rfkInternalId){
