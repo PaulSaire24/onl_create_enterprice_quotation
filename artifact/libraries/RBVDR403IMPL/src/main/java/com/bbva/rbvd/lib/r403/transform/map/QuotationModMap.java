@@ -20,8 +20,17 @@ public class QuotationModMap {
             quotationModMap.put(ConstantsUtil.QuotationModMap.INSURANCE_PRODUCT_ID,producId);
             quotationModMap.put(ConstantsUtil.InsurancePrdModality.FIELD_INSURANCE_MODALITY_TYPE,payloadStore.getPlanSelected());
             quotationModMap.put(ConstantsUtil.QuotationModMap.SALE_CHANNEL_ID,responseDTO.getSaleChannelId());
+            if ( !responseDTO.getProduct().getPlans().isEmpty() &&
+                    responseDTO.getProduct().getPlans().get(0).getInstallmentPlans() != null &&
+                    !responseDTO.getProduct().getPlans().get(0).getInstallmentPlans().isEmpty()) {
             quotationModMap.put(ConstantsUtil.QuotationModMap.PAYMENT_TERM_NUMBER,responseDTO.getProduct().getPlans().get(0).getInstallmentPlans().get(0).getPaymentsTotalNumber());
             quotationModMap.put(ConstantsUtil.QuotationModMap.POLICY_PAYMENT_FREQUENCY_TYPE,responseDTO.getProduct().getPlans().get(0).getInstallmentPlans().get(0).getPeriod());
+            quotationModMap.put(ConstantsUtil.QuotationModMap.PREMIUM_CURRENCY_ID,responseDTO.getProduct().getPlans().get(0).getTotalInstallment().getCurrency());
+            } else {
+                quotationModMap.put(ConstantsUtil.QuotationModMap.PAYMENT_TERM_NUMBER,null);
+                quotationModMap.put(ConstantsUtil.QuotationModMap.POLICY_PAYMENT_FREQUENCY_TYPE,null);
+                quotationModMap.put(ConstantsUtil.QuotationModMap.PREMIUM_CURRENCY_ID,null);
+            }
             quotationModMap.put(ConstantsUtil.QuotationModMap.FINANCING_START_DATE,payloadStore.getFechaInicio());
             quotationModMap.put(ConstantsUtil.QuotationModMap.FINANCING_END_DATE,payloadStore.getFechaFin());
             quotationModMap.put(ConstantsUtil.QuotationModMap.PREMIUM_AMOUNT,payloadStore.getPremiumAmount());
