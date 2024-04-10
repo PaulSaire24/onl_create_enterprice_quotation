@@ -34,7 +34,6 @@ public class QuotationModMap {
             quotationModMap.put(ConstantsUtil.QuotationModMap.FINANCING_START_DATE,payloadStore.getFechaInicio());
             quotationModMap.put(ConstantsUtil.QuotationModMap.FINANCING_END_DATE,payloadStore.getFechaFin());
             quotationModMap.put(ConstantsUtil.QuotationModMap.PREMIUM_AMOUNT,payloadStore.getPremiumAmount());
-            quotationModMap.put(ConstantsUtil.QuotationModMap.PREMIUM_CURRENCY_ID,responseDTO.getProduct().getPlans().get(0).getTotalInstallment().getCurrency());
             quotationModMap.put(ConstantsUtil.QuotationModMap.SAVED_QUOTATION_IND_TYPE,"S");
             quotationModMap.put(ConstantsUtil.QuotationModMap.LAST_CHANGE_BRANCH_ID,responseDTO.getLastChangeBranchId());
             quotationModMap.put(ConstantsUtil.QuotationModMap.SOURCE_BRANCH_ID,responseDTO.getLastChangeBranchId());
