@@ -48,10 +48,10 @@ public class CreateQuotationStore implements PostCreateQuotation {
         LOGGER.info("***** SimulationStore - executeCreateQuotation() - argumentsForSaveSimulationCoLife: {} ***",argumentsForSaveSimulationCoLife);
         Map<String, Object> argumentsForSaveQuotationCoLife = QuoteCompanyLifeMap.argumentsToSaveQuoteCompanyLife(payloadStore.getOutput(),
                 payloadStore,payloadStore.getInsuranceProductId());
-        LOGGER.info("***** SimulationStore - executeCreateQuotation() - argumentsForSaveSimulationCoLife: {} ***",argumentsForSaveSimulationCoLife);
+        LOGGER.info("***** SimulationStore - executeCreateQuotation() - argumentsForSaveQuotationCoLife: {} ***",argumentsForSaveQuotationCoLife);
         Map<String, Object> argumentsForSaveQuotationMod = QuotationModMap.argumentsToSaveQuotationMod(payloadStore.getOutput(),
                 payloadStore,payloadStore.getInsuranceProductId());
-        LOGGER.info("***** SimulationStore - executeCreateQuotation() - argumentsForSaveSimulationCoLife: {} ***",argumentsForSaveSimulationCoLife);
+        LOGGER.info("***** SimulationStore - executeCreateQuotation() - argumentsForSaveQuotationMod: {} ***",argumentsForSaveQuotationMod);
 
 
         ISimulationDAO iSimulationDAO = new SimulationDAOImpl(this.pisdR402);
