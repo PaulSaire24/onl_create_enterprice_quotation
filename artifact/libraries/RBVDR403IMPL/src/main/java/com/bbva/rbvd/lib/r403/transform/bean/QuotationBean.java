@@ -107,7 +107,6 @@ public class  QuotationBean {
         planillaBrutaMensual.setCodigo("");
         planillaBrutaMensual.setValor(formattedAmount);
         particularData.add(planillaBrutaMensual);
-        System.out.println(formattedAmount);
         ParticularDataBO sumaAsegurada = new ParticularDataBO();
         sumaAsegurada.setValor(String.valueOf(value));
         sumaAsegurada.setEtiqueta(ContansUtils.rimacInput.ETIQUETA_4);
