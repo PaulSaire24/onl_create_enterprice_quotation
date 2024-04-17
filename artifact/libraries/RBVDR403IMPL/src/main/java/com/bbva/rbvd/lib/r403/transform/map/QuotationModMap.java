@@ -22,7 +22,8 @@ public class QuotationModMap {
             quotationModMap.put(ConstantsUtil.QuotationModMap.SALE_CHANNEL_ID,responseDTO.getSaleChannelId());
             if ( !responseDTO.getProduct().getPlans().isEmpty() &&
                     responseDTO.getProduct().getPlans().get(0).getInstallmentPlans() != null &&
-                    !responseDTO.getProduct().getPlans().get(0).getInstallmentPlans().isEmpty()) {
+                    !responseDTO.getProduct().getPlans().get(0).getInstallmentPlans().isEmpty()&&
+                    responseDTO.getProduct().getPlans().get(0).getTotalInstallment() != null) {
             quotationModMap.put(ConstantsUtil.QuotationModMap.PAYMENT_TERM_NUMBER,responseDTO.getProduct().getPlans().get(0).getInstallmentPlans().get(0).getPaymentsTotalNumber());
             quotationModMap.put(ConstantsUtil.QuotationModMap.POLICY_PAYMENT_FREQUENCY_TYPE,responseDTO.getProduct().getPlans().get(0).getInstallmentPlans().get(0).getPeriod());
             quotationModMap.put(ConstantsUtil.QuotationModMap.PREMIUM_CURRENCY_ID,responseDTO.getProduct().getPlans().get(0).getTotalInstallment().getCurrency());
