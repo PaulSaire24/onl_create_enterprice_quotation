@@ -7,7 +7,10 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.ParticularDataBO;
 
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseInputBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationInputBO;
+import com.bbva.rbvd.lib.r403.business.impl.InsrEnterpriseLifeBusinessImpl;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 
@@ -19,6 +22,7 @@ import java.util.Objects;
 
 
 public class  QuotationBean {
+    private static final Logger LOGGER = LoggerFactory.getLogger(InsrEnterpriseLifeBusinessImpl.class);
 
     private QuotationBean(){}
 
@@ -97,6 +101,10 @@ public class  QuotationBean {
         planillaBrutaMensual.setEtiqueta(ContansUtils.rimacInput.ETIQUETA_3);
         planillaBrutaMensual.setCodigo("");
         planillaBrutaMensual.setValor(formattedAmount);
+        LOGGER.info("***** createQuotationDAO - getDatosParticulares  | argument formattedAmount: {} *****",
+                formattedAmount);
+        LOGGER.info("***** createQuotationDAO - getDatosParticulares  |  getAmount: {} *****",
+                employees.getMonthlyPayrollAmount().getAmount().toString());
         particularData.add(planillaBrutaMensual);
         ParticularDataBO sumaAsegurada = new ParticularDataBO();
         sumaAsegurada.setValor(String.valueOf(10000));
