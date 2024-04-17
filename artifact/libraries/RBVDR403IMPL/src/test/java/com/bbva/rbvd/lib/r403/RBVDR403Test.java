@@ -590,7 +590,7 @@ catch (BusinessException e){
 		employees.setEmployeesNumber(Long.valueOf(30));
 		AmountDTO monthlyPayrollAmount = new AmountDTO();
 		monthlyPayrollAmount.setCurrency("PEN");
-		monthlyPayrollAmount.setAmount(BigDecimal.valueOf(200.00).doubleValue());
+		monthlyPayrollAmount.setAmount(BigDecimal.valueOf(200000000000000000.00).doubleValue());
 		employees.setMonthlyPayrollAmount((monthlyPayrollAmount));
 		product.setId("503");
 		contacto.setContactDetailType("EMAIL");
@@ -647,7 +647,7 @@ catch (BusinessException e){
 		employees.setEmployeesNumber(Long.valueOf(30));
 		AmountDTO monthlyPayrollAmount = new AmountDTO();
 		monthlyPayrollAmount.setCurrency("PEN");
-		monthlyPayrollAmount.setAmount(BigDecimal.valueOf(200.00).doubleValue());
+		monthlyPayrollAmount.setAmount(BigDecimal.valueOf(20000000000000.00).doubleValue());
 		employees.setMonthlyPayrollAmount((monthlyPayrollAmount));
 		product.setId("842");
 		contacto.setContactDetailType("EMAIL");
