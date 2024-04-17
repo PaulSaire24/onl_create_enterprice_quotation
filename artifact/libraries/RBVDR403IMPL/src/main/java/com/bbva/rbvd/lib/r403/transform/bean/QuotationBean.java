@@ -11,6 +11,7 @@ import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.springframework.util.CollectionUtils;
 
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -72,6 +73,9 @@ public class  QuotationBean {
     public static List<ParticularDataBO> getDatosParticulares(EmployeesDTO employees){
 
         List<ParticularDataBO> particularData = new ArrayList<>();
+        Double amount = employees.getMonthlyPayrollAmount().getAmount();
+        DecimalFormat df = new DecimalFormat("#");
+        String formattedAmount = df.format(amount);
 
         ParticularDataBO numeroTrabajadores = new ParticularDataBO();
         numeroTrabajadores.setEtiqueta(ContansUtils.rimacInput.ETIQUETA_1);
@@ -88,7 +92,7 @@ public class  QuotationBean {
         ParticularDataBO planillaBrutaMensual = new ParticularDataBO();
         planillaBrutaMensual.setEtiqueta(ContansUtils.rimacInput.ETIQUETA_3);
         planillaBrutaMensual.setCodigo("");
-        planillaBrutaMensual.setValor(String.valueOf(employees.getMonthlyPayrollAmount().getAmount()));
+        planillaBrutaMensual.setValor(formattedAmount);
         particularData.add(planillaBrutaMensual);
 
         ParticularDataBO sumaAsegurada = new ParticularDataBO();

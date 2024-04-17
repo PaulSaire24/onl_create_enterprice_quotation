@@ -33,15 +33,11 @@ public class ListEnterprisePlan implements IListEnterprisePlan {
         addPlansId(planBOList,planList);
         return planBOList.stream()
                 .map(planBO -> {
-                    String[] plaName = planBO.getDescripcionPlan().split(" ");
-                    String planName = null;
-                    if (plaName.length >= 2) {
-                        planName = plaName[0] + " " + plaName[1];
-                    }
+                    String plaName = planBO.getDescripcionPlan();
                     PlanDTO planDTO = new PlanDTO();
                     planDTO.setId(String.format("%02d", planBO.getPlan()));
                     planDTO.setIsSelected(false);
-                    planDTO.setName(planName);
+                    planDTO.setName(plaName);
                     planDTO.setIsRecommended(false);
                     planDTO.setInstallmentPlans(mapInstallmentPlans(planBO,applicationConfigurationService));
                     planDTO.setCoverages(mapCoverages(planBO,applicationConfigurationService));
@@ -52,7 +48,7 @@ public class ListEnterprisePlan implements IListEnterprisePlan {
                 .collect(Collectors.toList());
     }
     private static AmountDTO mapTotalInstallmentPlans(PlanBO rimacPlan) {
-        if (Objects.isNull(rimacPlan.getPrimaNeta()) || Objects.isNull(rimacPlan.getMoneda())) {
+        if (Objects.isNull(rimacPlan.getPrimaBruta()) || Objects.isNull(rimacPlan.getMoneda())) {
             return null;
         }
         if(rimacPlan.getMoneda().equals("PEN")||
@@ -63,7 +59,7 @@ public class ListEnterprisePlan implements IListEnterprisePlan {
             rimacPlan.setMoneda("USD");
         }
         AmountDTO totalInstallmentPlan = new AmountDTO();
-        totalInstallmentPlan.setAmount(rimacPlan.getPrimaNeta().doubleValue());
+        totalInstallmentPlan.setAmount(rimacPlan.getPrimaBruta().doubleValue());
         totalInstallmentPlan.setCurrency(rimacPlan.getMoneda());
 
         return totalInstallmentPlan;
