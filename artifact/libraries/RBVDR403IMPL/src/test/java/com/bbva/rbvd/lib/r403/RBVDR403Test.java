@@ -330,11 +330,13 @@ catch (BusinessException e){
 		plan1.setPlan(534254L);
 		plan1.setFinanciamientos(financingBOList);
 		plan1.setPrimaNeta(new BigDecimal(1000));
+		plan1.setPrimaBruta(new BigDecimal(1000));
 		plan1.setMoneda("pen");
 		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
 		plan2.setPlan(2l);
 		plan2.setFinanciamientos(financingBOList);
 		plan2.setPrimaNeta(new BigDecimal(1000));
+		plan2.setPrimaBruta(new BigDecimal(1000));
 		plan2.setMoneda("pen");
 		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
 		List<QuotationBO> cotizaciones = new ArrayList<>();
@@ -384,12 +386,14 @@ catch (BusinessException e){
 		plan1.setCoberturas(coverageBOList);
 		plan1.setFinanciamientos(financingBOList);
 		plan1.setPrimaNeta(new BigDecimal(1000));
+		plan1.setPrimaBruta(new BigDecimal(1000));
 		plan1.setMoneda("pen");
 		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
 
 		plan2.setPlan(2l);
 		plan2.setFinanciamientos(financingBOList);
 		plan2.setPrimaNeta(new BigDecimal(1000));
+		plan2.setPrimaBruta(new BigDecimal(1000));
 		plan2.setMoneda("pen");
 		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
 
@@ -446,6 +450,7 @@ catch (BusinessException e){
 		plan1.setCoberturas(coverageBOList);
 		plan1.setFinanciamientos(financingBOList);
 		plan1.setPrimaNeta(new BigDecimal(1000));
+		plan1.setPrimaBruta(new BigDecimal(1000));
 		plan1.setMoneda("pen");
 		plan1.setAsistencias(assistanceBOList);
 		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
@@ -453,6 +458,7 @@ catch (BusinessException e){
 		plan2.setPlan(2l);
 		plan2.setFinanciamientos(financingBOList);
 		plan2.setPrimaNeta(new BigDecimal(1000));
+		plan2.setPrimaBruta(new BigDecimal(1000));
 		plan2.setMoneda("pen");
 		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
 		List<QuotationBO> cotizaciones = new ArrayList<>();
@@ -503,12 +509,14 @@ catch (BusinessException e){
 		plan1.setCoberturas(coverageBOList);
 		plan1.setFinanciamientos(financingBOList);
 		plan1.setPrimaNeta(new BigDecimal(1000));
+		plan1.setPrimaBruta(new BigDecimal(1000));
 		plan1.setMoneda("pen");
 		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
 		planes.add(plan1);
 		plan2.setPlan(2l);
 		plan2.setFinanciamientos(financingBOList);
 		plan2.setPrimaNeta(new BigDecimal(1000));
+		plan2.setPrimaBruta(new BigDecimal(1000));
 		plan2.setMoneda("pen");
 		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
 
