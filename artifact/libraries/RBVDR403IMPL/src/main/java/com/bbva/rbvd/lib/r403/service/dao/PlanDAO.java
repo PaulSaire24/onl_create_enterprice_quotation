@@ -59,7 +59,7 @@ public class PlanDAO {
             rimacPlan.setMoneda("USD");
         }
         AmountDTO totalInstallmentPlan = new AmountDTO();
-        totalInstallmentPlan.setAmount(rimacPlan.getPrimaNeta().doubleValue());
+        totalInstallmentPlan.setAmount(rimacPlan.getPrimaBruta().doubleValue());
         totalInstallmentPlan.setCurrency(rimacPlan.getMoneda());
 
         return totalInstallmentPlan;
