@@ -78,7 +78,7 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 
 		IInsurancePlanDAO iInsurancePlanDAO = new InsurancePlanDAO(this.pisdR402);
 		List<Map<String, Object>> planList = iInsurancePlanDAO.getPlansId(argumentsForGetPlansId);
-		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - List of plans: {} ***", planList);
+		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - List of plans : {} ***", planList);
 
 		LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - input.participants[] : {} ***",quotationCreate.getParticipants());
 
