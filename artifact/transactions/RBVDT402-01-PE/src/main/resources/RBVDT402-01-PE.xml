@@ -7,7 +7,7 @@
 			<parameter order="2" name="employeesNumber" mandatory="1" type="Long" size="40"/>
 			<dto order="3" name="monthlyPayrollAmount" mandatory="1" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.AmountDTO" artifactId="RBVDC402">
 				<parameter order="1" name="currency" mandatory="1" type="String" size="10"/>
-				<parameter order="2" name="amount" mandatory="1" type="Double" size="10"/>
+				<parameter order="2" name="amount" mandatory="1" type="Double" size="17"/>
 			</dto>
 		</dto>
 		<dto order="3" name="product" mandatory="1" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ProductDTO" artifactId="RBVDC402">

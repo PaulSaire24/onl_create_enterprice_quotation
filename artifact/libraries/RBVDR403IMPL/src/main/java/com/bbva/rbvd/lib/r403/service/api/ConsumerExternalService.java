@@ -1,4 +1,4 @@
-package com.bbva.rbvd.lib.r403.service.impl;
+package com.bbva.rbvd.lib.r403.service.api;
 
 
 import com.bbva.elara.utility.api.connector.APIConnector;

@@ -1,9 +1,11 @@
 package com.bbva.rbvd.lib.r403.transfer;
 
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceModalityDAO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class PayloadStore {
     private EnterpriseQuotationDTO output;
@@ -18,6 +20,7 @@ public class PayloadStore {
     private BigDecimal premiumAmount;
     private String address;
     private String number;
+    private List<String> policyQuotaInternalIdList;
 
     public EnterpriseQuotationDTO getOutput() {
         return output;
@@ -113,5 +116,13 @@ public class PayloadStore {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public List<String> getPolicyQuotaInternalIdList() {
+        return policyQuotaInternalIdList;
+    }
+
+    public void setPolicyQuotaInternalIdList(List<String> policyQuotaInternalIdList) {
+        this.policyQuotaInternalIdList = policyQuotaInternalIdList;
     }
 }

@@ -19,7 +19,7 @@ import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResp
 import com.bbva.rbvd.dto.enterpriseinsurance.utils.ConstantsUtil;
 import com.bbva.rbvd.lib.r403.impl.RBVDR403Impl;
 
-import com.bbva.rbvd.lib.r403.service.impl.ConsumerExternalService;
+import com.bbva.rbvd.lib.r403.service.api.ConsumerExternalService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

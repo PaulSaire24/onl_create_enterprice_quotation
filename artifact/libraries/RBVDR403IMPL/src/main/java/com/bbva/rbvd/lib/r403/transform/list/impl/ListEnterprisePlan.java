@@ -1,21 +1,23 @@
 package com.bbva.rbvd.lib.r403.transform.list.impl;
 
 import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
-import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.*;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.AmountDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.DescriptionDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.CoverageDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.InstallmentPlansDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.AssistanceBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.CoverageBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.FinancingBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
-import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceModalityDAO;
-import com.bbva.rbvd.lib.r403.impl.utils.ValidMaps;
-import com.bbva.rbvd.lib.r403.transform.list.IListEnterprisePlan;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
-public class ListEnterprisePlan implements IListEnterprisePlan {
+public class ListEnterprisePlan  {
 
 
     private final ApplicationConfigurationService applicationConfigurationService;
@@ -23,31 +25,7 @@ public class ListEnterprisePlan implements IListEnterprisePlan {
     public ListEnterprisePlan(ApplicationConfigurationService applicationConfigurationService) {
         this.applicationConfigurationService = applicationConfigurationService;
     }
-    @Override
-    public List<PlanDTO> getPlanInfo(List<PlanBO> planBOList, ApplicationConfigurationService applicationConfigurationService,
-                                     List<InsuranceModalityDAO> planList){
-        if (Objects.isNull(planBOList)) {
-            return Collections.emptyList();
-        }
-        addPlansName(planBOList,planList);
-        addPlansId(planBOList,planList);
-        return planBOList.stream()
-                .map(planBO -> {
-                    String plaName = planBO.getDescripcionPlan();
-                    PlanDTO planDTO = new PlanDTO();
-                    planDTO.setId(String.format("%02d", planBO.getPlan()));
-                    planDTO.setIsSelected(false);
-                    planDTO.setName(plaName);
-                    planDTO.setIsRecommended(false);
-                    planDTO.setInstallmentPlans(mapInstallmentPlans(planBO,applicationConfigurationService));
-                    planDTO.setCoverages(mapCoverages(planBO,applicationConfigurationService));
-                    planDTO.setTotalInstallment(mapTotalInstallmentPlans(planBO));
-                    planDTO.setBenefits(mapBenefits(planBO));
-                    return planDTO;
-                })
-                .collect(Collectors.toList());
-    }
-    private static AmountDTO mapTotalInstallmentPlans(PlanBO rimacPlan) {
+    public static AmountDTO mapTotalInstallmentPlans(PlanBO rimacPlan) {
         if (Objects.isNull(rimacPlan.getPrimaBruta()) || Objects.isNull(rimacPlan.getMoneda())) {
             return null;
         }
@@ -65,7 +43,7 @@ public class ListEnterprisePlan implements IListEnterprisePlan {
         return totalInstallmentPlan;
     }
 
-    private static List<CoverageDTO> mapCoverages(PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
+    public static List<CoverageDTO> mapCoverages(PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
         if (CollectionUtils.isEmpty(rimacPlan.getCoberturas())) {
             return Collections.emptyList();
         }
@@ -81,45 +59,7 @@ public class ListEnterprisePlan implements IListEnterprisePlan {
                 })
                 .collect(Collectors.toList());
     }
-    private static void addPlansId(List<PlanBO> planBOList,List<InsuranceModalityDAO> planList) {
-
-        Map<String, String> idToTypeMap = planList.stream()
-                .collect(Collectors.toMap(
-                        map -> map.getInsuranceCompanyModalityId(),
-                        map -> map.getInsuranceModalityType()));
-        if(!ValidMaps.mapIsNullOrEmpty(idToTypeMap)) {
-            // Update the PlanBO objects using the map
-            planBOList.forEach(planBO -> {
-                String planId = planBO.getPlan().toString(); // Accede al atributo plan y conviértelo a cadena
-                if (planId != null) {
-                    // Convertir la cadena a int y luego a Long para eliminar los ceros a la izquierda
-                    int intValue = Integer.parseInt(idToTypeMap.getOrDefault(planId, "0"));
-                    planBO.setPlan((long) intValue);
-                }
-            });
-            planBOList.sort(Comparator.comparingLong(PlanBO::getPlan));
-        }
-    }
-    private static void addPlansName(List<PlanBO> planBOList,List<InsuranceModalityDAO> planList) {
-
-        Map<String, String> nameToIdMap = planList.stream()
-                .collect(Collectors.toMap(
-                        //PONER EN EL DTO LA CLAVE
-                        map ->  map.getInsuranceCompanyModalityId(),
-                        map ->  map.getInsuranceModalityName()));
-        if(!ValidMaps.mapIsNullOrEmpty(nameToIdMap)) {
-            // Actualiza PlanBO usando el mapa
-            planBOList.forEach(planBO -> {
-                String planName = planBO.getPlan().toString(); // Accede al atributo plan y conviértelo a cadena
-                if (planName != null) {
-                    // Convertir la cadena a int y luego a Long para eliminar los ceros a la izquierda
-                    String intValue =nameToIdMap.getOrDefault(planName, "0");
-                    planBO.setDescripcionPlan(intValue);
-                }
-            });
-        }
-    }
-    private static List<DescriptionDTO> mapBenefits(PlanBO rimacPlan) {
+    public static List<DescriptionDTO> mapBenefits(PlanBO rimacPlan) {
         if (CollectionUtils.isEmpty(rimacPlan.getAsistencias())) {
             return Collections.emptyList();
         }
@@ -136,7 +76,7 @@ public class ListEnterprisePlan implements IListEnterprisePlan {
                 })
                 .collect(Collectors.toList());
     }
-    private static List<InstallmentPlansDTO> mapInstallmentPlans(PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
+    public static List<InstallmentPlansDTO> mapInstallmentPlans(PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
         if (CollectionUtils.isEmpty(rimacPlan.getFinanciamientos())) {
             return Collections.emptyList();
         }
@@ -171,7 +111,7 @@ public class ListEnterprisePlan implements IListEnterprisePlan {
 
         return paymentAmount;
     }
-    private static DescriptionDTO mapCoverageType(CoverageBO coverageBO, ApplicationConfigurationService applicationConfigurationService) {
+    public static DescriptionDTO mapCoverageType(CoverageBO coverageBO, ApplicationConfigurationService applicationConfigurationService) {
         if (Objects.isNull(coverageBO.getCondicion())) {
             return null;
         }

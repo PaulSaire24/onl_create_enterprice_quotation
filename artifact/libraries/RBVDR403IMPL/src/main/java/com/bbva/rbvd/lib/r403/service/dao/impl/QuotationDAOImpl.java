@@ -29,7 +29,7 @@ public class QuotationDAOImpl implements IQuotationDAO {
     @Override
     public void deleteQuotation(Map<String, Object> argument) {
 
-        this.pisdR402.executeInsertSingleRow("PISD.DELETE_INSURED_QUOTATION_ENTERPRISE",argument);
+        this.pisdR402.executeInsertSingleRow(ContansUtils.rimacInput.DELETE_INSURED_QUOTATION_ENTERPRISE,argument);
 
     }
 }

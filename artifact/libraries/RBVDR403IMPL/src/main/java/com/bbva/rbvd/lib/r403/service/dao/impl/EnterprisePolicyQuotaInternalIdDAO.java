@@ -3,10 +3,11 @@ package com.bbva.rbvd.lib.r403.service.dao.impl;
 import com.bbva.pisd.lib.r402.PISDR402;
 
 
-
+import com.bbva.rbvd.dto.enterpriseinsurance.utils.ConstantsUtil;
 import com.bbva.rbvd.lib.r403.service.dao.IEnterprisePolicyQuotaInternalIdDAO;
 import com.bbva.rbvd.lib.r403.transform.bean.PolicyQuotaInternalIdBean;
 import com.bbva.rbvd.lib.r403.transform.map.PolicyQuotaInternalIdMap;
+import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,7 +24,7 @@ public class EnterprisePolicyQuotaInternalIdDAO implements IEnterprisePolicyQuot
     public List<String> getPolicyQuotaInternalId(String rfkInternalId) {
         Map<String, Object> argumentsForGetPlansId = PolicyQuotaInternalIdMap.createArgumentsForGetPolicyId(
                 rfkInternalId);
-        List<Map<String,Object>> productResponse= this.pisdR402.executeGetListASingleRow("PISD.GET_QUOTATION_POLICY_ID",argumentsForGetPlansId);
+        List<Map<String,Object>> productResponse= this.pisdR402.executeGetListASingleRow(ContansUtils.rimacInput.GET_QUOTATION_POLICY_ID,argumentsForGetPlansId);
 
         return PolicyQuotaInternalIdBean.getPolicyQuotaInternalId(productResponse);
     }

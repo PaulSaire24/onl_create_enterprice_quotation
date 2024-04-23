@@ -53,7 +53,7 @@ public class PayloadConfig {
         return plansInformation;
     }
 
-    public void setPlansInformation(List<InsuranceModalityDAO> plansInformation) {
+    public void setPlansFromBD(List<InsuranceModalityDAO> plansInformation) {
         this.plansInformation = plansInformation;
     }
 

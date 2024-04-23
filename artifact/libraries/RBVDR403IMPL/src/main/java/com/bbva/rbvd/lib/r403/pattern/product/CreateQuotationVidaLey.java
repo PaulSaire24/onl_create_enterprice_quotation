@@ -3,6 +3,7 @@ package com.bbva.rbvd.lib.r403.pattern.product;
 import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
 import com.bbva.elara.utility.api.connector.APIConnector;
 import com.bbva.pisd.lib.r014.PISDR014;
+import com.bbva.pisd.lib.r402.PISDR402;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
 import com.bbva.rbvd.lib.r403.business.IInsrEnterpriseLifeBusiness;
 import com.bbva.rbvd.lib.r403.business.impl.InsrEnterpriseLifeBusinessImpl;
@@ -20,10 +21,10 @@ public class CreateQuotationVidaLey extends CreateQuotationDecorator {
         super(preCreateQuotation, postCreateQuotation);
     }
     @Override
-   public EnterpriseQuotationDTO start(EnterpriseQuotationDTO input, ApplicationConfigurationService applicationConfigurationService, APIConnector externalApiConnector, PISDR014 pisdR014){
+   public EnterpriseQuotationDTO start(EnterpriseQuotationDTO input, ApplicationConfigurationService applicationConfigurationService, APIConnector externalApiConnector, PISDR014 pisdR014, PISDR402 pisdR402){
         LOGGER.info("***** RBVDR403Impl - CreateQuotationVidaLey - start START | input {} *****",input);
         PayloadConfig payloadConfig = this.getPreCreateQuotation().getConfig(input);
-        IInsrEnterpriseLifeBusiness insrEnterpriseLifeBusiness = new InsrEnterpriseLifeBusinessImpl(applicationConfigurationService,externalApiConnector,pisdR014);
+        IInsrEnterpriseLifeBusiness insrEnterpriseLifeBusiness = new InsrEnterpriseLifeBusinessImpl(applicationConfigurationService,externalApiConnector,pisdR014,pisdR402);
         PayloadStore payloadStore = insrEnterpriseLifeBusiness.doEnterpriseLife(payloadConfig);
         this.getPostCreateQuotation().end(payloadStore);
         LOGGER.info("***** RBVDR403Impl - CreateQuotationVidaLey - start END | PayloadStore.Output {} *****",payloadStore.getOutput());
