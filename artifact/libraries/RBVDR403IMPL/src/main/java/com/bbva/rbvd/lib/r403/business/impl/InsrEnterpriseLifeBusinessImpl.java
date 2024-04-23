@@ -87,10 +87,10 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
             payloadStore.setPremiumAmount(!CollectionUtils.isEmpty(financing.getCuotasFinanciamiento())?
                     financing.getCuotasFinanciamiento().get(ConstantsUtil.NumberConstants.ZERO).getMonto(): null);
            }
-        if(payloadConfig.getPolicyQuotaInternalIdList()!=null){
+        if(payloadStore.getPolicyQuotaInternalIdList()!=null){
             String firstPolicyQuotaInternalId;
-            firstPolicyQuotaInternalId = getFirstQuotationId(payloadConfig.getPolicyQuotaInternalIdList());
-            response.setId(generateSecondQuotationId(payloadConfig.getNextSimulationId(),payloadConfig.getInput(),payloadConfig.getPolicyQuotaInternalIdList()));
+            firstPolicyQuotaInternalId = getFirstQuotationId(payloadStore.getPolicyQuotaInternalIdList());
+            response.setId(generateSecondQuotationId(payloadConfig.getNextSimulationId(),payloadConfig.getInput(),payloadStore.getPolicyQuotaInternalIdList()));
             payloadStore.setFirstPolicyQuotaInternalId(firstPolicyQuotaInternalId);
         }
         payloadStore.setAddress(email);
