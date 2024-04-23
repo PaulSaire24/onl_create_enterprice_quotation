@@ -60,7 +60,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
             payloadStore.setPolicyQuotaInternalIdList(policyQuotaInternalId);
             payloadStore.setPlanSelected(planSelected);
         }
-        List<Long> plansToRimac = filterPlanIdToSendRimac(payloadConfig.getPlanSelected(),payloadConfig.getPlansInformation());
+        List<Long> plansToRimac = filterPlanIdToSendRimac(payloadStore.getPlanSelected(),payloadConfig.getPlansInformation());
         InsuranceEnterpriseInputBO rimacInput =createQuotationDAO(payloadConfig.getInput(),plansToRimac,payloadConfig.getCompanyQuotaId(),
                 this.applicationConfigurationService);
         ConsumerExternalService consumerExternalService = new ConsumerExternalService();
@@ -120,8 +120,10 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         if (isFirstCall(quotationCreate.getQuotationReference())) {
             companyQuotationPayloadBO.setTipoCotizacion(ConstantsUtil.StringConstants.R);
         } else {
+
             companyQuotationPayloadBO.setTipoCotizacion(ConstantsUtil.StringConstants.C);
             companyQuotationPayloadBO.setPlanes(planList);
+            LOGGER.info("***** InsrEnterpriseLifeBusinessImpl - createQuotationDAO  |  planList: {} *****", planList);
         }
 
         String currency = quotationCreate.getEmployees().getMonthlyPayrollAmount().getCurrency();
@@ -209,6 +211,8 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
     }
     private static List<Long> filterPlanIdToSendRimac(String plans, List<InsuranceModalityDAO> planList) {
         List<Long> firstPlan = new ArrayList<>();
+        LOGGER.info("***** InsrEnterpriseLifeBusinessImpl - filterPlanIdToSendRimac  |  plans: {} *****", plans);
+
         if (plans != null) {
             firstPlan=  planList.stream()
                     .filter(dto -> dto.getInsuranceModalityType().equals(plans))
@@ -216,6 +220,8 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
                     .collect(Collectors.toList());
 
         }
+        LOGGER.info("***** InsrEnterpriseLifeBusinessImpl - filterPlanIdToSendRimac  |  firstPlan: {} *****", firstPlan);
+
         return firstPlan;
     }
     private EnterpriseQuotationDTO mapInQuotationResponse(EnterpriseQuotationDTO input,

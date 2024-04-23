@@ -259,6 +259,8 @@ catch (BusinessException e){
 				.thenReturn(1);
 		when(pisdr402.executeGetListASingleRow("PISD.GET_MODALITY_TYPE_BY_PRODUCT_ID",getArgumentsPlans()))
 				.thenReturn(createPlan());
+		when(pisdr402.executeGetASingleRow("PISD.SELECT_QUOTATION_BY_PLAN",getArgumentsPlanSelected()))
+				.thenReturn(createPlanSelected());
 		when(pisdr402.executeGetListASingleRow("PISD.GET_QUOTATION_POLICY_ID",getArgumentsPolicy()))
 				.thenReturn(getPolicy());
 
@@ -716,6 +718,13 @@ catch (BusinessException e){
 		return listPlans;
 
 	}
+	private Map<String, Object> createPlanSelected(){
+
+		Map<String, Object> mapPlans = new HashMap<>();
+		mapPlans.put(ConstantsUtil.InsurancePrdModality.FIELD_INSURANCE_MODALITY_TYPE, "01");
+		return mapPlans;
+
+	}
 	private List<Map<String, Object>> getPolicy(){
 		List<Map<String, Object>> listPlans = new ArrayList<>();
 		Map<String, Object> mapPolicy = new HashMap<>();
@@ -732,6 +741,13 @@ catch (BusinessException e){
 		Map<String, Object> arguments = new HashMap<>();
 		arguments.put(ConstantsUtil.InsurancePrdModality.FIELD_INSURANCE_PRODUCT_ID, new BigDecimal(842));
 		arguments.put(ConstantsUtil.InsurancePrdModality.FIELD_SALE_CHANNEL_ID, "PC");
+		return arguments;
+
+	}
+	private Map<String, Object> getArgumentsPlanSelected(){
+
+		Map<String, Object> arguments = new HashMap<>();
+		arguments.put(ConstantsUtil.QuotationModMap.POLICY_QUOTA_INTERNAL_ID,"01720842678900");
 		return arguments;
 
 	}
