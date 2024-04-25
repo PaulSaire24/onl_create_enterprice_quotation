@@ -9,10 +9,13 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.FinancingBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.ParticularDataBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceModalityDAO;
-import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.*;
+import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseInputBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationInputBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.utils.ConstantsUtil;
 import com.bbva.rbvd.lib.r403.business.IInsrEnterpriseLifeBusiness;
-import com.bbva.rbvd.lib.r403.impl.utils.ValidMaps;
 import com.bbva.rbvd.lib.r403.service.dao.IEnterprisePlanSelectedDAO;
 import com.bbva.rbvd.lib.r403.service.dao.IEnterprisePolicyQuotaInternalIdDAO;
 import com.bbva.rbvd.lib.r403.service.dao.impl.EnterprisePlanSelectedDAO;
@@ -20,7 +23,6 @@ import com.bbva.rbvd.lib.r403.service.dao.impl.EnterprisePolicyQuotaInternalIdDA
 import com.bbva.rbvd.lib.r403.service.api.ConsumerExternalService;
 import com.bbva.rbvd.lib.r403.transfer.PayloadConfig;
 import com.bbva.rbvd.lib.r403.transfer.PayloadStore;
-import com.bbva.rbvd.lib.r403.transform.list.impl.ListEnterprisePlan;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +33,10 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 
@@ -320,7 +325,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
                     int intValueOfPolicy = Integer.parseInt(policy.substring(policy.length() - 2));
                     LOGGER.info("***** InsrEnterpriseLifeBusinessImpl - generateSecondQuotationId | intValueOfPolicy: {} *****", intValueOfPolicy);
                     int nextValue = intValueOfPolicy + 1;
-                    String policyQuotaInternalNextId = String.valueOf(nextValue);
+                    String policyQuotaInternalNextId = ContansUtils.StringsUtils.ZERO.concat(String.valueOf(nextValue));
                     lastDigits = policyQuotaInternalNextId;
                     break;
                 }
