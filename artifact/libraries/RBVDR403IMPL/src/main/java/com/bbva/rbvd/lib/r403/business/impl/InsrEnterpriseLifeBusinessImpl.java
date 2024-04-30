@@ -143,7 +143,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
     private static void addContractorFromParticipant(EnterpriseQuotationDTO quotationCreate,
                                                      ApplicationConfigurationService applicationConfigurationService, QuotationInputBO companyQuotationPayloadBO) {
 
-        if(CollectionUtils.isEmpty(quotationCreate.getParticipants())){
+        if(!CollectionUtils.isEmpty(quotationCreate.getParticipants())){
             ParticipantDTO participantHolder = quotationCreate.getParticipants().stream()
                    //poner en variable
                     .filter(participant -> ConstantsUtil.StringConstants.PARTICIPANT_TYPE_HOLDER.equalsIgnoreCase(participant.getParticipantType().getId()))

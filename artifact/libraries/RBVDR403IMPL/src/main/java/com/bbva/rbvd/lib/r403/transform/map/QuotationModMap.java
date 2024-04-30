@@ -34,6 +34,7 @@ public class QuotationModMap {
             }
             quotationModMap.put(ConstantsUtil.QuotationModMap.FINANCING_START_DATE,payloadStore.getFechaInicio());
             quotationModMap.put(ConstantsUtil.QuotationModMap.FINANCING_END_DATE,payloadStore.getFechaFin());
+            //mandar a hans el campo
             quotationModMap.put(ConstantsUtil.QuotationModMap.PREMIUM_AMOUNT,payloadStore.getPremiumAmount());
             quotationModMap.put(ConstantsUtil.QuotationModMap.SAVED_QUOTATION_IND_TYPE,"S");
             quotationModMap.put(ConstantsUtil.QuotationModMap.LAST_CHANGE_BRANCH_ID,responseDTO.getLastChangeBranchId());
