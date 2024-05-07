@@ -50,11 +50,10 @@ public class InsrEnterpriseLifeBusinessPlanImpl {
                         map -> map.getInsuranceCompanyModalityId(),
                         map -> map.getInsuranceModalityType()));
         if(!ValidMaps.mapIsNullOrEmpty(idToTypeMap)) {
-            // Update the PlanBO objects using the map
+
             planBOList.forEach(planBO -> {
-                String planId = planBO.getPlan().toString(); // Accede al atributo plan y conviértelo a cadena
+                String planId = planBO.getPlan().toString();
                 if (planId != null) {
-                    // Convertir la cadena a int y luego a Long para eliminar los ceros a la izquierda
                     int intValue = Integer.parseInt(idToTypeMap.getOrDefault(planId, ContansUtils.StringsUtils.ZERO));
                     planBO.setPlan((long) intValue);
                 }
@@ -66,15 +65,12 @@ public class InsrEnterpriseLifeBusinessPlanImpl {
 
         Map<String, String> nameToIdMap = planList.stream()
                 .collect(Collectors.toMap(
-                        //PONER EN EL DTO LA CLAVE
                         map ->  map.getInsuranceCompanyModalityId(),
                         map ->  map.getInsuranceModalityName()));
         if(!ValidMaps.mapIsNullOrEmpty(nameToIdMap)) {
-            // Actualiza PlanBO usando el mapa
             planBOList.forEach(planBO -> {
-                String planName = planBO.getPlan().toString(); // Accede al atributo plan y conviértelo a cadena
+                String planName = planBO.getPlan().toString();
                 if (planName != null) {
-                    // Convertir la cadena a int y luego a Long para eliminar los ceros a la izquierda
                     String intValue =nameToIdMap.getOrDefault(planName, ContansUtils.StringsUtils.ZERO);
                     planBO.setDescripcionPlan(intValue);
                 }

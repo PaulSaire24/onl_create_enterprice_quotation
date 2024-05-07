@@ -12,7 +12,6 @@ public class PayloadConfig {
     private EnterpriseQuotationDTO input;
     private String companyQuotaId;
     private InsuranceProductDAO productInformationBySimulation;
-    private BigDecimal insuranceProductId;
     private List<InsuranceModalityDAO> plansInformation;
     private BigDecimal nextSimulationId;
 
@@ -39,15 +38,6 @@ public class PayloadConfig {
     public void setProductInformationBySimulation(InsuranceProductDAO productInformationBySimulation) {
         this.productInformationBySimulation = productInformationBySimulation;
     }
-
-    public BigDecimal getInsuranceProductId() {
-        return insuranceProductId;
-    }
-
-    public void setInsuranceProductId(BigDecimal insuranceProductId) {
-        this.insuranceProductId = insuranceProductId;
-    }
-
     public List<InsuranceModalityDAO> getPlansInformation() {
         return plansInformation;
     }

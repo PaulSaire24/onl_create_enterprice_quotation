@@ -13,6 +13,9 @@ import com.bbva.rbvd.lib.r403.pattern.product.CreateQuotationVidaLey;
 import com.bbva.rbvd.lib.r403.pattern.impl.CreateQuotationParameter;
 import com.bbva.rbvd.lib.r403.pattern.CreateQuotation;
 
+import com.bbva.rbvd.lib.r403.utils.ContansUtils;
+import com.bbva.rbvd.lib.r403.utils.RBVDErrors;
+import com.bbva.rbvd.lib.r403.utils.RBVDValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -58,20 +61,17 @@ public class RBVDR403Impl extends RBVDR403Abstract {
 
 		List<ParticipantDTO> participant = input.getParticipants();
 		if (input.getEmployees().getMonthlyPayrollAmount().getAmount() <= 0.0) {
-			LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - getAmount: {} ***", input.getEmployees().getMonthlyPayrollAmount().getAmount());
-			throw new BusinessException("RBVD10094947", false, "ERROR EL MONTO NO PUEDE SER MENOR A CERO");
+			throw RBVDValidation.build(RBVDErrors.WRONG_INPUT_AMOUNT);
 
 		} else if (input.getEmployees().getEmployeesNumber() <= 0L) {
-			LOGGER.info("***** RBVDR403Impl - executeCreateQuotation() - getAmount: {} ***", input.getEmployees().getEmployeesNumber());
-			throw new BusinessException("RBVD10094946", false, "ERROR EL NUMERO DE EMPLEADOS NO PUEDE SER MENOR A CERO");
+			throw RBVDValidation.build(RBVDErrors.WRONG_INPUT_EMPLOYEE);
 
 		}
 		if (!CollectionUtils.isEmpty(participant)) {
-			// Validar que el tipo de documento de cada participante sea "RUC" usando lambdas
 			participant.stream()
-					.filter(participants -> !"RUC".equals(participants.getIdentityDocument().getDocumentType().getId()))
+					.filter(participants -> !ContansUtils.StringsUtils.RUC.equals(participants.getIdentityDocument().getDocumentType().getId()))
 					.forEach(participants -> {
-						throw new BusinessException("RBVD10094948", false, "ERROR EL TIPO DE DOCUMENTO SOLO PUEDE SER RUC");
+						throw RBVDValidation.build(RBVDErrors.WRONG_INPUT_DOCUMENT_ID);
 					});
 		}
 	}

@@ -39,9 +39,6 @@ public class CreateQuotationParameter implements PreCreateQuotation {
 
         payloadConfig.setInput(input);
         payloadConfig.setProductInformationBySimulation(product);
-        //eliminar
-        payloadConfig.setInsuranceProductId(product.getInsuranceProductId());
-        //
         payloadConfig.setCompanyQuotaId(product.getProductShortDesc());
         payloadConfig.setPlansFromBD(plans);
         payloadConfig.setNextSimulationId(nextId);

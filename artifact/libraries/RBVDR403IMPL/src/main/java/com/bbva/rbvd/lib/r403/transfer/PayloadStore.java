@@ -10,7 +10,6 @@ import java.util.List;
 public class PayloadStore {
     private EnterpriseQuotationDTO output;
     private InsuranceEnterpriseResponseBO rimacResponse;
-    private String policyQuotaInternalId;
     private BigDecimal nextSimulationId;
     private BigDecimal insuranceProductId;
     private String firstPolicyQuotaInternalId;
@@ -38,13 +37,7 @@ public class PayloadStore {
         this.rimacResponse = rimacResponse;
     }
 
-    public String getPolicyQuotaInternalId() {
-        return policyQuotaInternalId;
-    }
 
-    public void setPolicyQuotaInternalId(String policyQuotaInternalId) {
-        this.policyQuotaInternalId = policyQuotaInternalId;
-    }
 
     public BigDecimal getNextSimulationId() {
         return nextSimulationId;

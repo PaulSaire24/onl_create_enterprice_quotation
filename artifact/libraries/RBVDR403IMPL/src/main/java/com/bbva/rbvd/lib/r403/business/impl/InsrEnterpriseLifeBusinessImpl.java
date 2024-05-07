@@ -102,9 +102,8 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         payloadStore.setNumber(mobile);
         payloadStore.setOutput(response);
         payloadStore.setRimacResponse(responseRimac);
-        payloadStore.setPolicyQuotaInternalId(response.getId());
         payloadStore.setNextSimulationId(payloadConfig.getNextSimulationId());
-        payloadStore.setInsuranceProductId(payloadConfig.getInsuranceProductId());
+        payloadStore.setInsuranceProductId(payloadConfig.getProductInformationBySimulation().getInsuranceProductId());
         LOGGER.info("***** InsrEnterpriseLifeBusinessImpl - doEnterpriseLife END | return payloadStore: {} *****", payloadStore);
 
         return payloadStore;
@@ -145,7 +144,6 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
 
         if(!CollectionUtils.isEmpty(quotationCreate.getParticipants())){
             ParticipantDTO participantHolder = quotationCreate.getParticipants().stream()
-                   //poner en variable
                     .filter(participant -> ConstantsUtil.StringConstants.PARTICIPANT_TYPE_HOLDER.equalsIgnoreCase(participant.getParticipantType().getId()))
                     .findFirst()
                     .orElse(null);
@@ -170,20 +168,19 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
 
         ParticularDataBO numeroTrabajadores = new ParticularDataBO();
         numeroTrabajadores.setEtiqueta(ContansUtils.rimacInput.NUMERO_DE_TRABAJADORES);
-        numeroTrabajadores.setCodigo("");
+        numeroTrabajadores.setCodigo(ContansUtils.StringsUtils.BLANK);
         numeroTrabajadores.setValor(String.valueOf(employees.getEmployeesNumber()));
         particularData.add(numeroTrabajadores);
 
         ParticularDataBO indicadorEdadTrabajadores = new ParticularDataBO();
         indicadorEdadTrabajadores.setEtiqueta(ContansUtils.rimacInput.INDICADOR_EDAD_TRABAJADORES);
-        //Agregar variables
         indicadorEdadTrabajadores.setValor(Boolean.TRUE.equals(employees.getAreMajorityAge()) ? "S" : "N");
         indicadorEdadTrabajadores.setCodigo(ContansUtils.StringsUtils.BLANK);
         particularData.add(indicadorEdadTrabajadores);
 
         ParticularDataBO planillaBrutaMensual = new ParticularDataBO();
         planillaBrutaMensual.setEtiqueta(ContansUtils.rimacInput.PLANILLA_BRUTA_MENSUAL);
-        planillaBrutaMensual.setCodigo("");
+        planillaBrutaMensual.setCodigo(ContansUtils.StringsUtils.BLANK);
         planillaBrutaMensual.setValor(formattedAmount);
         LOGGER.info("***** createQuotationDAO - getDatosParticulares  | argument formattedAmount: {} *****",
                 formattedAmount);
@@ -192,8 +189,8 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         particularData.add(planillaBrutaMensual);
         ParticularDataBO sumaAsegurada = new ParticularDataBO();
         sumaAsegurada.setValor(String.valueOf(10000));
-        sumaAsegurada.setEtiqueta(ContansUtils.rimacInput.SUMA_ASEGURADA);
-        sumaAsegurada.setCodigo("");
+        sumaAsegurada.setEtiqueta(ContansUtils.StringsUtils.SUMA_ASEGURADA);
+        sumaAsegurada.setCodigo(ContansUtils.StringsUtils.BLANK);
         particularData.add(sumaAsegurada);
 
         return particularData;
@@ -245,7 +242,12 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
             input.setValidityPeriod(null);
         }
         else {
+            if(responseRimac.getCotizaciones().get(0).getFechaFinVigencia().equals(null)){
+                input.setValidityPeriod(null);
+            }
+            else {
             input.setValidityPeriod(createValidityPeriodDTO(responseRimac.getCotizaciones().get(0).getFechaFinVigencia()));
+            }
         }
         input.setQuotationDate(LocalDate.now());
 
@@ -282,7 +284,6 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
     }
 
     private ValidityPeriodDTO createValidityPeriodDTO(String fechaFinVigencia){
-        //VALIDAR CAMPO FECHA FIN Y FECHA INICIO NO NULO
         ValidityPeriodDTO validityPeriodDTO = new ValidityPeriodDTO();
         validityPeriodDTO.setStartDate(convertLocalDateToDate(LocalDate.now()));
         validityPeriodDTO.setEndDate(convertLocalDateToDate(convertStringDateToLocalDate(fechaFinVigencia)));
@@ -324,7 +325,6 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
             for (String policy : policyIdList) {
                 if (!policy.substring(policy.length() - 2).equals(subString)) {
                     int intValueOfPolicy = Integer.parseInt(policy.substring(policy.length() - 2));
-                    LOGGER.info("***** InsrEnterpriseLifeBusinessImpl - generateSecondQuotationId | intValueOfPolicy: {} *****", intValueOfPolicy);
                     int nextValue = intValueOfPolicy + 1;
                     String policyQuotaInternalNextId = ContansUtils.StringsUtils.ZERO.concat(String.valueOf(nextValue));
                     lastDigits = policyQuotaInternalNextId;

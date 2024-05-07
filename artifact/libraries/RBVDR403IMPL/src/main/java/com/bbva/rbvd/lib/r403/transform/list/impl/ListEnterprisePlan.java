@@ -27,12 +27,12 @@ public class ListEnterprisePlan  {
         if (Objects.isNull(rimacPlan.getPrimaBruta()) || Objects.isNull(rimacPlan.getMoneda())) {
             return null;
         }
-        if(rimacPlan.getMoneda().equals("PEN")||
-                rimacPlan.getMoneda().equals("SOL")){
-            rimacPlan.setMoneda("PEN");
+        if(rimacPlan.getMoneda().equals(ContansUtils.StringsUtils.AMOUNT_PEN)||
+                rimacPlan.getMoneda().equals(ContansUtils.StringsUtils.AMOUNT_SOL)){
+            rimacPlan.setMoneda(ContansUtils.StringsUtils.AMOUNT_PEN);
         }
         else{
-            rimacPlan.setMoneda("USD");
+            rimacPlan.setMoneda(ContansUtils.StringsUtils.AMOUNT_USD);
         }
         FinancingBO primerValor = new FinancingBO();
         Iterator<FinancingBO> iterador = rimacPlan.getFinanciamientos().iterator();
@@ -53,7 +53,7 @@ public class ListEnterprisePlan  {
             return Collections.emptyList();
         }
         List<String> sumaAsegurada = particularData.stream()
-                .filter(dato -> dato.getEtiqueta().equals("SUMA_ASEGURADA"))
+                .filter(dato -> dato.getEtiqueta().equals(ContansUtils.StringsUtils.SUMA_ASEGURADA))
                 .map(ParticularDataBO::getValor)
                 .collect(Collectors.toList());
         String firstSumaAsegurada = null;
@@ -117,13 +117,12 @@ public class ListEnterprisePlan  {
 
         AmountDTO paymentAmount = new AmountDTO();
         paymentAmount.setAmount(rimacPlan.getCuotasFinanciamiento().get(0).getMonto().doubleValue());
-        //PONER EN EL DTO LA CLAVE
-        if(rimacPlan.getCuotasFinanciamiento().get(0).getMoneda().equals("PEN")||
-                rimacPlan.getCuotasFinanciamiento().get(0).getMoneda().equals("SOL")){
-            rimacPlan.getCuotasFinanciamiento().get(0).setMoneda("PEN");
+        if(rimacPlan.getCuotasFinanciamiento().get(0).getMoneda().equals(ContansUtils.StringsUtils.AMOUNT_PEN)||
+                rimacPlan.getCuotasFinanciamiento().get(0).getMoneda().equals(ContansUtils.StringsUtils.AMOUNT_SOL)){
+            rimacPlan.getCuotasFinanciamiento().get(0).setMoneda(ContansUtils.StringsUtils.AMOUNT_PEN);
         }
         else{
-            rimacPlan.getCuotasFinanciamiento().get(0).setMoneda("USD");
+            rimacPlan.getCuotasFinanciamiento().get(0).setMoneda(ContansUtils.StringsUtils.AMOUNT_USD);
         }
         paymentAmount.setCurrency(rimacPlan.getCuotasFinanciamiento().get(0).getMoneda());
 
@@ -133,13 +132,12 @@ public class ListEnterprisePlan  {
         AmountDTO insuredAmount = new AmountDTO();
         if (!Objects.isNull(rimacPlan)) {
         insuredAmount.setAmount(sumaAsegurada);
-        //PONER EN EL DTO LA CLAVE
-        if(rimacPlan.getMoneda().equals("PEN")||
-                rimacPlan.getMoneda().equals("SOL")){
-            rimacPlan.setMoneda("PEN");
+        if(rimacPlan.getMoneda().equals(ContansUtils.StringsUtils.AMOUNT_PEN)||
+                rimacPlan.getMoneda().equals(ContansUtils.StringsUtils.AMOUNT_SOL)){
+            rimacPlan.setMoneda(ContansUtils.StringsUtils.AMOUNT_PEN);
         }
         else{
-            rimacPlan.setMoneda("USD");
+            rimacPlan.setMoneda(ContansUtils.StringsUtils.AMOUNT_USD);
         }
         insuredAmount.setCurrency(rimacPlan.getMoneda());
     }
@@ -152,8 +150,7 @@ public class ListEnterprisePlan  {
         }
 
         DescriptionDTO coverageType = new DescriptionDTO();
-        //PONER EN EL DTO LA CLAVE
-        String condition = applicationConfigurationService.getProperty("COVERAGE_TYPE_" + coverageBO.getCondicion());
+        String condition = applicationConfigurationService.getProperty(ContansUtils.StringsUtils.COVERAGE_TYPE+ coverageBO.getCondicion());
         coverageType.setId(condition);
         coverageType.setName(condition);
 
@@ -166,8 +163,8 @@ public class ListEnterprisePlan  {
             return null;
         }
         //PONER EN EL DTO LA CLAVE
-        period.setId(applicationConfigurationService.getProperty("PERIODICITY_ID_" + rimacPlan.getPeriodicidad()));
-        period.setName(applicationConfigurationService.getProperty("PERIODICITY_NAME_" + rimacPlan.getPeriodicidad()));
+        period.setId(applicationConfigurationService.getProperty(ContansUtils.StringsUtils.PERIODICITY_ID + rimacPlan.getPeriodicidad()));
+        period.setName(applicationConfigurationService.getProperty(ContansUtils.StringsUtils.PERIODICITY_NAME + rimacPlan.getPeriodicidad()));
 
         return period;
     }
