@@ -242,7 +242,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
             input.setValidityPeriod(null);
         }
         else {
-            if(responseRimac.getCotizaciones().get(0).getFechaFinVigencia().equals(null)){
+            if(responseRimac.getCotizaciones().get(0).getFechaFinVigencia()==null){
                 input.setValidityPeriod(null);
             }
             else {
