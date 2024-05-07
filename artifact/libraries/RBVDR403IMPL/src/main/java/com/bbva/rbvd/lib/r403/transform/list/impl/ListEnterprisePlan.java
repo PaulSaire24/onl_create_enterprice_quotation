@@ -5,13 +5,11 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.AmountDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.DescriptionDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.CoverageDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.InstallmentPlansDTO;
-import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.AssistanceBO;
-import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.CoverageBO;
-import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.FinancingBO;
-import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.*;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Collections;
@@ -25,7 +23,7 @@ public class ListEnterprisePlan  {
     public ListEnterprisePlan(ApplicationConfigurationService applicationConfigurationService) {
         this.applicationConfigurationService = applicationConfigurationService;
     }
-    public static AmountDTO mapTotalInstallmentPlans(PlanBO rimacPlan) {
+    public static AmountDTO mapTotalInstallmentPlans(PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
         if (Objects.isNull(rimacPlan.getPrimaBruta()) || Objects.isNull(rimacPlan.getMoneda())) {
             return null;
         }
@@ -36,25 +34,45 @@ public class ListEnterprisePlan  {
         else{
             rimacPlan.setMoneda("USD");
         }
+        FinancingBO primerValor = new FinancingBO();
+        Iterator<FinancingBO> iterador = rimacPlan.getFinanciamientos().iterator();
+        if (iterador.hasNext()) {
+             primerValor = iterador.next();
+        }
+
         AmountDTO totalInstallmentPlan = new AmountDTO();
         totalInstallmentPlan.setAmount(rimacPlan.getPrimaBruta().doubleValue());
         totalInstallmentPlan.setCurrency(rimacPlan.getMoneda());
+        totalInstallmentPlan.setPeriod(mapPeriod(primerValor,applicationConfigurationService));
 
         return totalInstallmentPlan;
     }
 
-    public static List<CoverageDTO> mapCoverages(PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
-        if (CollectionUtils.isEmpty(rimacPlan.getCoberturas())) {
+    public static List<CoverageDTO> mapCoverages(List<ParticularDataBO> particularData,PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
+        if (CollectionUtils.isEmpty(particularData)) {
             return Collections.emptyList();
         }
+        List<String> sumaAsegurada = particularData.stream()
+                .filter(dato -> dato.getEtiqueta().equals("SUMA_ASEGURADA"))
+                .map(ParticularDataBO::getValor)
+                .collect(Collectors.toList());
+        String firstSumaAsegurada = null;
+        Iterator<String> iterador = sumaAsegurada.iterator();
+        if (iterador.hasNext()) {
+            firstSumaAsegurada = iterador.next();
+        }
+
+            Double sumAsegurada = Double.valueOf(firstSumaAsegurada);
 
         return rimacPlan.getCoberturas().stream()
                 .map(coverageBO -> {
+
                     CoverageDTO coverageDTO = new CoverageDTO();
                     coverageDTO.setCoverageType(mapCoverageType(coverageBO,applicationConfigurationService));
                     coverageDTO.setId(coverageBO.getCobertura().toString());
                     coverageDTO.setDescription(coverageBO.getNumeroSueldos()+ ContansUtils.rimacInput.REMUNERACIONES);
                     coverageDTO.setName(coverageBO.getObservacionCobertura());
+                    coverageDTO.setInsuredAmount(mapInsuredAmount(sumAsegurada,rimacPlan));
                     return coverageDTO;
                 })
                 .collect(Collectors.toList());
@@ -110,6 +128,24 @@ public class ListEnterprisePlan  {
         paymentAmount.setCurrency(rimacPlan.getCuotasFinanciamiento().get(0).getMoneda());
 
         return paymentAmount;
+    }
+    private static AmountDTO mapInsuredAmount(Double sumaAsegurada, PlanBO rimacPlan) {
+        AmountDTO insuredAmount = new AmountDTO();
+        if (!Objects.isNull(rimacPlan)) {
+
+        }
+        insuredAmount.setAmount(sumaAsegurada);
+        //PONER EN EL DTO LA CLAVE
+        if(rimacPlan.getMoneda().equals("PEN")||
+                rimacPlan.getMoneda().equals("SOL")){
+            rimacPlan.setMoneda("PEN");
+        }
+        else{
+            rimacPlan.setMoneda("USD");
+        }
+        insuredAmount.setCurrency(rimacPlan.getMoneda());
+
+        return insuredAmount;
     }
     public static DescriptionDTO mapCoverageType(CoverageBO coverageBO, ApplicationConfigurationService applicationConfigurationService) {
         if (Objects.isNull(coverageBO.getCondicion())) {

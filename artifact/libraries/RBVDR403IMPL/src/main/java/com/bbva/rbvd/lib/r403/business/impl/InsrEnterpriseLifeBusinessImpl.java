@@ -237,7 +237,8 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         InsrEnterpriseLifeBusinessPlanImpl insrEnterpriseLifeBusinessPlan = new InsrEnterpriseLifeBusinessPlanImpl();
         input.getProduct().setPlans(!CollectionUtils.isEmpty(responseRimac.getCotizaciones())
                 ? insrEnterpriseLifeBusinessPlan.getPlanInfo(listPlans(responseRimac.getCotizaciones()),this.applicationConfigurationService,
-                planList) : null);
+                planList,responseRimac.getDatosParticulares()) : null);
+        LOGGER.info("***** InsrEnterpriseLifeBusinessImpl - mapInQuotationResponse  |  plans response: {} *****",  input.getProduct().getPlans());
         input.getProduct().setName(productName);
         input.setId(generateQuotationId(nextId, input));
         if(CollectionUtils.isEmpty(responseRimac.getCotizaciones())){

@@ -449,6 +449,11 @@ catch (BusinessException e){
 		responseBO.setProducto("842");
 		List<PlanBO> planes = new ArrayList<>();
 		List<Long> planes2 = new ArrayList<>();
+		List<ParticularDataBO> datosParticulares = new ArrayList<>();
+		ParticularDataBO valores = new ParticularDataBO();
+		valores.setValor("10000");
+		valores.setEtiqueta("SUMA_ASEGURADA");
+		datosParticulares.add(valores);
 		planes2.add(1234124l);
 		PlanBO plan1 = new PlanBO();
 		PlanBO plan2 = new PlanBO();
@@ -488,6 +493,7 @@ catch (BusinessException e){
 		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
 		planes.add(plan1);
 		plan2.setPlan(2l);
+		plan2.setCoberturas(coverageBOList);
 		plan2.setFinanciamientos(financingBOList);
 		plan2.setPrimaNeta(new BigDecimal(1000));
 		plan2.setPrimaBruta(new BigDecimal(1000));
@@ -504,6 +510,7 @@ catch (BusinessException e){
 		cotizaciones.add(cotizaciones1);
 		cotizaciones.add(cotizaciones2);
 		planes.add(plan1);
+		responseBO.setDatosParticulares(datosParticulares);
 		responseBO.setCotizaciones(cotizaciones);
 		responseBO.setPlanes(planes2);
 		return responseBO;
