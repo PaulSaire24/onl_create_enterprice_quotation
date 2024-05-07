@@ -132,8 +132,6 @@ public class ListEnterprisePlan  {
     private static AmountDTO mapInsuredAmount(Double sumaAsegurada, PlanBO rimacPlan) {
         AmountDTO insuredAmount = new AmountDTO();
         if (!Objects.isNull(rimacPlan)) {
-
-        }
         insuredAmount.setAmount(sumaAsegurada);
         //PONER EN EL DTO LA CLAVE
         if(rimacPlan.getMoneda().equals("PEN")||
@@ -144,8 +142,9 @@ public class ListEnterprisePlan  {
             rimacPlan.setMoneda("USD");
         }
         insuredAmount.setCurrency(rimacPlan.getMoneda());
-
+    }
         return insuredAmount;
+
     }
     public static DescriptionDTO mapCoverageType(CoverageBO coverageBO, ApplicationConfigurationService applicationConfigurationService) {
         if (Objects.isNull(coverageBO.getCondicion())) {
