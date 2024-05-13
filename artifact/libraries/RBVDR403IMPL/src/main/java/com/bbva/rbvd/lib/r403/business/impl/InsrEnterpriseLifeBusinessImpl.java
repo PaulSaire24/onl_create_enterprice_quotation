@@ -33,10 +33,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Objects;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -238,6 +235,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         LOGGER.info("***** InsrEnterpriseLifeBusinessImpl - mapInQuotationResponse  |  plans response: {} *****",  input.getProduct().getPlans());
         input.getProduct().setName(productName);
         input.setId(generateQuotationId(nextId, input));
+        input.setInsuredAmount(generateInsuredAmount(responseRimac.getDatosParticulares(),listPlans(responseRimac.getCotizaciones())));
         if(CollectionUtils.isEmpty(responseRimac.getCotizaciones())){
             input.setValidityPeriod(null);
         }
@@ -312,6 +310,45 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         String simulationId = nextId.toString();
         String product = input.getProduct().getId();
         return input.getSourceBranchCode().concat(product).concat(simulationId).concat(ContansUtils.StringsUtils.LAST_DIGIT_00);
+    }
+    private static AmountDTO generateInsuredAmount(List<ParticularDataBO> datosParticulares,List<PlanBO> planBOList){
+
+        AmountDTO insuredAmount;
+        List<String> sumaAsegurada = datosParticulares.stream()
+                .filter(dato -> dato.getEtiqueta().equals(ContansUtils.StringsUtils.SUMA_ASEGURADA))
+                .map(ParticularDataBO::getValor)
+                .collect(Collectors.toList());
+        PlanBO planBO = null;
+        Iterator<PlanBO> nextPlan = planBOList.iterator();
+        if (nextPlan.hasNext()) {
+            planBO = nextPlan.next();
+        }
+        String firstSumaAsegurada = null;
+        Iterator<String> iterador = sumaAsegurada.iterator();
+        if (iterador.hasNext()) {
+            firstSumaAsegurada = iterador.next();
+        }
+
+        Double sumAsegurada = Double.valueOf(firstSumaAsegurada);
+        insuredAmount = mapInsuredAmount(sumAsegurada,planBO);
+
+        return insuredAmount;
+    }
+    private static AmountDTO mapInsuredAmount(Double sumaAsegurada, PlanBO rimacPlan) {
+        AmountDTO insuredAmount = new AmountDTO();
+        if (!Objects.isNull(rimacPlan)) {
+            insuredAmount.setAmount(sumaAsegurada);
+            if(rimacPlan.getMoneda().equals(ContansUtils.StringsUtils.AMOUNT_PEN)||
+                    rimacPlan.getMoneda().equals(ContansUtils.StringsUtils.AMOUNT_SOL)){
+                rimacPlan.setMoneda(ContansUtils.StringsUtils.AMOUNT_PEN);
+            }
+            else{
+                rimacPlan.setMoneda(ContansUtils.StringsUtils.AMOUNT_USD);
+            }
+            insuredAmount.setCurrency(rimacPlan.getMoneda());
+        }
+        return insuredAmount;
+
     }
     public static String generateSecondQuotationId(BigDecimal nextId,EnterpriseQuotationDTO input,List<String> policyIdList) {
 

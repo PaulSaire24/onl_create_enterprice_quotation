@@ -198,6 +198,10 @@
 				<parameter order="1" name="id" mandatory="1" type="String" size="30"/>
 			</dto>
 		</dto>
+		<dto order="13" name="insuredAmount" mandatory="0" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.AmountDTO" artifactId="RBVDC402">
+			<parameter order="1" name="amount" mandatory="1" type="Double" size="17"/>
+			<parameter order="2" name="currency" mandatory="1" type="String" size="10"/>
+		</dto>
 	</paramsOut>
 	<description>transaction to create a enterprice quotation</description>
 </transaction>
