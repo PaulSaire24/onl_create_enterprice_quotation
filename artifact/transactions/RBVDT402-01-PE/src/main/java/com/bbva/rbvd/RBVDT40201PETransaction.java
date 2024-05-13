@@ -79,6 +79,7 @@ public class RBVDT40201PETransaction extends AbstractRBVDT40201PETransaction {
 				this.setQuotationreference(response.getQuotationReference());
 				this.setQuotationdate(Date.from(response.getQuotationDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
 				this.setPaymentmethod(response.getPaymentMethod());
+				this.setInsuredamount(response.getInsuredAmount());
 				this.setBank(response.getBank());
 				this.setHttpResponseCode(HttpResponseCode.HTTP_CODE_200, Severity.OK);
 			} else {
