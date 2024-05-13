@@ -115,7 +115,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         QuotationInputBO companyQuotationPayloadBO = new QuotationInputBO();
         List<Long> firstPlanList = new ArrayList<>();
         companyQuotationPayloadBO.setProducto(productName);
-        companyQuotationPayloadBO.setDatosParticulares(getDatosParticulares(quotationCreate.getEmployees()));
+        companyQuotationPayloadBO.setDatosParticulares(getDatosParticulares(quotationCreate.getEmployees(),isFirstCall(quotationCreate.getQuotationReference())));
         companyQuotationPayloadBO.setPlanes(firstPlanList);
 
         if (isFirstCall(quotationCreate.getQuotationReference())) {
@@ -156,13 +156,12 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         }
     }
 
-    public static List<ParticularDataBO> getDatosParticulares(EmployeesDTO employees){
+    public static List<ParticularDataBO> getDatosParticulares(EmployeesDTO employees, Boolean isFirstQuotation) {
 
         List<ParticularDataBO> particularData = new ArrayList<>();
         Double amount = employees.getMonthlyPayrollAmount().getAmount();
         DecimalFormat df = new DecimalFormat("#");
         String formattedAmount = df.format(amount);
-
         ParticularDataBO numeroTrabajadores = new ParticularDataBO();
         numeroTrabajadores.setEtiqueta(ContansUtils.rimacInput.NUMERO_DE_TRABAJADORES);
         numeroTrabajadores.setCodigo(ContansUtils.StringsUtils.BLANK);

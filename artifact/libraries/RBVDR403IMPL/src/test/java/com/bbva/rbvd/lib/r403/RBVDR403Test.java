@@ -336,6 +336,11 @@ catch (BusinessException e){
 		List<PlanBO> planes = new ArrayList<>();
 		List<Long> planes2 = new ArrayList<>();
 		planes2.add(1234124l);
+		List<ParticularDataBO> datosParticulares = new ArrayList<>();
+		ParticularDataBO valores = new ParticularDataBO();
+		valores.setValor("10000");
+		valores.setEtiqueta("SUMA_ASEGURADA");
+		datosParticulares.add(valores);
 		PlanBO plan1 = new PlanBO();
 		PlanBO plan2 = new PlanBO();
 		List<FinancingBO> financingBOList = new ArrayList<>();
@@ -364,12 +369,14 @@ catch (BusinessException e){
 		plan1.setPrimaNeta(new BigDecimal(1000));
 		plan1.setPrimaBruta(new BigDecimal(1000));
 		plan1.setMoneda("pen");
+		plan1.setCoberturas(coverageBOList);
 		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
 		plan2.setPlan(534254L);
 		plan2.setFinanciamientos(financingBOList);
 		plan2.setPrimaNeta(new BigDecimal(1000));
 		plan2.setPrimaBruta(new BigDecimal(1000));
 		plan2.setMoneda("pen");
+		plan2.setCoberturas(coverageBOList);
 		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
 		List<QuotationBO> cotizaciones = new ArrayList<>();
 		QuotationBO cotizaciones1 = new QuotationBO();
@@ -383,14 +390,20 @@ catch (BusinessException e){
 		cotizaciones.add(cotizaciones2);
 		responseBO.setPlanes(planes2);
 		responseBO.setCotizaciones(cotizaciones);
+		responseBO.setDatosParticulares(datosParticulares);
 		return responseBO;
 	}
 	private QuotationResponseBO createRimacResponseOBL(){
 		QuotationResponseBO responseBO = new QuotationResponseBO();
 		responseBO.setProducto("842");
+		List<PlanBO> planes = new ArrayList<>();
 		List<Long> planes2 = new ArrayList<>();
 		planes2.add(1234124l);
-		List<PlanBO> planes = new ArrayList<>();
+		List<ParticularDataBO> datosParticulares = new ArrayList<>();
+		ParticularDataBO valores = new ParticularDataBO();
+		valores.setValor("10000");
+		valores.setEtiqueta("SUMA_ASEGURADA");
+		datosParticulares.add(valores);
 		PlanBO plan1 = new PlanBO();
 		PlanBO plan2 = new PlanBO();
 		List<FinancingBO> financingBOList = new ArrayList<>();
@@ -428,7 +441,7 @@ catch (BusinessException e){
 		plan2.setPrimaBruta(new BigDecimal(1000));
 		plan2.setMoneda("pen");
 		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
-
+		plan2.setCoberturas(coverageBOList);
 		List<QuotationBO> cotizaciones = new ArrayList<>();
 		QuotationBO cotizaciones1 = new QuotationBO();
 		QuotationBO cotizaciones2 = new QuotationBO();
@@ -439,7 +452,8 @@ catch (BusinessException e){
 		cotizaciones2.setPlan(plan2);
 		cotizaciones.add(cotizaciones1);
 		cotizaciones.add(cotizaciones2);
-		planes.add(plan1);
+		cotizaciones1.setPlan(plan1);
+		responseBO.setDatosParticulares(datosParticulares);
 		responseBO.setCotizaciones(cotizaciones);
 		responseBO.setPlanes(planes2);
 		return responseBO;
@@ -518,9 +532,14 @@ catch (BusinessException e){
 	private QuotationResponseBO createRimacResponseOPC(){
 		QuotationResponseBO responseBO = new QuotationResponseBO();
 		responseBO.setProducto("842");
+		List<PlanBO> planes = new ArrayList<>();
 		List<Long> planes2 = new ArrayList<>();
 		planes2.add(1234124l);
-		List<PlanBO> planes = new ArrayList<>();
+		List<ParticularDataBO> datosParticulares = new ArrayList<>();
+		ParticularDataBO valores = new ParticularDataBO();
+		valores.setValor("10000");
+		valores.setEtiqueta("SUMA_ASEGURADA");
+		datosParticulares.add(valores);
 		PlanBO plan1 = new PlanBO();
 		PlanBO plan2 = new PlanBO();
 		List<FinancingBO> financingBOList = new ArrayList<>();
@@ -558,7 +577,7 @@ catch (BusinessException e){
 		plan2.setPrimaBruta(new BigDecimal(1000));
 		plan2.setMoneda("pen");
 		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
-
+		plan2.setCoberturas(coverageBOList);
 		List<QuotationBO> cotizaciones = new ArrayList<>();
 		QuotationBO cotizaciones1 = new QuotationBO();
 		QuotationBO cotizaciones2 = new QuotationBO();
@@ -571,6 +590,7 @@ catch (BusinessException e){
 		cotizaciones.add(cotizaciones2);
 		planes.add(plan1);
 		responseBO.setCotizaciones(cotizaciones);
+		responseBO.setDatosParticulares(datosParticulares);
 		responseBO.setPlanes(planes2);
 		return responseBO;
 	}private EnterpriseQuotationDTO createInputDNI(){
