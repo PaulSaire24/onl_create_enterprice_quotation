@@ -1,6 +1,9 @@
 package com.bbva.rbvd.lib.r403.utils;
 
 public enum RBVDErrors{
+    WRONG_INPUT_AMOUNT("RBVD10094947", false, "ERROR EL MONTO NO PUEDE SER MENOR A CERO"),
+    WRONG_INPUT_EMPLOYEE("RBVD10094946", false, "ERROR EL NUMERO DE EMPLEADOS NO PUEDE SER MENOR A CERO"),
+    WRONG_INPUT_DOCUMENT_ID ("RBVD10094948", false, "ERROR EL TIPO DE DOCUMENTO SOLO PUEDE SER RUC"),
     ERROR_FROM_RIMAC("RBVD00000119", false, "Error desde Rimac con la cotizacion enviada"),
     WRONG_PRODUCT_CODE("RBVD01020022", false, "El codigo de producto enviado es incorrecto"),
     WRONG_PLAN_CODES("RBVD01020023", false, "Los codigos de los planes son incorrectos"),

@@ -1,4 +1,4 @@
-package com.bbva.rbvd.lib.r403.service.impl;
+package com.bbva.rbvd.lib.r403.service.api;
 
 
 import com.bbva.elara.utility.api.connector.APIConnector;
@@ -7,6 +7,7 @@ import com.bbva.pisd.dto.insurance.amazon.SignatureAWS;
 import com.bbva.pisd.lib.r014.PISDR014;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseInputBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.utils.ConstantsUtil;
 import com.bbva.rbvd.lib.r403.impl.utils.JsonHelper;
 import com.bbva.rbvd.lib.r403.impl.utils.RimacExceptionHandler;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
@@ -36,7 +37,7 @@ public class ConsumerExternalService {
 
         InsuranceEnterpriseResponseBO responseRimac = null;
         try {
-            responseRimac = externalApiConnector.postForObject("enterprisequotation.create", entity, InsuranceEnterpriseResponseBO.class);
+            responseRimac = externalApiConnector.postForObject(ContansUtils.rimacInput.CREATE_QUOTATION_API, entity, InsuranceEnterpriseResponseBO.class);
             LOGGER.info("***** RBVDR403Impl - executeSimulationRimacService ***** Response: {}", getRequestJson(responseRimac));
         } catch(RestClientException ex) {
             LOGGER.debug("***** RBVDR403Impl - executeSimulationRimacService ***** Exception: {}", ex.getMessage());
@@ -50,12 +51,12 @@ public class ConsumerExternalService {
     }
     private HttpHeaders createHttpHeadersAWS(SignatureAWS signature) {
         HttpHeaders headers = new HttpHeaders();
-        MediaType mediaType = new MediaType("application", "json", StandardCharsets.UTF_8);
+        MediaType mediaType = new MediaType(ContansUtils.StringsUtils.APPLICATION, ContansUtils.StringsUtils.JSON, StandardCharsets.UTF_8);
         headers.setContentType(mediaType);
-        headers.set("Authorization", signature.getAuthorization());
-        headers.set("X-Amz-Date", signature.getxAmzDate());
-        headers.set("x-api-key", signature.getxApiKey());
-        headers.set("traceId", signature.getTraceId());
+        headers.set(ContansUtils.StringsUtils.AUTHORIZATION, signature.getAuthorization());
+        headers.set(ContansUtils.StringsUtils.X_AMZ_DATE, signature.getxAmzDate());
+        headers.set(ContansUtils.StringsUtils.X_API_KEY, signature.getxApiKey());
+        headers.set(ContansUtils.StringsUtils.TRACE_ID, signature.getTraceId());
         return headers;
     }
 
