@@ -75,6 +75,7 @@ public class CreateQuotationStore implements PostCreateQuotation {
         IEnterpriseQuotationModDAO enterpriseQuotationModDAO = new EnterpriseQuotationModDAOImpl(this.pisdR402);
 
 
+
         IQuotationDAO iQuotationDAO = new QuotationDAOImpl(this.pisdR402);
         if(payloadStore.getOutput().getQuotationReference()==null) {
             iSimulationDAO.insertSimulation(argumentsForSaveSimulation);
