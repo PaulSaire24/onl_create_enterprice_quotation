@@ -49,7 +49,7 @@ public class ListEnterprisePlan  {
     }
 
     public static List<CoverageDTO> mapCoverages(List<ParticularDataBO> particularData,PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
-        if (CollectionUtils.isEmpty(particularData)) {
+        if (CollectionUtils.isEmpty(particularData)||CollectionUtils.isEmpty(rimacPlan.getCoberturas())) {
             return Collections.emptyList();
         }
         List<String> sumaAsegurada = particularData.stream()
