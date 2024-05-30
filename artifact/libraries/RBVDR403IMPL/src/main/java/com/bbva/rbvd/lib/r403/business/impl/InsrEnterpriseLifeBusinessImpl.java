@@ -115,7 +115,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         QuotationInputBO companyQuotationPayloadBO = new QuotationInputBO();
         List<Long> firstPlanList = new ArrayList<>();
         companyQuotationPayloadBO.setProducto(productName);
-        companyQuotationPayloadBO.setDatosParticulares(getDatosParticulares(quotationCreate.getEmployees(),isFirstCall(quotationCreate.getQuotationReference())));
+        companyQuotationPayloadBO.setDatosParticulares(getDatosParticulares(quotationCreate.getEmployees(),isFirstCall(quotationCreate.getQuotationReference()),quotationCreate.getInsuredAmount()));
         companyQuotationPayloadBO.setPlanes(firstPlanList);
 
         if (isFirstCall(quotationCreate.getQuotationReference())) {
@@ -156,12 +156,17 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         }
     }
 
-    public static List<ParticularDataBO> getDatosParticulares(EmployeesDTO employees, Boolean isFirstQuotation) {
+    public static List<ParticularDataBO> getDatosParticulares(EmployeesDTO employees, Boolean isFirstQuotation,AmountDTO insuredAmount) {
 
         List<ParticularDataBO> particularData = new ArrayList<>();
         Double amount = employees.getMonthlyPayrollAmount().getAmount();
         DecimalFormat df = new DecimalFormat("#");
         String formattedAmount = df.format(amount);
+        String stringInsured = String.valueOf(insuredAmount.getAmount());
+        double doubleInsured = Double.parseDouble(stringInsured);
+        int intInsured = (int) doubleInsured;
+
+
         ParticularDataBO numeroTrabajadores = new ParticularDataBO();
         numeroTrabajadores.setEtiqueta(ContansUtils.rimacInput.NUMERO_DE_TRABAJADORES);
         numeroTrabajadores.setCodigo(ContansUtils.StringsUtils.BLANK);
@@ -183,8 +188,12 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         LOGGER.info("***** createQuotationDAO - getDatosParticulares  |  getAmount: {} *****",
                 employees.getMonthlyPayrollAmount().getAmount().toString());
         particularData.add(planillaBrutaMensual);
+
+
         ParticularDataBO sumaAsegurada = new ParticularDataBO();
-        sumaAsegurada.setValor(String.valueOf(10000));
+        sumaAsegurada.setValor(String.valueOf(intInsured));
+        LOGGER.info("***** createQuotationDAO - getDatosParticulares  |  sumaAsegurada: {} *****",
+                insuredAmount.getAmount());
         sumaAsegurada.setEtiqueta(ContansUtils.StringsUtils.SUMA_ASEGURADA);
         sumaAsegurada.setCodigo(ContansUtils.StringsUtils.BLANK);
         particularData.add(sumaAsegurada);

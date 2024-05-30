@@ -46,7 +46,9 @@ public class RBVDT40201PETransaction extends AbstractRBVDT40201PETransaction {
 
 		EnterpriseQuotationDTO quotationCreate = new EnterpriseQuotationDTO();
 		quotationCreate.setQuotationReference(this.getQuotationreference());
+
 		quotationCreate.setEmployees(this.getEmployees());
+		quotationCreate.setInsuredAmount(this.getInsuredamount());
 		quotationCreate.setProduct(this.getProduct());
 		quotationCreate.setBusinessAgent(this.getBusinessagent());
 		quotationCreate.setParticipants(this.getParticipants());
