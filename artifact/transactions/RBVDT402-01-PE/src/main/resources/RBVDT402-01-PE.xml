@@ -60,6 +60,10 @@
 				<parameter order="1" name="id" mandatory="1" type="String" size="20"/>
 			</dto>
 		</dto>
+		<dto order="9" name="insuredAmount" mandatory="0" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.AmountDTO" artifactId="RBVDC402">
+			<parameter order="1" name="amount" mandatory="1" type="Double" size="20"/>
+			<parameter order="2" name="currency" mandatory="1" type="String" size="4"/>
+		</dto>
 	</paramsIn>
 	<paramsOut>
 		<parameter order="1" name="id" mandatory="1" type="String" size="20"/>
@@ -136,6 +140,33 @@
 							<parameter order="3" name="description" mandatory="0" type="String" size="200"/>
 						</dto>
 					</list>
+					<dto order="10" name="rates" mandatory="0" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.RatesDTO" artifactId="RBVDC402">
+						<dto order="1" name="totalRates" mandatory="1" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.AmountDTO" artifactId="RBVDC402">
+							<parameter order="1" name="amount" mandatory="1" type="Double" size="20"/>
+							<parameter order="2" name="currency" mandatory="1" type="String" size="3"/>
+						</dto>
+						<list order="2" name="itemizeRates" mandatory="0">
+							<dto order="1" name="Type" mandatory="0" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ItemizeRatesDTO" artifactId="RBVDC402">
+								<parameter order="1" name="rateType" mandatory="1" type="String" size="10"/>
+								<parameter order="2" name="description" mandatory="0" type="String" size="50"/>
+								<parameter order="3" name="calculationDate" mandatory="1" type="Date (YYYY-MM-DD)" size="0"/>
+								<list order="2" name="itemizeRateUnits" mandatory="0">
+									<dto order="1" name="Type" mandatory="0" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ItemizeRatesDTO" artifactId="RBVDC402">
+										<parameter order="1" name="unitType" mandatory="1" type="String" size="10"/>
+										<parameter order="2" name="percentage" mandatory="0" type="Double" size="4"/>
+										<parameter order="3" name="amount" mandatory="0" type="Double" size="20"/>
+										<parameter order="4" name="currency" mandatory="0" type="String" size="3"/>
+									</dto>
+								</list>
+								<dto order="3" name="rounding" mandatory="0" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.RoundingDTO" artifactId="RBVDC402">
+									<dto order="1" name="roundingType" mandatory="0" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.DescriptionDTO" artifactId="RBVDC402">
+										<parameter order="1" name="id" mandatory="1" type="String" size="10"/>
+									</dto>
+									<parameter order="2" name="percentage" mandatory="0" type="Double" size="10"/>
+								</dto>
+							</dto>
+						</list>
+					</dto>
 				</dto>
 			</list>
 		</dto>
