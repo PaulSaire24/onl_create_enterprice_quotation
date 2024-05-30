@@ -162,6 +162,11 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         Double amount = employees.getMonthlyPayrollAmount().getAmount();
         DecimalFormat df = new DecimalFormat("#");
         String formattedAmount = df.format(amount);
+        String stringInsured = String.valueOf(insuredAmount.getAmount());
+        double doubleInsured = Double.parseDouble(stringInsured);
+        int intInsured = (int) doubleInsured;
+
+
         ParticularDataBO numeroTrabajadores = new ParticularDataBO();
         numeroTrabajadores.setEtiqueta(ContansUtils.rimacInput.NUMERO_DE_TRABAJADORES);
         numeroTrabajadores.setCodigo(ContansUtils.StringsUtils.BLANK);
@@ -183,12 +188,13 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         LOGGER.info("***** createQuotationDAO - getDatosParticulares  |  getAmount: {} *****",
                 employees.getMonthlyPayrollAmount().getAmount().toString());
         particularData.add(planillaBrutaMensual);
+
+
         ParticularDataBO sumaAsegurada = new ParticularDataBO();
-        sumaAsegurada.setValor(String.valueOf(insuredAmount.getAmount()));
+        sumaAsegurada.setValor(String.valueOf(intInsured));
         LOGGER.info("***** createQuotationDAO - getDatosParticulares  |  sumaAsegurada: {} *****",
                 insuredAmount.getAmount());
-
-                sumaAsegurada.setEtiqueta(ContansUtils.StringsUtils.SUMA_ASEGURADA);
+        sumaAsegurada.setEtiqueta(ContansUtils.StringsUtils.SUMA_ASEGURADA);
         sumaAsegurada.setCodigo(ContansUtils.StringsUtils.BLANK);
         particularData.add(sumaAsegurada);
 
