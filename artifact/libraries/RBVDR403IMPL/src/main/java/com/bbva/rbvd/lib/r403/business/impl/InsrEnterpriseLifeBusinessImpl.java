@@ -115,7 +115,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         QuotationInputBO companyQuotationPayloadBO = new QuotationInputBO();
         List<Long> firstPlanList = new ArrayList<>();
         companyQuotationPayloadBO.setProducto(productName);
-        companyQuotationPayloadBO.setDatosParticulares(getDatosParticulares(quotationCreate.getEmployees(),isFirstCall(quotationCreate.getQuotationReference())));
+        companyQuotationPayloadBO.setDatosParticulares(getDatosParticulares(quotationCreate.getEmployees(),isFirstCall(quotationCreate.getQuotationReference()),quotationCreate.getInsuredAmount()));
         companyQuotationPayloadBO.setPlanes(firstPlanList);
 
         if (isFirstCall(quotationCreate.getQuotationReference())) {
@@ -156,7 +156,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         }
     }
 
-    public static List<ParticularDataBO> getDatosParticulares(EmployeesDTO employees, Boolean isFirstQuotation) {
+    public static List<ParticularDataBO> getDatosParticulares(EmployeesDTO employees, Boolean isFirstQuotation,AmountDTO insuredAmount) {
 
         List<ParticularDataBO> particularData = new ArrayList<>();
         Double amount = employees.getMonthlyPayrollAmount().getAmount();
@@ -184,8 +184,11 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
                 employees.getMonthlyPayrollAmount().getAmount().toString());
         particularData.add(planillaBrutaMensual);
         ParticularDataBO sumaAsegurada = new ParticularDataBO();
-        sumaAsegurada.setValor(String.valueOf(10000));
-        sumaAsegurada.setEtiqueta(ContansUtils.StringsUtils.SUMA_ASEGURADA);
+        sumaAsegurada.setValor(String.valueOf(insuredAmount.getAmount()));
+        LOGGER.info("***** createQuotationDAO - getDatosParticulares  |  sumaAsegurada: {} *****",
+                insuredAmount.getAmount());
+
+                sumaAsegurada.setEtiqueta(ContansUtils.StringsUtils.SUMA_ASEGURADA);
         sumaAsegurada.setCodigo(ContansUtils.StringsUtils.BLANK);
         particularData.add(sumaAsegurada);
 

@@ -654,6 +654,7 @@ catch (BusinessException e){
 	private EnterpriseQuotationDTO createInput(){
 		EnterpriseQuotationDTO input = new EnterpriseQuotationDTO();
 		BankDTO bank = new BankDTO();
+		AmountDTO amountDTO = new AmountDTO();
 		PaymentMethodDTO paymentMethodDTO = new PaymentMethodDTO();
 		ProductDTO product = new ProductDTO();
 		List<Long> planes2 = new ArrayList<>();
@@ -667,6 +668,8 @@ catch (BusinessException e){
 		EmployeesDTO employees = new EmployeesDTO();
 		DescriptionDTO busunessAgent = new DescriptionDTO();
 
+		amountDTO.setAmount(new Double(10000));
+		amountDTO.setCurrency("PEN");
 		participnt1.setId("P041360");
 		IdentityDocumentDTO document = new IdentityDocumentDTO();
 		DescriptionDTO documentType = new DescriptionDTO();
@@ -691,7 +694,7 @@ catch (BusinessException e){
 		contacto.setAddress("marco.yovera@bbva.com");
 		contacto1.setContact(contacto);
 		contactDetails.add(contacto1);
-
+        input.setInsuredAmount(amountDTO);
 		input.setProduct(product);
 		input.setParticipants(participantes);
 		input.setQuotationReference("2312313");
