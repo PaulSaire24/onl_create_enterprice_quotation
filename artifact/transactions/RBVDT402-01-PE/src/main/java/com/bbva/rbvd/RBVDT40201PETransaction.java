@@ -65,10 +65,7 @@ public class RBVDT40201PETransaction extends AbstractRBVDT40201PETransaction {
 		try {
 			EnterpriseQuotationDTO response = rbvdr403.executeCreateQuotation(quotationCreate);
 			if (nonNull(response)) {
-				LOGGER.info("RBVDT40201PETransaction - Response : {}", response.toString());
-				LOGGER.info("RBVDT40201PETransaction - product: {}", response.getProduct());
-				LOGGER.info("RBVDT40201PETransaction - quotation reference : {}", response.getQuotationReference());
-				LOGGER.info("RBVDT40201PETransaction - contactdetail : {}", response.getContactDetails());
+				LOGGER.info("RBVDT40201PETransaction - Response : {}", response);
 
 				this.setProduct(response.getProduct());
 				this.setParticipants(response.getParticipants());
@@ -83,6 +80,9 @@ public class RBVDT40201PETransaction extends AbstractRBVDT40201PETransaction {
 				this.setPaymentmethod(response.getPaymentMethod());
 				this.setInsuredamount(response.getInsuredAmount());
 				this.setBank(response.getBank());
+				this.setTotalamount(response.getTotalAmount());
+				this.setTotalamountwithouttax(response.getTotalAmountWithoutTax());
+
 				this.setHttpResponseCode(HttpResponseCode.HTTP_CODE_200, Severity.OK);
 			} else {
 				this.setSeverity(Severity.ENR);
