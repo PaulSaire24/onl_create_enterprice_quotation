@@ -132,6 +132,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
 
         addContractorFromParticipant(quotationCreate, applicationConfigurationService, companyQuotationPayloadBO);
 
+
         payload.setPayload(companyQuotationPayloadBO);
 
         return payload;
@@ -159,9 +160,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
     public static List<ParticularDataBO> getDatosParticulares(EmployeesDTO employees, Boolean isFirstQuotation,AmountDTO insuredAmount) {
 
         List<ParticularDataBO> particularData = new ArrayList<>();
-        Double amount = employees.getMonthlyPayrollAmount().getAmount();
-        DecimalFormat df = new DecimalFormat("#");
-        String formattedAmount = df.format(amount);
+
         String stringInsured = String.valueOf(insuredAmount.getAmount());
         double doubleInsured = Double.parseDouble(stringInsured);
         int intInsured = (int) doubleInsured;
@@ -182,9 +181,9 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         ParticularDataBO planillaBrutaMensual = new ParticularDataBO();
         planillaBrutaMensual.setEtiqueta(ContansUtils.rimacInput.PLANILLA_BRUTA_MENSUAL);
         planillaBrutaMensual.setCodigo(ContansUtils.StringsUtils.BLANK);
-        planillaBrutaMensual.setValor(formattedAmount);
+        planillaBrutaMensual.setValor(String.valueOf(employees.getMonthlyPayrollAmount().getAmount()));
         LOGGER.info("***** createQuotationDAO - getDatosParticulares  | argument formattedAmount: {} *****",
-                formattedAmount);
+                employees.getMonthlyPayrollAmount().getAmount());
         LOGGER.info("***** createQuotationDAO - getDatosParticulares  |  getAmount: {} *****",
                 employees.getMonthlyPayrollAmount().getAmount().toString());
         particularData.add(planillaBrutaMensual);
