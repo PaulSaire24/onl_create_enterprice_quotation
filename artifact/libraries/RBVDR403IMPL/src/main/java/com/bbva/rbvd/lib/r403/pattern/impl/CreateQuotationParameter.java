@@ -34,13 +34,14 @@ public class CreateQuotationParameter implements PreCreateQuotation {
         PayloadConfig payloadConfig = new PayloadConfig();
         InsuranceProductDAO product = productService.getProductInfo(input.getProduct().getId());
         List<InsuranceModalityDAO> plans = productService.getPlanFromDB(product.getInsuranceProductId(),input.getSaleChannelId());
+        LOGGER.info("***** CreateQuotationParameter getConfig - plans from db: {} *****",plans);
         BigDecimal nextId = this.getInsuranceSimulationId();
 
 
         payloadConfig.setInput(input);
         payloadConfig.setProductInformationBySimulation(product);
         payloadConfig.setCompanyQuotaId(product.getProductShortDesc());
-        payloadConfig.setPlansFromBD(plans);
+        payloadConfig.setPlansInformation(plans);
         payloadConfig.setNextSimulationId(nextId);
         return payloadConfig;
     }

@@ -216,16 +216,13 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         return contactDetailsDTO;
     }
     private static List<Long> filterPlanIdToSendRimac(String plans, List<InsuranceModalityDAO> planList) {
-        List<Long> firstPlan = new ArrayList<>();
-        LOGGER.info("***** InsrEnterpriseLifeBusinessImpl - filterPlanIdToSendRimac  |  plans: {} *****", plans);
-
-        if (plans != null) {
-            firstPlan=  planList.stream()
+        LOGGER.info("***** InsrEnterpriseLifeBusinessImpl - planList: {} *****", planList);
+        List<Long> firstPlan=  planList.stream()
                     .filter(dto -> dto.getInsuranceModalityType().equals(plans))
                     .map(dto -> Long.parseLong(dto.getInsuranceCompanyModalityId()))
                     .collect(Collectors.toList());
 
-        }
+
         LOGGER.info("***** InsrEnterpriseLifeBusinessImpl - filterPlanIdToSendRimac  |  firstPlan: {} *****", firstPlan);
 
         return firstPlan;
