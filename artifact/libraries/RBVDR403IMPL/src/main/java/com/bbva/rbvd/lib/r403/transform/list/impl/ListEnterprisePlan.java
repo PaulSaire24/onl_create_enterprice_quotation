@@ -7,6 +7,8 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.CoverageDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.InstallmentPlansDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.*;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Iterator;
@@ -17,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class ListEnterprisePlan  {
 
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(ListEnterprisePlan.class);
     private final ApplicationConfigurationService applicationConfigurationService;
 
     public ListEnterprisePlan(ApplicationConfigurationService applicationConfigurationService) {
@@ -149,8 +151,11 @@ public class ListEnterprisePlan  {
             return null;
         }
 
+        LOGGER.info("***** InsrEnterpriseLifeBusinessPlanImpl - mapCoverageType  |  coverageBO response: {} *****",  coverageBO.getPrincipal());
+        LOGGER.info("***** InsrEnterpriseLifeBusinessPlanImpl - mapCoverageType  |  key console: {} *****",  ContansUtils.StringsUtils.COVERAGE_TYPE+ coverageBO.getPrincipal());
         DescriptionDTO coverageType = new DescriptionDTO();
         String condition = applicationConfigurationService.getProperty(ContansUtils.StringsUtils.COVERAGE_TYPE+ coverageBO.getPrincipal());
+        LOGGER.info("***** InsrEnterpriseLifeBusinessPlanImpl - mapCoverageType  |  condition: {} *****", condition);
         coverageType.setId(condition);
         coverageType.setName(condition);
 
