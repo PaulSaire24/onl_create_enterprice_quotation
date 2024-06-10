@@ -95,6 +95,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
             response.setId(generateSecondQuotationId(payloadConfig.getNextSimulationId(),payloadConfig.getInput(),payloadStore.getPolicyQuotaInternalIdList()));
             payloadStore.setFirstPolicyQuotaInternalId(firstPolicyQuotaInternalId);
         }
+        LOGGER.info("***** InsrEnterpriseLifeBusinessImpl - doEnterpriseLife END | return response: {} *****", response);
         payloadStore.setAddress(email);
         payloadStore.setNumber(mobile);
         payloadStore.setOutput(response);
