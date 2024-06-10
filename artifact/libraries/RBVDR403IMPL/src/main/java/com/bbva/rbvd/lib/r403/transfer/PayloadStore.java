@@ -118,4 +118,22 @@ public class PayloadStore {
     public void setPolicyQuotaInternalIdList(List<String> policyQuotaInternalIdList) {
         this.policyQuotaInternalIdList = policyQuotaInternalIdList;
     }
+
+    @Override
+    public String toString() {
+        return "PayloadStore{" +
+                "output=" + output +
+                ", rimacResponse=" + rimacResponse +
+                ", nextSimulationId=" + nextSimulationId +
+                ", insuranceProductId=" + insuranceProductId +
+                ", firstPolicyQuotaInternalId='" + firstPolicyQuotaInternalId + '\'' +
+                ", planSelected='" + planSelected + '\'' +
+                ", fechaInicio='" + fechaInicio + '\'' +
+                ", fechaFin='" + fechaFin + '\'' +
+                ", premiumAmount=" + premiumAmount +
+                ", address='" + address + '\'' +
+                ", number='" + number + '\'' +
+                ", policyQuotaInternalIdList=" + policyQuotaInternalIdList +
+                '}';
+    }
 }
