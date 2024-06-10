@@ -2,6 +2,7 @@ package com.bbva.rbvd.lib.r403.business.impl;
 
 import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.PlanDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.RateDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.ParticularDataBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceModalityDAO;
@@ -43,6 +44,8 @@ public class InsrEnterpriseLifeBusinessPlanImpl {
                     planDTO.setCoverages(listEnterprisePlan.mapCoverages(datosParticulares,planBO,applicationConfigurationService));
                     planDTO.setTotalInstallment(listEnterprisePlan.mapTotalInstallmentPlans(planBO,applicationConfigurationService));
                     planDTO.setBenefits(listEnterprisePlan.mapBenefits(planBO));
+                    planDTO.setRates(new RateDTO());
+                    planDTO.getRates().setItemizeRates(listEnterprisePlan.mapRates(planBO));
                     return planDTO;
                 })
                 .collect(Collectors.toList());

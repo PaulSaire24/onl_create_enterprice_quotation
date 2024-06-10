@@ -2,8 +2,10 @@ package com.bbva.rbvd.lib.r403.transform.list.impl;
 
 import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.AmountDTO;
-import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.DescriptionDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.CoverageDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.DescriptionDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.DetailRateDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.DetailRateUnitDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.InstallmentPlansDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.CoverageBO;
@@ -99,6 +101,21 @@ public class ListEnterprisePlan  {
                     return benefitsDTO;
                 })
                 .collect(Collectors.toList());
+    }
+
+    public static List<DetailRateDTO> mapRates(PlanBO rimacPlan){
+
+        return rimacPlan.getTasas().stream()
+                .map(tasa ->{
+                    DetailRateDTO detailRateDTO = new DetailRateDTO();
+                    detailRateDTO.setRateType("Tasa de prima - rango".concat(tasa.getRango()));
+                    detailRateDTO.setDescription(tasa.getDescripcion());
+                    DetailRateUnitDTO detailRateUnitDTO = new DetailRateUnitDTO();
+                    detailRateUnitDTO.setUnitType("Porcentaje");
+                    detailRateUnitDTO.setPercentage(tasa.getTasa().doubleValue());
+                    detailRateDTO.setItemizeRateUnits(Collections.singletonList(detailRateUnitDTO));
+                    return detailRateDTO;
+                }).collect(Collectors.toList());
     }
     public static List<InstallmentPlansDTO> mapInstallmentPlans(PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
         if (CollectionUtils.isEmpty(rimacPlan.getFinanciamientos())) {

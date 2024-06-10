@@ -25,9 +25,10 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ProductDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.CoverageBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.FinancingBO;
-import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.InstallmentFinancingBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.ParticularDataBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.AssistanceBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.TaxBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.InstallmentFinancingBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.InsuranceEnterpriseResponseBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.rimac.QuotationResponseBO;
@@ -48,11 +49,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
+
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -110,8 +112,10 @@ public class RBVDR403Test {
 
 		EnterpriseQuotationDTO response = rbvdR302.executeCreateQuotation(requestInput);
 
+		assertNotNull(response);
+
 	}
-	@Test
+	@Test(expected = BusinessException.class)
 	public void executeTestRimacFail(){
 		this.requestInput =createInputQuotationReference();
 		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
@@ -133,13 +137,12 @@ public class RBVDR403Test {
 				.thenReturn(createPlan());
 		when(pisdr402.executeGetListASingleRow("PISD.GET_QUOTATION_POLICY_ID",getArgumentsPolicy()))
 				.thenReturn(getPolicy());
-		try {
-			rbvdR302.executeCreateQuotation(requestInput);
-		}
-		catch (BusinessException e){
+		EnterpriseQuotationDTO responnse =	 rbvdR302.executeCreateQuotation(requestInput);
 
-		}}
-	@Test
+		assertNotNull(responnse);
+
+	}
+	@Test(expected = BusinessException.class)
 	public void executeTestDNI(){
 		this.requestInput = createInputDNI();
 		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
@@ -159,14 +162,11 @@ public class RBVDR403Test {
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
 				.thenReturn(createProduct());
-		try {
-			rbvdR302.executeCreateQuotation(requestInput);
-		}
-		catch (BusinessException e){
+		EnterpriseQuotationDTO responnse =	 rbvdR302.executeCreateQuotation(requestInput);
 
-		}
+		assertNotNull(responnse);
 	}
-	@Test
+	@Test(expected = BusinessException.class)
 	public void executeTestKO(){
 		this.requestInput =createInputQuotationReference();
 		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
@@ -188,12 +188,9 @@ public class RBVDR403Test {
 		when(pisdr402.executeGetListASingleRow("PISD.GET_QUOTATION_POLICY_ID",getArgumentsPolicy()))
 				.thenReturn(getPolicy());
 		when(pisdr014.executeSignatureConstruction(anyString(), any(), any(), any(), any())).thenReturn(new SignatureAWS());
-try {
-	rbvdR302.executeCreateQuotation(requestInput);
-}
-catch (BusinessException e){
+		EnterpriseQuotationDTO responnse =	 rbvdR302.executeCreateQuotation(requestInput);
 
-}
+		assertNotNull(responnse);
 }
 	@Test
 	public void executeTestOkfULLOBL(){
@@ -288,7 +285,7 @@ catch (BusinessException e){
 		assertEquals(response.getProduct().getPlans().get(1).getName(),"PLAN SOLES");
 
 	}
-	@Test
+	@Test(expected = BusinessException.class)
 	public void executeTestAddAdvice1(){
 		this.requestInput = createInputAmountZero();
 		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
@@ -309,14 +306,11 @@ catch (BusinessException e){
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
 				.thenReturn(createProduct());
 
-		try {
-			rbvdR302.executeCreateQuotation(requestInput);
-		}
-		catch (BusinessException e){
+		EnterpriseQuotationDTO responnse =	 rbvdR302.executeCreateQuotation(requestInput);
 
-		}
+		assertNotNull(responnse);
 	}
-	@Test
+	@Test(expected = BusinessException.class)
 	public void executeTestAddAdvice2(){
 		this.requestInput = createInputNumberEmployeesZero();
 		QuotationResponseBO responseRimacMock = createRimacResponse(); // DTO establecido en el test
@@ -337,18 +331,14 @@ catch (BusinessException e){
 		when(pisdr401.executeGetProductById(anyString(), anyMap()))
 				.thenReturn(createProduct());
 
-		try {
-			rbvdR302.executeCreateQuotation(requestInput);
-		}
-		catch (BusinessException e){
+		EnterpriseQuotationDTO responnse =	 rbvdR302.executeCreateQuotation(requestInput);
 
-		}
+		assertNotNull(responnse);
 	}
 	private QuotationResponseBO createRimacResponse(){
 		QuotationResponseBO responseBO = new QuotationResponseBO();
 
 		responseBO.setProducto("842");
-		List<PlanBO> planes = new ArrayList<>();
 		List<Long> planes2 = new ArrayList<>();
 		planes2.add(1234124l);
 		List<ParticularDataBO> datosParticulares = new ArrayList<>();
@@ -388,6 +378,11 @@ catch (BusinessException e){
 		plan1.setMoneda("pen");
 		plan1.setCoberturas(coverageBOList);
 		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
+		TaxBO taxBO1 = new TaxBO();
+		taxBO1.setTasa(new BigDecimal(18));
+		taxBO1.setDescripcion("Rango de 18-64 años");
+		taxBO1.setRango("0");
+		plan1.setTasas(Collections.singletonList(taxBO1));
 		plan2.setPlan(534254L);
 		plan2.setFinanciamientos(financingBOList);
 		plan2.setPrimaNeta(new BigDecimal(1000));
@@ -395,11 +390,14 @@ catch (BusinessException e){
 		plan2.setMoneda("pen");
 		plan2.setCoberturas(coverageBOList);
 		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
+		TaxBO taxBO2 = new TaxBO();
+		taxBO2.setTasa(new BigDecimal(18));
+		taxBO2.setDescripcion("Rango de 18-64 años");
+		taxBO2.setRango("0");
+		plan2.setTasas(Collections.singletonList(taxBO2));
 		List<QuotationBO> cotizaciones = new ArrayList<>();
 		QuotationBO cotizaciones1 = new QuotationBO();
 		QuotationBO cotizaciones2 = new QuotationBO();
-		planes.add(plan1);
-		planes.add(plan2);
 		cotizaciones1.setPlan(plan1);
 		cotizaciones1.setFechaFinVigencia("2024-04-30");
 		cotizaciones2.setPlan(plan2);
@@ -452,6 +450,12 @@ catch (BusinessException e){
 		plan1.setMoneda("pen");
 		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
 
+		TaxBO taxBO1 = new TaxBO();
+		taxBO1.setTasa(new BigDecimal(18));
+		taxBO1.setDescripcion("Rango de 18-64 años");
+		taxBO1.setRango("0");
+		plan1.setTasas(Collections.singletonList(taxBO1));
+
 		plan2.setPlan(2l);
 		plan2.setFinanciamientos(financingBOList);
 		plan2.setPrimaNeta(new BigDecimal(1000));
@@ -459,6 +463,13 @@ catch (BusinessException e){
 		plan2.setMoneda("pen");
 		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
 		plan2.setCoberturas(coverageBOList);
+
+		TaxBO taxBO2 = new TaxBO();
+		taxBO2.setTasa(new BigDecimal(18));
+		taxBO2.setDescripcion("Rango de 18-64 años");
+		taxBO2.setRango("0");
+		plan2.setTasas(Collections.singletonList(taxBO2));
+
 		List<QuotationBO> cotizaciones = new ArrayList<>();
 		QuotationBO cotizaciones1 = new QuotationBO();
 		QuotationBO cotizaciones2 = new QuotationBO();
@@ -522,6 +533,13 @@ catch (BusinessException e){
 		plan1.setMoneda("pen");
 		plan1.setAsistencias(assistanceBOList);
 		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
+
+		TaxBO taxBO1 = new TaxBO();
+		taxBO1.setTasa(new BigDecimal(18));
+		taxBO1.setDescripcion("Rango de 18-64 años");
+		taxBO1.setRango("0");
+		plan1.setTasas(Collections.singletonList(taxBO1));
+
 		planes.add(plan1);
 		plan2.setPlan(2l);
 		plan2.setCoberturas(coverageBOList);
@@ -530,6 +548,13 @@ catch (BusinessException e){
 		plan2.setPrimaBruta(new BigDecimal(1000));
 		plan2.setMoneda("pen");
 		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
+
+		TaxBO taxBO2 = new TaxBO();
+		taxBO2.setTasa(new BigDecimal(18));
+		taxBO2.setDescripcion("Rango de 18-64 años");
+		taxBO2.setRango("0");
+		plan2.setTasas(Collections.singletonList(taxBO2));
+
 		List<QuotationBO> cotizaciones = new ArrayList<>();
 		QuotationBO cotizaciones1 = new QuotationBO();
 		QuotationBO cotizaciones2 = new QuotationBO();
@@ -587,6 +612,12 @@ catch (BusinessException e){
 		plan1.setPrimaBruta(new BigDecimal(1000));
 		plan1.setMoneda("pen");
 		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
+		TaxBO taxBO1 = new TaxBO();
+		taxBO1.setTasa(new BigDecimal(18));
+		taxBO1.setDescripcion("Rango de 18-64 años");
+		taxBO1.setRango("0");
+		plan1.setTasas(Collections.singletonList(taxBO1));
+
 		planes.add(plan1);
 		plan2.setPlan(2l);
 		plan2.setFinanciamientos(financingBOList);
@@ -595,6 +626,12 @@ catch (BusinessException e){
 		plan2.setMoneda("pen");
 		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
 		plan2.setCoberturas(coverageBOList);
+		TaxBO taxBO2 = new TaxBO();
+		taxBO2.setTasa(new BigDecimal(18));
+		taxBO2.setDescripcion("Rango de 18-64 años");
+		taxBO2.setRango("0");
+		plan2.setTasas(Collections.singletonList(taxBO2));
+
 		List<QuotationBO> cotizaciones = new ArrayList<>();
 		QuotationBO cotizaciones1 = new QuotationBO();
 		QuotationBO cotizaciones2 = new QuotationBO();
