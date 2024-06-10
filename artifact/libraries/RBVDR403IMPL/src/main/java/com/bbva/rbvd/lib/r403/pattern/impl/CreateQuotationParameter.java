@@ -7,8 +7,8 @@ import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceProduc
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceModalityDAO;
 import com.bbva.rbvd.lib.r403.pattern.PreCreateQuotation;
 import com.bbva.rbvd.lib.r403.service.ProductService;
-import com.bbva.rbvd.lib.r403.service.dao.*;
-import com.bbva.rbvd.lib.r403.service.dao.impl.*;
+import com.bbva.rbvd.lib.r403.service.dao.IInsuranceSimulationDAO;
+import com.bbva.rbvd.lib.r403.service.dao.impl.InsuranceSimulationDAOImpl;
 import com.bbva.rbvd.lib.r403.transfer.PayloadConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
