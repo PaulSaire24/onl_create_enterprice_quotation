@@ -378,11 +378,11 @@ public class RBVDR403Test {
 		plan1.setMoneda("pen");
 		plan1.setCoberturas(coverageBOList);
 		plan1.setDescripcionPlan("PLAN PLATA SOLES 10000");
-		TaxBO taxBO1 = new TaxBO();
+		/*TaxBO taxBO1 = new TaxBO();
 		taxBO1.setTasa(new BigDecimal(18));
 		taxBO1.setDescripcion("Rango de 18-64 años");
 		taxBO1.setRango("0");
-		plan1.setTasas(Collections.singletonList(taxBO1));
+		plan1.setTasas(Collections.singletonList(taxBO1));*/
 		plan2.setPlan(534254L);
 		plan2.setFinanciamientos(financingBOList);
 		plan2.setPrimaNeta(new BigDecimal(1000));
@@ -390,11 +390,11 @@ public class RBVDR403Test {
 		plan2.setMoneda("pen");
 		plan2.setCoberturas(coverageBOList);
 		plan2.setDescripcionPlan("PLAN PLATA SOLES 10000");
-		TaxBO taxBO2 = new TaxBO();
+		/*TaxBO taxBO2 = new TaxBO();
 		taxBO2.setTasa(new BigDecimal(18));
 		taxBO2.setDescripcion("Rango de 18-64 años");
 		taxBO2.setRango("0");
-		plan2.setTasas(Collections.singletonList(taxBO2));
+		plan2.setTasas(Collections.singletonList(taxBO2));*/
 		List<QuotationBO> cotizaciones = new ArrayList<>();
 		QuotationBO cotizaciones1 = new QuotationBO();
 		QuotationBO cotizaciones2 = new QuotationBO();

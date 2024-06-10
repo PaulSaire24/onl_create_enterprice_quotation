@@ -104,11 +104,14 @@ public class ListEnterprisePlan  {
     }
 
     public static List<DetailRateDTO> mapRates(PlanBO rimacPlan){
+        if (CollectionUtils.isEmpty(rimacPlan.getTasas())) {
+            return Collections.emptyList();
+        }
 
         return rimacPlan.getTasas().stream()
                 .map(tasa ->{
                     DetailRateDTO detailRateDTO = new DetailRateDTO();
-                    detailRateDTO.setRateType("Tasa de prima - rango".concat(tasa.getRango()));
+                    detailRateDTO.setRateType("Tasa de prima - rango ".concat(tasa.getRango()));
                     detailRateDTO.setDescription(tasa.getDescripcion());
                     DetailRateUnitDTO detailRateUnitDTO = new DetailRateUnitDTO();
                     detailRateUnitDTO.setUnitType("Porcentaje");
