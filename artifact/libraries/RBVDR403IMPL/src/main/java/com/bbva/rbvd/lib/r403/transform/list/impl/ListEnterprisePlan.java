@@ -144,13 +144,13 @@ public class ListEnterprisePlan  {
         return insuredAmount;
 
     }
-    public static DescriptionDTO mapCoverageType(CoverageBO coverageBO, ApplicationConfigurationService applicationConfigurationService) {
-        if (Objects.isNull(coverageBO.getCondicion())) {
+    private static DescriptionDTO mapCoverageType(CoverageBO coverageBO, ApplicationConfigurationService applicationConfigurationService) {
+        if (Objects.isNull(coverageBO.getPrincipal())) {
             return null;
         }
 
         DescriptionDTO coverageType = new DescriptionDTO();
-        String condition = applicationConfigurationService.getProperty(ContansUtils.StringsUtils.COVERAGE_TYPE+ coverageBO.getCondicion());
+        String condition = applicationConfigurationService.getProperty(ContansUtils.StringsUtils.COVERAGE_TYPE+ coverageBO.getPrincipal());
         coverageType.setId(condition);
         coverageType.setName(condition);
 

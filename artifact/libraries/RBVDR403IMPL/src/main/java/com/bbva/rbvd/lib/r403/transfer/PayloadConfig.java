@@ -38,11 +38,12 @@ public class PayloadConfig {
     public void setProductInformationBySimulation(InsuranceProductDAO productInformationBySimulation) {
         this.productInformationBySimulation = productInformationBySimulation;
     }
+
     public List<InsuranceModalityDAO> getPlansInformation() {
         return plansInformation;
     }
 
-    public void setPlansFromBD(List<InsuranceModalityDAO> plansInformation) {
+    public void setPlansInformation(List<InsuranceModalityDAO> plansInformation) {
         this.plansInformation = plansInformation;
     }
 

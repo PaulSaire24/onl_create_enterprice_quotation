@@ -67,6 +67,7 @@ public class InsrEnterpriseLifeBusinessPlanImpl {
                 .collect(Collectors.toMap(
                         map ->  map.getInsuranceCompanyModalityId(),
                         map ->  map.getInsuranceModalityName()));
+        LOGGER.info("***** addPlansName - InsrEnterpriseLifeBusinessPlanImpl  |  plans Maps: {} *****",  nameToIdMap);
         if(!ValidMaps.mapIsNullOrEmpty(nameToIdMap)) {
             planBOList.forEach(planBO -> {
                 String planName = planBO.getPlan().toString();

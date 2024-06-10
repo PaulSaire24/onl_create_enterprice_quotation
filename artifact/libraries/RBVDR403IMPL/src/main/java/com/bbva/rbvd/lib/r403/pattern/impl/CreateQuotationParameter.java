@@ -40,7 +40,7 @@ public class CreateQuotationParameter implements PreCreateQuotation {
         payloadConfig.setInput(input);
         payloadConfig.setProductInformationBySimulation(product);
         payloadConfig.setCompanyQuotaId(product.getProductShortDesc());
-        payloadConfig.setPlansFromBD(plans);
+        payloadConfig.setPlansInformation(plans);
         payloadConfig.setNextSimulationId(nextId);
         return payloadConfig;
     }
