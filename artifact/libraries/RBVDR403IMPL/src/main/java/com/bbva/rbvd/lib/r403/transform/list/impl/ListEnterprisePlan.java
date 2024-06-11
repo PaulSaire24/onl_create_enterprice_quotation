@@ -12,6 +12,7 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.CoverageBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.FinancingBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.ParticularDataBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.AssistanceBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.RateDTO;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,22 +104,25 @@ public class ListEnterprisePlan  {
                 .collect(Collectors.toList());
     }
 
-    public static List<DetailRateDTO> mapRates(PlanBO rimacPlan){
+    public static RateDTO mapRates(PlanBO rimacPlan){
         if (rimacPlan == null || CollectionUtils.isEmpty(rimacPlan.getTasas())) {
             return null;
         }
 
-        return rimacPlan.getTasas().stream()
+        RateDTO rateDTO = new RateDTO();
+        rateDTO.setItemizeRates(rimacPlan.getTasas().stream()
                 .map(tasa ->{
                     DetailRateDTO detailRateDTO = new DetailRateDTO();
                     detailRateDTO.setRateType("Tasa de prima - rango ".concat(tasa.getRango()));
                     detailRateDTO.setDescription(tasa.getDescripcion());
                     DetailRateUnitDTO detailRateUnitDTO = new DetailRateUnitDTO();
-                    detailRateUnitDTO.setUnitType("Porcentaje");
+                    detailRateUnitDTO.setUnitType("PERCENTAGE");
                     detailRateUnitDTO.setPercentage(tasa.getTasa().doubleValue());
                     detailRateDTO.setItemizeRateUnits(Collections.singletonList(detailRateUnitDTO));
                     return detailRateDTO;
-                }).collect(Collectors.toList());
+                }).collect(Collectors.toList()));
+
+        return rateDTO;
     }
     public static List<InstallmentPlansDTO> mapInstallmentPlans(PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
         if (rimacPlan == null || CollectionUtils.isEmpty(rimacPlan.getFinanciamientos())) {

@@ -44,8 +44,7 @@ public class InsrEnterpriseLifeBusinessPlanImpl {
                     planDTO.setCoverages(listEnterprisePlan.mapCoverages(datosParticulares,planBO,applicationConfigurationService));
                     planDTO.setTotalInstallment(listEnterprisePlan.mapTotalInstallmentPlans(planBO,applicationConfigurationService));
                     planDTO.setBenefits(listEnterprisePlan.mapBenefits(planBO));
-                    planDTO.setRates(new RateDTO());
-                    planDTO.getRates().setItemizeRates(listEnterprisePlan.mapRates(planBO));
+                    planDTO.setRates(listEnterprisePlan.mapRates(planBO));
                     return planDTO;
                 })
                 .collect(Collectors.toList());
