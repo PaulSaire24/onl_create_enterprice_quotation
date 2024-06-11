@@ -61,7 +61,7 @@
 				<parameter order="1" name="id" mandatory="1" type="String" size="20"/>
 			</dto>
 		</dto>
-		<dto order="9" name="insuredAmount" mandatory="0" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.AmountDTO" artifactId="RBVDC402">
+		<dto order="9" name="insuredAmount" mandatory="1" package="com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.AmountDTO" artifactId="RBVDC402">
 			<parameter order="1" name="amount" mandatory="1" type="Double" size="20"/>
 			<parameter order="2" name="currency" mandatory="1" type="String" size="3"/>
 		</dto>

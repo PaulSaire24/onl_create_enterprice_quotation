@@ -2,11 +2,20 @@ package com.bbva.rbvd.lib.r403.transform.list.impl;
 
 import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.AmountDTO;
-import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.DescriptionDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.CoverageDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.DescriptionDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.DetailRateDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.DetailRateUnitDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.InstallmentPlansDTO;
-import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.*;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.CoverageBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.FinancingBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.ParticularDataBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.AssistanceBO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.RateDTO;
 import com.bbva.rbvd.lib.r403.utils.ContansUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Iterator;
@@ -17,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class ListEnterprisePlan  {
 
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(ListEnterprisePlan.class);
     private final ApplicationConfigurationService applicationConfigurationService;
 
     public ListEnterprisePlan(ApplicationConfigurationService applicationConfigurationService) {
@@ -49,7 +58,7 @@ public class ListEnterprisePlan  {
     }
 
     public static List<CoverageDTO> mapCoverages(List<ParticularDataBO> particularData,PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
-        if (CollectionUtils.isEmpty(particularData)||CollectionUtils.isEmpty(rimacPlan.getCoberturas())) {
+        if (rimacPlan == null || CollectionUtils.isEmpty(particularData)||CollectionUtils.isEmpty(rimacPlan.getCoberturas())) {
             return Collections.emptyList();
         }
         List<String> sumaAsegurada = particularData.stream()
@@ -78,8 +87,8 @@ public class ListEnterprisePlan  {
                 .collect(Collectors.toList());
     }
     public static List<DescriptionDTO> mapBenefits(PlanBO rimacPlan) {
-        if (CollectionUtils.isEmpty(rimacPlan.getAsistencias())) {
-            return Collections.emptyList();
+        if (rimacPlan == null || CollectionUtils.isEmpty(rimacPlan.getAsistencias())) {
+            return null;
         }
 
         List<AssistanceBO> assistanceBOList =rimacPlan.getAsistencias();
@@ -94,9 +103,30 @@ public class ListEnterprisePlan  {
                 })
                 .collect(Collectors.toList());
     }
+
+    public static RateDTO mapRates(PlanBO rimacPlan){
+        if (rimacPlan == null || CollectionUtils.isEmpty(rimacPlan.getTasas())) {
+            return null;
+        }
+
+        RateDTO rateDTO = new RateDTO();
+        rateDTO.setItemizeRates(rimacPlan.getTasas().stream()
+                .map(tasa ->{
+                    DetailRateDTO detailRateDTO = new DetailRateDTO();
+                    detailRateDTO.setRateType("Tasa de prima - rango ".concat(tasa.getRango()));
+                    detailRateDTO.setDescription(tasa.getDescripcion());
+                    DetailRateUnitDTO detailRateUnitDTO = new DetailRateUnitDTO();
+                    detailRateUnitDTO.setUnitType("PERCENTAGE");
+                    detailRateUnitDTO.setPercentage(tasa.getTasa().doubleValue());
+                    detailRateDTO.setItemizeRateUnits(Collections.singletonList(detailRateUnitDTO));
+                    return detailRateDTO;
+                }).collect(Collectors.toList()));
+
+        return rateDTO;
+    }
     public static List<InstallmentPlansDTO> mapInstallmentPlans(PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
-        if (CollectionUtils.isEmpty(rimacPlan.getFinanciamientos())) {
-            return Collections.emptyList();
+        if (rimacPlan == null || CollectionUtils.isEmpty(rimacPlan.getFinanciamientos())) {
+            return null;
         }
         List<FinancingBO> financingBOList = rimacPlan.getFinanciamientos();
 
@@ -144,13 +174,16 @@ public class ListEnterprisePlan  {
         return insuredAmount;
 
     }
-    public static DescriptionDTO mapCoverageType(CoverageBO coverageBO, ApplicationConfigurationService applicationConfigurationService) {
-        if (Objects.isNull(coverageBO.getCondicion())) {
+    private static DescriptionDTO mapCoverageType(CoverageBO coverageBO, ApplicationConfigurationService applicationConfigurationService) {
+        if (Objects.isNull(coverageBO.getPrincipal())) {
             return null;
         }
 
+        LOGGER.info("***** InsrEnterpriseLifeBusinessPlanImpl - mapCoverageType  |  coverageBO response: {} *****",  coverageBO.getPrincipal());
+        LOGGER.info("***** InsrEnterpriseLifeBusinessPlanImpl - mapCoverageType  |  key console: {} *****",  ContansUtils.StringsUtils.COVERAGE_TYPE+ coverageBO.getPrincipal());
         DescriptionDTO coverageType = new DescriptionDTO();
-        String condition = applicationConfigurationService.getProperty(ContansUtils.StringsUtils.COVERAGE_TYPE+ coverageBO.getCondicion());
+        String condition = applicationConfigurationService.getProperty(ContansUtils.StringsUtils.COVERAGE_TYPE+ coverageBO.getPrincipal());
+        LOGGER.info("***** InsrEnterpriseLifeBusinessPlanImpl - mapCoverageType  |  condition: {} *****", condition);
         coverageType.setId(condition);
         coverageType.setName(condition);
 

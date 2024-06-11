@@ -4,7 +4,13 @@ import com.bbva.elara.configuration.manager.application.ApplicationConfiguration
 import com.bbva.elara.utility.api.connector.APIConnector;
 import com.bbva.pisd.lib.r014.PISDR014;
 import com.bbva.pisd.lib.r402.PISDR402;
-import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.*;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.AmountDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ContactDetailsDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EmployeesDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ContractorDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ValidityPeriodDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.ParticipantDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.FinancingBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.ParticularDataBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
@@ -29,11 +35,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Date;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -95,6 +104,7 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
             response.setId(generateSecondQuotationId(payloadConfig.getNextSimulationId(),payloadConfig.getInput(),payloadStore.getPolicyQuotaInternalIdList()));
             payloadStore.setFirstPolicyQuotaInternalId(firstPolicyQuotaInternalId);
         }
+        LOGGER.info("***** InsrEnterpriseLifeBusinessImpl - doEnterpriseLife END | return response: {} *****", response);
         payloadStore.setAddress(email);
         payloadStore.setNumber(mobile);
         payloadStore.setOutput(response);

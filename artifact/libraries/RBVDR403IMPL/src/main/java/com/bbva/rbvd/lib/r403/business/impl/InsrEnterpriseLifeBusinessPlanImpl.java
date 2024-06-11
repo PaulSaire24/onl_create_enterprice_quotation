@@ -2,6 +2,7 @@ package com.bbva.rbvd.lib.r403.business.impl;
 
 import com.bbva.elara.configuration.manager.application.ApplicationConfigurationService;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.PlanDTO;
+import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.RateDTO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.ParticularDataBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.commons.rimac.PlanBO;
 import com.bbva.rbvd.dto.enterpriseinsurance.createquotation.dao.InsuranceModalityDAO;
@@ -11,7 +12,11 @@ import com.bbva.rbvd.lib.r403.utils.ContansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class InsrEnterpriseLifeBusinessPlanImpl {
@@ -39,6 +44,7 @@ public class InsrEnterpriseLifeBusinessPlanImpl {
                     planDTO.setCoverages(listEnterprisePlan.mapCoverages(datosParticulares,planBO,applicationConfigurationService));
                     planDTO.setTotalInstallment(listEnterprisePlan.mapTotalInstallmentPlans(planBO,applicationConfigurationService));
                     planDTO.setBenefits(listEnterprisePlan.mapBenefits(planBO));
+                    planDTO.setRates(listEnterprisePlan.mapRates(planBO));
                     return planDTO;
                 })
                 .collect(Collectors.toList());
@@ -67,6 +73,7 @@ public class InsrEnterpriseLifeBusinessPlanImpl {
                 .collect(Collectors.toMap(
                         map ->  map.getInsuranceCompanyModalityId(),
                         map ->  map.getInsuranceModalityName()));
+        LOGGER.info("***** addPlansName - InsrEnterpriseLifeBusinessPlanImpl  |  plans Maps: {} *****",  nameToIdMap);
         if(!ValidMaps.mapIsNullOrEmpty(nameToIdMap)) {
             planBOList.forEach(planBO -> {
                 String planName = planBO.getPlan().toString();
