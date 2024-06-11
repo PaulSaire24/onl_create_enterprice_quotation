@@ -57,7 +57,7 @@ public class ListEnterprisePlan  {
     }
 
     public static List<CoverageDTO> mapCoverages(List<ParticularDataBO> particularData,PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
-        if (CollectionUtils.isEmpty(particularData)||CollectionUtils.isEmpty(rimacPlan.getCoberturas())) {
+        if (rimacPlan == null || CollectionUtils.isEmpty(particularData)||CollectionUtils.isEmpty(rimacPlan.getCoberturas())) {
             return Collections.emptyList();
         }
         List<String> sumaAsegurada = particularData.stream()
@@ -86,8 +86,8 @@ public class ListEnterprisePlan  {
                 .collect(Collectors.toList());
     }
     public static List<DescriptionDTO> mapBenefits(PlanBO rimacPlan) {
-        if (CollectionUtils.isEmpty(rimacPlan.getAsistencias())) {
-            return Collections.emptyList();
+        if (rimacPlan == null || CollectionUtils.isEmpty(rimacPlan.getAsistencias())) {
+            return null;
         }
 
         List<AssistanceBO> assistanceBOList =rimacPlan.getAsistencias();
@@ -104,8 +104,8 @@ public class ListEnterprisePlan  {
     }
 
     public static List<DetailRateDTO> mapRates(PlanBO rimacPlan){
-        if (CollectionUtils.isEmpty(rimacPlan.getTasas())) {
-            return Collections.emptyList();
+        if (rimacPlan == null || CollectionUtils.isEmpty(rimacPlan.getTasas())) {
+            return null;
         }
 
         return rimacPlan.getTasas().stream()
@@ -121,8 +121,8 @@ public class ListEnterprisePlan  {
                 }).collect(Collectors.toList());
     }
     public static List<InstallmentPlansDTO> mapInstallmentPlans(PlanBO rimacPlan, ApplicationConfigurationService applicationConfigurationService) {
-        if (CollectionUtils.isEmpty(rimacPlan.getFinanciamientos())) {
-            return Collections.emptyList();
+        if (rimacPlan == null || CollectionUtils.isEmpty(rimacPlan.getFinanciamientos())) {
+            return null;
         }
         List<FinancingBO> financingBOList = rimacPlan.getFinanciamientos();
 
