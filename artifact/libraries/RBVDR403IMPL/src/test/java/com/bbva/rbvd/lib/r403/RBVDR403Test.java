@@ -741,7 +741,7 @@ public class RBVDR403Test {
 		employees.setEmployeesNumber(Long.valueOf(30));
 		AmountDTO monthlyPayrollAmount = new AmountDTO();
 		monthlyPayrollAmount.setCurrency("PEN");
-		monthlyPayrollAmount.setAmount(BigDecimal.valueOf(20000000000000.00).doubleValue());
+		monthlyPayrollAmount.setAmount(1234567890123.33);
 		employees.setMonthlyPayrollAmount((monthlyPayrollAmount));
 		product.setId("842");
 		contacto.setContactDetailType("EMAIL");
