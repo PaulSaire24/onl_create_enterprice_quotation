@@ -7,9 +7,6 @@ import com.bbva.rbvd.dto.enterpriseinsurance.commons.dto.EnterpriseQuotationDTO;
  */
 public interface RBVDR403 {
 
-	/**
-	 * The execute method...
-	 */
 	EnterpriseQuotationDTO executeCreateQuotation(EnterpriseQuotationDTO quotationCreate);
 
 }

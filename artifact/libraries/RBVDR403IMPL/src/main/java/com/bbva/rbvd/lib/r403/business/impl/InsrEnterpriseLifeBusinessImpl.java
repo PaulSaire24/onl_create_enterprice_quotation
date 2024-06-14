@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -191,11 +192,10 @@ public class InsrEnterpriseLifeBusinessImpl implements IInsrEnterpriseLifeBusine
         ParticularDataBO planillaBrutaMensual = new ParticularDataBO();
         planillaBrutaMensual.setEtiqueta(ContansUtils.rimacInput.PLANILLA_BRUTA_MENSUAL);
         planillaBrutaMensual.setCodigo(ContansUtils.StringsUtils.BLANK);
-        planillaBrutaMensual.setValor(String.valueOf(employees.getMonthlyPayrollAmount().getAmount()));
-        LOGGER.info("***** createQuotationDAO - getDatosParticulares  | argument formattedAmount: {} *****",
-                employees.getMonthlyPayrollAmount().getAmount());
-        LOGGER.info("***** createQuotationDAO - getDatosParticulares  |  getAmount: {} *****",
-                employees.getMonthlyPayrollAmount().getAmount().toString());
+        DecimalFormat decimalFormat = new DecimalFormat("0.######");
+        String planillaBrutaMensualValue = decimalFormat.format(employees.getMonthlyPayrollAmount().getAmount());
+        planillaBrutaMensual.setValor(planillaBrutaMensualValue);
+        LOGGER.info("***** createQuotationDAO - getDatosParticulares  | argument formattedAmount: {} *****",planillaBrutaMensualValue);
         particularData.add(planillaBrutaMensual);
 
 
